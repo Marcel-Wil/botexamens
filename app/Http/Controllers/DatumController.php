@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Datum;
+use Illuminate\Support\Facades\Redirect;
 
 class DatumController extends Controller
 {
@@ -29,9 +30,9 @@ class DatumController extends Controller
 
         $diff = array_diff($new, $old);
 
-        return response()->json([
+        return Redirect::back()->with('result', [
             'new_items' => array_values($diff),
-            'has_changes' => !empty($diff)
+            'has_changes' => !empty($diff),
         ]);
     }
 }
