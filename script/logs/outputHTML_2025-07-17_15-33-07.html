@@ -1,0 +1,944 @@
+
+
+<div class="collapse-indicate">
+
+    <div class="card-header" hidden></div>
+    <div class="card-header bg-lightgray border-top px-2 pt-2 pb-1 hover-pointer" data-toggle="collapse" aria-expanded="true"
+         data-target="#filterCollapse" href="#filterCollapse" style="cursor:pointer;">
+
+        <div class="p-0 noHover">
+            <span class="collapse-header-indicator float-left border rounded font-weight-bold bg-secondary text-white">
+                &#x2228
+            </span>
+            <h5 class="text-center mb-0">Filters instellen</h5>
+        </div>
+        <div class="text-center">
+            <label class="m-1">
+                <span class="text-nowrap">(MA, DI, WO, DO, VR)</span>
+                <span class="text-nowrap">(06:50 - 17:00)</span>
+            </label>
+        </div>
+
+    </div>
+
+    <div id="filterCollapse" class="collapse-body collapse">
+        <div class="card-body">
+
+            <form class="d-flex justify-content-around text-center" id="FilterForm" style="flex-flow: row wrap;" action="/Afspraak/AjaxPartialTimeSelectNew" method="post">
+                <input hidden="hidden" value="1004" type="number" data-val="true" data-val-required="The ecId field is required." id="inputFilter_ecId" name="inputFilter.ecId" /><input name="__Invariant" type="hidden" value="inputFilter.ecId" />
+                <input hidden="hidden" value="QQ035E0" type="text" id="inputFilter_dataId" name="inputFilter.dataId" />
+
+                <input hidden="hidden" type="text" value="17/01/2026" data-val="true" data-val-required="The Begin datum field is required." id="inputFilter_StartDate" name="inputFilter.StartDate" />
+                <input hidden="hidden" type="text" value="17/02/2026" data-val="true" data-val-required="The Eind datum field is required." id="inputFilter_EndDate" name="inputFilter.EndDate" />
+
+
+                <div class="filterBlock input-check">
+                    <div class="input-border mt-0 mb-2 mx-1">
+                        <label>Week dagen</label>
+                        <ol class="input-ol-list">
+                            <li>
+                                <label for="inputFilter_ShowDayMA">Maandag</label>
+                                <input checked="checked" type="checkbox" data-val="true" data-val-required="The Maandag field is required." id="inputFilter_ShowDayMA" name="inputFilter.ShowDayMA" value="true" />
+                            </li>
+                            <li>
+                                <label for="inputFilter_ShowDayDI">Dinsdag</label>
+                                <input checked="checked" type="checkbox" data-val="true" data-val-required="The Dinsdag field is required." id="inputFilter_ShowDayDI" name="inputFilter.ShowDayDI" value="true" />
+                            </li>
+                            <li>
+                                <label for="inputFilter_ShowDayWO">Woensdag</label>
+                                <input checked="checked" type="checkbox" data-val="true" data-val-required="The Woensdag field is required." id="inputFilter_ShowDayWO" name="inputFilter.ShowDayWO" value="true" />
+                            </li>
+                            <li>
+                                <label for="inputFilter_ShowDayDO">Donderdag</label>
+                                <input checked="checked" type="checkbox" data-val="true" data-val-required="The Donderdag field is required." id="inputFilter_ShowDayDO" name="inputFilter.ShowDayDO" value="true" />
+                            </li>
+                            <li>
+                                <label for="inputFilter_ShowDayVR">Vrijdag</label>
+                                <input checked="checked" type="checkbox" data-val="true" data-val-required="The Vrijdag field is required." id="inputFilter_ShowDayVR" name="inputFilter.ShowDayVR" value="true" />
+                            </li>
+
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="filterBlock input-time">
+                    <div class="input-border mt-0 mb-2 mx-1">
+                        <label>Tijd Selectie</label>
+                        <ol class="input-ol-list">
+                            <li class="m-1">
+                                <label for="inputFilter_StartTime">Van</label>
+                                <input class="form-control" value="06:50:00" type="time" data-val="true" data-val-required="The Van field is required." id="inputFilter_StartTime" name="inputFilter.StartTime" /><input name="__Invariant" type="hidden" value="inputFilter.StartTime" />
+                            </li>
+                            <li class="m-1">
+                                <label for="inputFilter_EndTime">Tot</label>
+                                <input class="form-control" value="17:00:00" type="time" data-val="true" data-val-required="The Tot field is required." id="inputFilter_EndTime" name="inputFilter.EndTime" /><input name="__Invariant" type="hidden" value="inputFilter.EndTime" />
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8PH6B_iUbplPlvKJdfnLOp-iNxW2uVsh--XEIH3NP2sm9noF_TaHPMlAT-d9EBVWZkiBf4JLQcu_O3IFprxaDrgyJu30PFQ8NW0tZh9DWJ8fVT3yr8F5GSYz9zzasyJW8_Lw-7d26OmJTTxdEx-fLS4" /><input name="inputFilter.ShowDayMA" type="hidden" value="false" /><input name="inputFilter.ShowDayDI" type="hidden" value="false" /><input name="inputFilter.ShowDayWO" type="hidden" value="false" /><input name="inputFilter.ShowDayDO" type="hidden" value="false" /><input name="inputFilter.ShowDayVR" type="hidden" value="false" /></form>
+
+            <div class="w-100 text-center">
+                <input class="btn btn-primary-ot" type="submit" value="Filter" form="FilterForm" style="width:80px;" />
+
+                <button id="FilterResetButton" class="btn btn-primary-ot" style="width:80px;">Reset</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="collapse-indicate">
+
+    <div class="card-header" hidden></div>
+    <div class="card-header bg-lightgray border-top px-2 pt-2 pb-1 hover-pointer" data-toggle="collapse" aria-expanded="true"
+         data-target="#timeSelectCollapse" href="#timeSelectCollapse" style="cursor:pointer;">
+
+        <div class="p-0 noHover">
+            <span class="collapse-header-indicator float-left border rounded font-weight-bold bg-secondary text-white">
+                &#x2227
+            </span>
+            <h5 class="text-center mb-0">Tijdslot selecteren</h5>
+        </div>
+
+        <div class="d-flex m-auto pt-1">
+                <span class="m-auto noHover text-nowrap">(17/01/2026 - 17/02/2026)</span>
+        </div>
+
+    </div>
+
+    <div id="timeSelectCollapse" class="collapse-body collapse show">
+
+            <div class="d-flex m-auto justify-content-between align-self-stretch">
+                <div class="w-50 border-right border-dark">
+                </div>
+                <div class="w-50 border-left border-dark">
+                </div>
+            </div>
+
+        <div class="card-body card-group-list p-0 text-center">
+                    <ol class="TimeSlotList border d-inline-block list-unstyled">
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard19012026"
+                                        data-target="#TimeSlotCard19012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            ma 19/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard19012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0730.0740.0750.0800.0810">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('19/01/2026',
+                                                                                             '2026/01/19',
+                                                                                             '07:30',
+                                                                                             '0730.0740.0750.0800.0810')"
+                                                                            data-target="#Modal">
+                                                                        07:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0820.0830.0840.0850.0900">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('19/01/2026',
+                                                                                             '2026/01/19',
+                                                                                             '08:20',
+                                                                                             '0820.0830.0840.0850.0900')"
+                                                                            data-target="#Modal">
+                                                                        08:20
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0910.0920.0930.0940.0950">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('19/01/2026',
+                                                                                             '2026/01/19',
+                                                                                             '09:10',
+                                                                                             '0910.0920.0930.0940.0950')"
+                                                                            data-target="#Modal">
+                                                                        09:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1000.1010.1020.1030.1040">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('19/01/2026',
+                                                                                             '2026/01/19',
+                                                                                             '10:00',
+                                                                                             '1000.1010.1020.1030.1040')"
+                                                                            data-target="#Modal">
+                                                                        10:00
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1410.1420.1430.1440.1450">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('19/01/2026',
+                                                                                             '2026/01/19',
+                                                                                             '14:10',
+                                                                                             '1410.1420.1430.1440.1450')"
+                                                                            data-target="#Modal">
+                                                                        14:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1500.1510.1520.1530.1540">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('19/01/2026',
+                                                                                             '2026/01/19',
+                                                                                             '15:00',
+                                                                                             '1500.1510.1520.1530.1540')"
+                                                                            data-target="#Modal">
+                                                                        15:00
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1550.1600.1610.1620.1630">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('19/01/2026',
+                                                                                             '2026/01/19',
+                                                                                             '15:50',
+                                                                                             '1550.1600.1610.1620.1630')"
+                                                                            data-target="#Modal">
+                                                                        15:50
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard20012026"
+                                        data-target="#TimeSlotCard20012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            di 20/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard20012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0730.0740.0750.0800.0810">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '07:30',
+                                                                                             '0730.0740.0750.0800.0810')"
+                                                                            data-target="#Modal">
+                                                                        07:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0820.0830.0840.0850.0900">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '08:20',
+                                                                                             '0820.0830.0840.0850.0900')"
+                                                                            data-target="#Modal">
+                                                                        08:20
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0910.0920.0930.0940.0950">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '09:10',
+                                                                                             '0910.0920.0930.0940.0950')"
+                                                                            data-target="#Modal">
+                                                                        09:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1050.1100.1110.1120.1130">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '10:50',
+                                                                                             '1050.1100.1110.1120.1130')"
+                                                                            data-target="#Modal">
+                                                                        10:50
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1230.1240.1250.1300.1310">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '12:30',
+                                                                                             '1230.1240.1250.1300.1310')"
+                                                                            data-target="#Modal">
+                                                                        12:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1410.1420.1430.1440.1450">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '14:10',
+                                                                                             '1410.1420.1430.1440.1450')"
+                                                                            data-target="#Modal">
+                                                                        14:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1500.1510.1520.1530.1540">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '15:00',
+                                                                                             '1500.1510.1520.1530.1540')"
+                                                                            data-target="#Modal">
+                                                                        15:00
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1550.1600.1610.1620.1630">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('20/01/2026',
+                                                                                             '2026/01/20',
+                                                                                             '15:50',
+                                                                                             '1550.1600.1610.1620.1630')"
+                                                                            data-target="#Modal">
+                                                                        15:50
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard22012026"
+                                        data-target="#TimeSlotCard22012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            do 22/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard22012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0720.0730.0740.0750.0800">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('22/01/2026',
+                                                                                             '2026/01/22',
+                                                                                             '07:20',
+                                                                                             '0720.0730.0740.0750.0800')"
+                                                                            data-target="#Modal">
+                                                                        07:20
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard23012026"
+                                        data-target="#TimeSlotCard23012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            vr 23/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard23012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0730.0740.0750.0800.0810">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('23/01/2026',
+                                                                                             '2026/01/23',
+                                                                                             '07:30',
+                                                                                             '0730.0740.0750.0800.0810')"
+                                                                            data-target="#Modal">
+                                                                        07:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0820.0830.0840.0850.0900">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('23/01/2026',
+                                                                                             '2026/01/23',
+                                                                                             '08:20',
+                                                                                             '0820.0830.0840.0850.0900')"
+                                                                            data-target="#Modal">
+                                                                        08:20
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0910.0920.0930.0940.0950">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('23/01/2026',
+                                                                                             '2026/01/23',
+                                                                                             '09:10',
+                                                                                             '0910.0920.0930.0940.0950')"
+                                                                            data-target="#Modal">
+                                                                        09:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1050.1100.1110.1120.1130">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('23/01/2026',
+                                                                                             '2026/01/23',
+                                                                                             '10:50',
+                                                                                             '1050.1100.1110.1120.1130')"
+                                                                            data-target="#Modal">
+                                                                        10:50
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1320.1330.1340.1350.1400">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('23/01/2026',
+                                                                                             '2026/01/23',
+                                                                                             '13:20',
+                                                                                             '1320.1330.1340.1350.1400')"
+                                                                            data-target="#Modal">
+                                                                        13:20
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1410.1420.1430.1440.1450">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('23/01/2026',
+                                                                                             '2026/01/23',
+                                                                                             '14:10',
+                                                                                             '1410.1420.1430.1440.1450')"
+                                                                            data-target="#Modal">
+                                                                        14:10
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                    </ol>
+                    <ol class="TimeSlotList border d-inline-block list-unstyled">
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard26012026"
+                                        data-target="#TimeSlotCard26012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            ma 26/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard26012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0730.0740.0750.0800.0810">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '07:30',
+                                                                                             '0730.0740.0750.0800.0810')"
+                                                                            data-target="#Modal">
+                                                                        07:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0820.0830.0840.0850.0900">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '08:20',
+                                                                                             '0820.0830.0840.0850.0900')"
+                                                                            data-target="#Modal">
+                                                                        08:20
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0910.0920.0930.0940.0950">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '09:10',
+                                                                                             '0910.0920.0930.0940.0950')"
+                                                                            data-target="#Modal">
+                                                                        09:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1050.1100.1110.1120.1130">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '10:50',
+                                                                                             '1050.1100.1110.1120.1130')"
+                                                                            data-target="#Modal">
+                                                                        10:50
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1230.1240.1250.1300.1310">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '12:30',
+                                                                                             '1230.1240.1250.1300.1310')"
+                                                                            data-target="#Modal">
+                                                                        12:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1410.1420.1430.1440.1450">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '14:10',
+                                                                                             '1410.1420.1430.1440.1450')"
+                                                                            data-target="#Modal">
+                                                                        14:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1500.1510.1520.1530.1540">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '15:00',
+                                                                                             '1500.1510.1520.1530.1540')"
+                                                                            data-target="#Modal">
+                                                                        15:00
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1550.1600.1610.1620.1630">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('26/01/2026',
+                                                                                             '2026/01/26',
+                                                                                             '15:50',
+                                                                                             '1550.1600.1610.1620.1630')"
+                                                                            data-target="#Modal">
+                                                                        15:50
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard27012026"
+                                        data-target="#TimeSlotCard27012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            di 27/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard27012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1320.1330.1340.1350.1400">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('27/01/2026',
+                                                                                             '2026/01/27',
+                                                                                             '13:20',
+                                                                                             '1320.1330.1340.1350.1400')"
+                                                                            data-target="#Modal">
+                                                                        13:20
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1410.1420.1430.1440.1450">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('27/01/2026',
+                                                                                             '2026/01/27',
+                                                                                             '14:10',
+                                                                                             '1410.1420.1430.1440.1450')"
+                                                                            data-target="#Modal">
+                                                                        14:10
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1500.1510.1520.1530.1540">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('27/01/2026',
+                                                                                             '2026/01/27',
+                                                                                             '15:00',
+                                                                                             '1500.1510.1520.1530.1540')"
+                                                                            data-target="#Modal">
+                                                                        15:00
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1550.1600.1610.1620.1630">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('27/01/2026',
+                                                                                             '2026/01/27',
+                                                                                             '15:50',
+                                                                                             '1550.1600.1610.1620.1630')"
+                                                                            data-target="#Modal">
+                                                                        15:50
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard28012026"
+                                        data-target="#TimeSlotCard28012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            wo 28/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard28012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0730.0740.0750.0800.0810">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('28/01/2026',
+                                                                                             '2026/01/28',
+                                                                                             '07:30',
+                                                                                             '0730.0740.0750.0800.0810')"
+                                                                            data-target="#Modal">
+                                                                        07:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0820.0830.0840.0850.0900">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('28/01/2026',
+                                                                                             '2026/01/28',
+                                                                                             '08:20',
+                                                                                             '0820.0830.0840.0850.0900')"
+                                                                            data-target="#Modal">
+                                                                        08:20
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                            <li class="TimeSlotListItem">
+                                <ol class="list-group TimeSlotListCardChild ">
+
+                                    <li class="hover-pointer" data-toggle="collapse" aria-expanded="false" style="min-height:25px;cursor:pointer;"
+                                        href="#TimeSlotCard30012026"
+                                        data-target="#TimeSlotCard30012026">
+                                        <span class="TimeSlotListCardChildText">
+                                            vr 30/01
+                                            <br />
+                                        </span>
+                                    </li>
+
+                                    <li class="TimeSlotListGroup">
+                                        <div class="collapse MultiExpander" id="TimeSlotCard30012026">
+                                            <div class="card card-body TimeSlotListCardItem ">
+                                                <div class="Scrollable TimeSlotListCardItemInner">
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="0730.0740.0750.0800.0810">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('30/01/2026',
+                                                                                             '2026/01/30',
+                                                                                             '07:30',
+                                                                                             '0730.0740.0750.0800.0810')"
+                                                                            data-target="#Modal">
+                                                                        07:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1230.1240.1250.1300.1310">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('30/01/2026',
+                                                                                             '2026/01/30',
+                                                                                             '12:30',
+                                                                                             '1230.1240.1250.1300.1310')"
+                                                                            data-target="#Modal">
+                                                                        12:30
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1320.1330.1340.1350.1400">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('30/01/2026',
+                                                                                             '2026/01/30',
+                                                                                             '13:20',
+                                                                                             '1320.1330.1340.1350.1400')"
+                                                                            data-target="#Modal">
+                                                                        13:20
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1500.1510.1520.1530.1540">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('30/01/2026',
+                                                                                             '2026/01/30',
+                                                                                             '15:00',
+                                                                                             '1500.1510.1520.1530.1540')"
+                                                                            data-target="#Modal">
+                                                                        15:00
+                                                                    </button>
+                                                                </div>
+                                                                <div class="TimeSlotCardItem" data-toggle="tooltip" data-placement="right" title="1550.1600.1610.1620.1630">
+                                                                    <button type="button" class="buttenAsLink" data-toggle="modal"
+                                                                            onclick="setdata('30/01/2026',
+                                                                                             '2026/01/30',
+                                                                                             '15:50',
+                                                                                             '1550.1600.1610.1620.1630')"
+                                                                            data-target="#Modal">
+                                                                        15:50
+                                                                    </button>
+                                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ol>
+                            </li>
+                    </ol>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog"
+     aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mx-auto" id="ModalLabel">
+                    Bevestigen afspraak
+                </h5>
+                <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-1 pb-0">
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Examen:</th>
+                        <td>Praktijkexamen</td>
+                    </tr>
+                    <tr>
+                        <th>Examencentrum:</th>
+                        <td>Deurne                        </td>
+                    </tr>
+                    <tr>
+                        <th>Datum:</th>
+                        <td id="shortDateString"></td>
+                    </tr>
+                    <tr>
+                        <th>Tijdslot:</th>
+                        <td id="timeSlotString"></td>
+                    </tr>
+                    <tr>
+                        <th>Kandidaat:</th>
+                        <td>Wilczynski Marceli</td>
+                    </tr>
+                    <tr>
+                        <th>Proef:</th>
+                        <td>Praktijkexamen </td>
+                    </tr>
+                        <tr id="trMinAnnulatieWarning" style="display:none;">
+                            <td colspan="2">
+                                <div class="p-1 border rounded border-danger bg-light text-danger">
+                                    <p class="mb-0">
+                                        Deze afspraak vindt plaats op minder dan 2 werkdagen in de toekomst.
+                                        Indien u deze afspraak bevestigd kan u deze <span class="font-weight-bold text-nowrap">niet kosteloos annuleren</span>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <form id="bevestigingForm" class="TimeSlotForm w-100" method="post" action="/Afspraak/Nieuw/QQ035E0/TijdSelectie">
+                    <input hidden="hidden" value="1004" type="number" data-val="true" data-val-required="The afspraakEc field is required." id="inputPost_afspraakEc" name="inputPost.afspraakEc" /><input name="__Invariant" type="hidden" value="inputPost.afspraakEc" />
+                    <input id="afspraakDatum" hidden="hidden" type="text" name="inputPost.afspraakDatum" value="" />
+                    <input id="afspraakTimeKey" hidden="hidden" type="text" name="inputPost.afspraakTimeKey" value="" />
+
+                    <div class="d-flex flex-wrap">
+                            <div class="col-12 px-0 g-recaptcha mx-auto my-2" align="center"
+                                 data-sitekey="6LcX4PgmAAAAAPDUVh9mYFLy0gMeH8sYqhmBDUQE" data-action="ecpr_afspraak_aanmaak"
+                                 data-callback="recaptchaCallback" data-expired-callback="recaptchaExpiredCallback"></div>
+                        <div class="col-12 my-1">
+                            <button id="btnBevestigAfspraak" class="btn btn-primary-ot w-100 form-submit" type="submit">
+                                Bevestig
+                            </button>
+                        </div>
+                        <div class="col-12 my-1">
+                            <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">
+                                Annuleer
+                            </button>
+                        </div>
+                    </div>
+                <input name="__RequestVerificationToken" type="hidden" value="CfDJ8PH6B_iUbplPlvKJdfnLOp-iNxW2uVsh--XEIH3NP2sm9noF_TaHPMlAT-d9EBVWZkiBf4JLQcu_O3IFprxaDrgyJu30PFQ8NW0tZh9DWJ8fVT3yr8F5GSYz9zzasyJW8_Lw-7d26OmJTTxdEx-fLS4" /></form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://www.google.com/recaptcha/enterprise.js?hl=nl" async defer></script>
+<script type="text/javascript">
+
+    $(document).ready(function ()
+    {
+        checkCollapse();
+
+        // controle of filter open moet staat op load
+        if (localStorage['filterOpen'] == "show")
+        {
+            localStorage.removeItem('filterOpen');
+            $('#filterCollapse').addClass("show");
+        }
+
+        $(".div-ec-select").removeAttr('hidden');
+        $(".div-ec-select-text").text('Deurne                        ');
+    });
+
+
+        function recaptchaCallback() { $('#btnBevestigAfspraak').prop("disabled", false); };
+        function recaptchaExpiredCallback() { $('#btnBevestigAfspraak').prop("disabled", true); };
+
+        $(document).ready(function ()
+        {
+            $('#btnBevestigAfspraak').prop("disabled", true);
+        });
+
+        $('#Modal').on('hidden.bs.modal', function ()
+        {
+            grecaptcha.enterprise.reset();
+            $('#btnBevestigAfspraak').prop("disabled", true);
+        });
+    
+    function setdata(shortDateString, date, timeSlotString, timeSlotKey)
+    {
+        $(".modal-body #shortDateString").text(shortDateString);
+        $(".modal-body #timeSlotString").text(timeSlotString);
+
+        $(".modal-footer #afspraakDatum").val(date);
+        $(".modal-footer #afspraakTimeKey").val(timeSlotKey);
+
+
+            if (toDate(shortDateString) > toDate('22/07/2025')) { $("#trMinAnnulatieWarning").hide(); }
+            else { $("#trMinAnnulatieWarning").show(); }
+            }
+
+    $('#TimeSkipForm1, #TimeSkipForm2').on("submit", function (e)
+    {
+        var s1 = $('#FilterForm').serialize(); var s2 = $(this).serialize();
+        $.ajax({
+            type: "POST",
+            url: "/TimeSelect/AjaxPartialTimeSelectNewTimeSkip",
+            data: s1 + "&" + s2,
+            success: function (data)
+            {
+                $("#PartialDiv").html(data);
+                checkDataPicker();
+            },
+            statusCode: { 429: function () { window.location.reload(); } },
+            error: function (data)
+            {
+                alert("Ajax Fail Get");
+            }
+        });
+        e.preventDefault();
+    });
+
+    $('#FilterForm').on("submit", function (e)
+    {
+        $.ajax({
+            type: "POST",
+            url: "/TimeSelect/AjaxPartialTimeSelectNewFilter",
+            data: $('#FilterForm').serialize(),
+            success: function (data)
+            {
+                $("#PartialDiv").html(data);
+                checkDataPicker();
+            },
+            statusCode: { 429: function () { window.location.reload(); } },
+            error: function (data)
+            {
+                alert("Ajax Fail Get");
+            }
+        });
+        e.preventDefault();
+    });
+
+    $("#bevestigingForm").submit(async function (event)
+    {
+        if (!$('#g-recaptcha-response').value)
+        {
+            $('.form-submit').each(function ()
+            {
+                $(this).attr('disabled', true);
+                setTimeout(() => { $(this).removeAttr('disabled') }, 5000);
+            });
+            return true;
+        }
+        else
+        {
+            alert("Gelieven de captcha op te lossen");
+            return false;
+        }
+    });
+
+    $('#FilterResetButton').on('click', function (e)
+    {
+        getExamenCentrum('1004');
+        localStorage['filterOpen'] = "show";
+    });
+
+    $('.Scrollable').on('DOMMouseScroll mousewheel', function (ev)
+    {
+        var $this = $(this),
+            scrollTop = this.scrollTop,
+            scrollHeight = this.scrollHeight,
+            height = $this.height(),
+            delta = (ev.type == 'DOMMouseScroll' ?
+                ev.originalEvent.detail * -40 :
+                ev.originalEvent.wheelDelta),
+            up = delta > 0;
+
+        var prevent = function ()
+        {
+            ev.stopPropagation();
+            ev.preventDefault();
+            ev.returnValue = false;
+            return false;
+        }
+
+        if (!up && -delta > scrollHeight - height - scrollTop)
+        {
+            // Scrolling down, but this will take us past the bottom.
+            $this.scrollTop(scrollHeight);
+            return prevent();
+        }
+        else if (up && delta > scrollTop)
+        {
+            // Scrolling up, but this will take us past the top.
+            $this.scrollTop(0);
+            return prevent();
+        }
+    });
+
+</script>
