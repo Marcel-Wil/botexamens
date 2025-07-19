@@ -10,7 +10,7 @@ def extract_dates_from_html(html_content):
     # Find the main div
     main_div = soup.find("div", id="timeSelectCollapse")
     if not main_div:
-        return results
+        return {"newdatums": results}
 
     # Find all <li class="hover-pointer" ...>
     for li in main_div.find_all("li", class_="hover-pointer"):
@@ -36,4 +36,4 @@ def extract_dates_from_html(html_content):
             "text": text_value
         })
 
-    return results
+    return {"newdatums": results}
