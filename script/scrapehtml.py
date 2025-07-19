@@ -37,10 +37,3 @@ def extract_dates_from_html(html_content):
         })
 
     return results
-
-# Example usage (now expects HTML content as a string):
-with open("logs/outputHTML_2025-07-17_16-34-0.html", "r", encoding="utf-8") as f:
-    html_content = f.read()
-dates = extract_dates_from_html(html_content)
-print(json.dumps(dates, indent=4))
-
