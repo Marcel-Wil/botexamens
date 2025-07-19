@@ -43,9 +43,10 @@ def extract_dates_from_html(html_content):
     return results
 
 def post_dates_to_api(dates):
-    url = "http://localhost:8000/api/send-datums"
+    url = "http://localhost:8000/api/compare-datums"
     try:
-        response = requests.post(url, json=dates)
+        payload = {"newdatums": dates}
+        response = requests.post(url, json=payload)
         response.raise_for_status()
         print(f"Successfully posted dates to {url}. Status code: {response.status_code}")
     except Exception as e:

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewEarlierDateFound;
 use Illuminate\Http\Request;
 use App\Models\Datum;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Mail;
 
 class DatumController extends Controller
 {
@@ -16,49 +17,53 @@ class DatumController extends Controller
             'newdatums.*.text' => 'required|string',
         ]);
 
-        $incomingDates = collect($request->input('newdatums'))
-            ->map(fn($item) => \DateTime::createFromFormat('d/m/Y', $item['date']))
-            ->filter()
-            ->map(fn($date) => $date->format('Y-m-d'));
+        $incomingDatums = collect($request->input('newdatums'))
+            ->map(function ($item) {
+                $date = \DateTime::createFromFormat('d/m/Y', $item['date']);
+                return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text']] : null;
+            })
+            ->filter();
+
+        if ($incomingDatums->isEmpty()) {
+            return response()->json(['message' => 'No valid dates provided.'], 400);
+        }
 
         $datum = Datum::latest()->first();
+        $existingDatums = collect($datum->datums ?? []);
 
-        $earliestDatum = null;
+        $earliestDatumInDb = $existingDatums->sortBy('date')->first();
 
-        if ($datum && is_array($datum->olddatums)) {
-            $sorted = collect($datum->olddatums)->sort()->values();
-            $earliestDatum = $sorted->first();
+        $earlierFound = null;
+        if ($earliestDatumInDb) {
+            $earlierFound = $incomingDatums
+                ->sortBy('date')
+                ->first(fn($item) => $item['date'] < $earliestDatumInDb['date']);
         }
 
-        $earlierDate = $earliestDatum
-            ? $incomingDates->first(fn($date) => $date < $earliestDatum)
-            : null;
-
-        $combined = collect($datum->olddatums ?? [])
-            ->merge($incomingDates)
-            ->unique()
-            ->sort()
-            ->values()
-            ->toArray();
+        $combinedDatums = $existingDatums
+            ->merge($incomingDatums)
+            ->unique('date')
+            ->sortBy('date')
+            ->values();
 
         if ($datum) {
-            $datum->update(['olddatums' => $combined]);
+            $datum->update(['datums' => $combinedDatums->toArray()]);
         } else {
-            Datum::create(['olddatums' => $combined]);
+            Datum::create(['datums' => $combinedDatums->toArray()]);
         }
 
-        if ($earlierDate) {
-            Mail::to('wilczynskimarceli@gmail.com')->send(new NewEarlierDateFound($earlierDate));
+        if ($earlierFound) {
+            Mail::to('wilczynskimarceli@gmail.com')->send(new NewEarlierDateFound($earlierFound));
 
             return response()->json([
                 'message' => 'Earlier date found and email sent.',
-                'earlier_date' => $earlierDate,
+                'earlier_datum' => $earlierFound,
             ]);
         }
 
         return response()->json([
             'message' => 'No earlier dates found.',
-            'earliest_in_db' => $earliestDatum,
+            'earliest_in_db' => $earliestDatumInDb,
         ]);
     }
 }
