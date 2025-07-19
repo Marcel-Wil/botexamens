@@ -4,22 +4,52 @@ import random
 from datetime import datetime
 from camoufox.sync_api import Camoufox
 import requests
+from bs4 import BeautifulSoup
+import re
 
-def main2():
-    proxy_config = {
-        'server': 'http://brd.superproxy.io:33335',
-        'username': 'brd-customer-hl_5d6233ac-zone-residential_proxy1-country-be',
-        'password': '7z7lwi9e01kg'
-    }
-    with Camoufox(
-        os=["macos", "windows"], 
-        geoip=True, 
-        humanize=True, 
-        proxy=proxy_config
-    ) as browser:
-        page = browser.new_page(ignore_https_errors=True)
-        page.goto("https://whatmyuseragent.com/")
-        input('Press Enter to exit...')
+def extract_dates_from_html(html_content):
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    results = []
+    # Find the main div
+    main_div = soup.find("div", id="timeSelectCollapse")
+    if not main_div:
+        return results
+
+    # Find all <li class="hover-pointer" ...>
+    for li in main_div.find_all("li", class_="hover-pointer"):
+        data_target = li.get("data-target")
+        if not data_target:
+            continue
+        # Extract date from data-target, e.g. "#TimeSlotCard19012026"
+        m = re.search(r"TimeSlotCard(\d{2})(\d{2})(\d{4})", data_target)
+        if not m:
+            continue
+        day, month, year = m.groups()
+        formatted_date = f"{day}/{month}/{year}"
+
+        # Get the text inside the <span>
+        span = li.find("span", class_="TimeSlotListCardChildText")
+        if span:
+            text_value = span.get_text(strip=True)
+        else:
+            text_value = ""
+
+        results.append({
+            "date": formatted_date,
+            "text": text_value
+        })
+
+    return results
+
+def post_dates_to_api(dates):
+    url = "http://localhost:8000/api/send-datums"
+    try:
+        response = requests.post(url, json=dates)
+        response.raise_for_status()
+        print(f"Successfully posted dates to {url}. Status code: {response.status_code}")
+    except Exception as e:
+        print(f"Failed to post dates to {url}: {e}")
 
 def main():
     # WIZARD STEP 1
@@ -109,16 +139,21 @@ def main():
                 page.remove_listener("response", handle_response)
 
                 if html_content:
-                    if not os.path.exists("logs"):
-                        os.makedirs("logs")
+                    if not os.path.exists("logs/deurne"):
+                        os.makedirs("logs/deurne")
+                    
+                    from scrapehtml import extract_dates_from_html
+                    import json
                     
                     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                    filename = f"logs/outputHTML_{timestamp}.html"
+                    filename = f"logs/deurne/outputHTML_{timestamp}.json"
 
-                    print(f"Saving response to {filename}")
+                    print(f"Extracting dates and saving response to {filename}")
+                    dates = extract_dates_from_html(html_content)
                     with open(filename, "w", encoding="utf-8") as f:
-                        f.write(html_content)
+                        json.dump(dates, f, indent=4)
                     print("Save complete.")
+                    post_dates_to_api(dates)
                 else:
                     print("Could not capture the HTML content in this interval.")
 
