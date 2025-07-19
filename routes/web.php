@@ -23,4 +23,4 @@ Route::get('/contact', [ContactController::class, 'show'])->name('contact.show')
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 require __DIR__ . '/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

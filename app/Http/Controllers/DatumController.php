@@ -12,27 +12,53 @@ class DatumController extends Controller
     {
         $request->validate([
             'newdatums' => 'required|array',
+            'newdatums.*.date' => 'required|string',
+            'newdatums.*.text' => 'required|string',
         ]);
 
-        $new = array_values($request->input('newdatums'));
+        $incomingDates = collect($request->input('newdatums'))
+            ->map(fn($item) => \DateTime::createFromFormat('d/m/Y', $item['date']))
+            ->filter()
+            ->map(fn($date) => $date->format('Y-m-d'));
 
         $datum = Datum::latest()->first();
 
-        if (!$datum) {
+        $earliestDatum = null;
+
+        if ($datum && is_array($datum->olddatums)) {
+            $sorted = collect($datum->olddatums)->sort()->values();
+            $earliestDatum = $sorted->first();
+        }
+
+        $earlierDate = $earliestDatum
+            ? $incomingDates->first(fn($date) => $date < $earliestDatum)
+            : null;
+
+        $combined = collect($datum->olddatums ?? [])
+            ->merge($incomingDates)
+            ->unique()
+            ->sort()
+            ->values()
+            ->toArray();
+
+        if ($datum) {
+            $datum->update(['olddatums' => $combined]);
+        } else {
+            Datum::create(['olddatums' => $combined]);
+        }
+
+        if ($earlierDate) {
+            Mail::to('wilczynskimarceli@gmail.com')->send(new NewEarlierDateFound($earlierDate));
+
             return response()->json([
-                'message' => 'No old data found.',
-                'new_items' => $new,
-                'has_changes' => true
+                'message' => 'Earlier date found and email sent.',
+                'earlier_date' => $earlierDate,
             ]);
         }
 
-        $old = array_values($datum->olddatums);
-
-        $diff = array_diff($new, $old);
-
-        return Redirect::back()->with('result', [
-            'new_items' => array_values($diff),
-            'has_changes' => !empty($diff),
+        return response()->json([
+            'message' => 'No earlier dates found.',
+            'earliest_in_db' => $earliestDatum,
         ]);
     }
 }
