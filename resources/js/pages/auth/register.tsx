@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 type RegisterForm = {
-    name: string;
+    voornaam: string;
+    achternaam: string;
     email: string;
     password: string;
     password_confirmation: string;
@@ -18,7 +19,8 @@ type RegisterForm = {
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
-        name: '',
+        voornaam: '',
+        achternaam: '',
         email: '',
         password: '',
         password_confirmation: '',
@@ -37,24 +39,40 @@ export default function Register() {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="voornaam">Voornaam*</Label>
                         <Input
-                            id="name"
+                            id="voornaam"
                             type="text"
                             required
                             autoFocus
                             tabIndex={1}
-                            autoComplete="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            autoComplete="given-name"
+                            value={data.voornaam}
+                            onChange={(e) => setData('voornaam', e.target.value)}
                             disabled={processing}
-                            placeholder="Full name"
+                            placeholder="First name"
                         />
-                        <InputError message={errors.name} className="mt-2" />
+                        <InputError message={errors.voornaam} className="mt-2" />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="achternaam">Achternaam</Label>
+                        <Input
+                            id="achternaam"
+                            type="text"
+                            autoFocus
+                            tabIndex={1}
+                            autoComplete="family-name"
+                            value={data.achternaam}
+                            onChange={(e) => setData('achternaam', e.target.value)}
+                            disabled={processing}
+                            placeholder="Last name"
+                        />
+                        <InputError message={errors.achternaam} className="mt-2" />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="email">Email address*</Label>
                         <Input
                             id="email"
                             type="email"
@@ -70,7 +88,7 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password">Password*</Label>
                         <Input
                             id="password"
                             type="password"
@@ -86,7 +104,7 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="password_confirmation">Confirm password</Label>
+                        <Label htmlFor="password_confirmation">Confirm password*</Label>
                         <Input
                             id="password_confirmation"
                             type="password"
