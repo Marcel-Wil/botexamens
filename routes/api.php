@@ -8,4 +8,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('compare-datums', [DatumController::class, 'compare']);
+Route::post('compare-datums', [DatumController::class, 'compare'])->middleware('allow-only-local-requests');
