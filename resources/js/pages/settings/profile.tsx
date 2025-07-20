@@ -22,6 +22,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 type ProfileForm = {
     name: string;
     email: string;
+    rrn: string;
 };
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
@@ -30,6 +31,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         name: auth.user.name,
         email: auth.user.email,
+        rrn: auth.user.rrn || '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -80,6 +82,21 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             />
 
                             <InputError className="mt-2" message={errors.email} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="rrn">Rijksregisternummer</Label>
+
+                            <Input
+                                id="rrn"
+                                className="mt-1 block w-full"
+                                value={data.rrn}
+                                onChange={(e) => setData('rrn', e.target.value)}
+                                autoComplete="off"
+                                placeholder="00.00.00-000.00"
+                            />
+
+                            <InputError className="mt-2" message={errors.rrn} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (

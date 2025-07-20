@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Datum extends Model
 {
-    protected $fillable = ['datums'];
+    protected $table = 'datum';
+
+    protected $fillable = ['olddatums'];
 
     protected $casts = [
-        'datums' => 'array',
+        'olddatums' => 'array',
     ];
 }
