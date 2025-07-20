@@ -121,10 +121,10 @@ const HeroSection = () => {
         <section id="home" className="flex overflow-hidden relative justify-center items-center pt-16 min-h-screen">
             {/* Animated shapes */}
             <div className="absolute top-0 left-0 z-0 w-full h-full">
-                <div className="absolute top-1/4 left-1/4 w-24 h-24 rounded-full opacity-20 bg-purple-500/50 animate-float"></div>
-                <div className="absolute top-1/2 right-1/4 w-32 h-32 rounded-lg opacity-20 bg-purple-500/50 animate-float" style={{ animationDelay: '1s' }}></div>
-                <div className="absolute bottom-1/4 left-1/3 w-16 h-16 rounded-full opacity-20 bg-purple-500/50 animate-float" style={{ animationDelay: '2s' }}></div>
-                <div className="absolute right-1/3 bottom-1/2 w-20 h-20 rounded-lg opacity-20 bg-purple-500/50 animate-float" style={{ animationDelay: '3s' }}></div>
+                <div className="absolute top-1/4 left-1/4 w-24 h-24 bg-purple-500 rounded-full opacity-20 animate-float"></div>
+                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-purple-500 rounded-lg opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute bottom-1/4 left-1/3 w-16 h-16 bg-purple-500 rounded-full opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+                <div className="absolute right-1/3 bottom-1/2 w-20 h-20 bg-purple-500 rounded-lg opacity-20 animate-float" style={{ animationDelay: '3s' }}></div>
             </div>
 
             <div className="relative z-10 text-center">
