@@ -117,6 +117,6 @@
     "include": [
         "resources/js/**/*.ts",
         "resources/js/**/*.d.ts",
-        "resources/js/**/*.tsx",
+        "resources/js/**/*.tsx", "components/mvpblocks/simple-pricing.tsx", "components/ui/badge2.tsx", "components/ui/card2.tsx", "components/ui/button2.tsx", "components/ui/tabs2.tsx",
     ]
 }
