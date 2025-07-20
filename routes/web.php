@@ -6,7 +6,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DatumController;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('homepage');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -15,9 +15,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::get('/homepage', function () {
-    return Inertia::render('homepage');
-});
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
