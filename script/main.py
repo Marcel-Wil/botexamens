@@ -6,30 +6,35 @@ from camoufox.sync_api import Camoufox
 import requests
 
 def post_dates_to_api(dates):
-    url = "http://localhost:8000/api/compare-datums"
+    server = os.getenv("SERVER", "localhost")
+    port = os.getenv("PORT", "8000")
+    url = f"http://{server}:{port}/api/compare-datums"
     try:
         payload = {"newdatums": dates}
-        response = requests.post(url, json=payload)
+        headers = {"Accept": "application/json"}
+        response = requests.post(url, json=payload, headers=headers)
         response.raise_for_status()
-        print(f"Successfully posted dates to {url}. Status code: {response.status_code}")
+        print(f"Successfully posted dates to {url}. Response: {response.json()}")
     except Exception as e:
         print(f"Failed to post dates to {url}: {e}")
 
+from dotenv import load_dotenv
+
 def main():
-    # WIZARD STEP 1
-    naam = ""
-    voornaam = ""
-    rrn = ""
-    gbdatum = ""
-    tel = ""
-    email = ""
-    adres = ""
-    postcode = ""
+    load_dotenv()
+    naam = os.getenv("NAAM", "")
+    voornaam = os.getenv("VOORNAAM", "")
+    rrn = os.getenv("RRN", "")
+    gbdatum = os.getenv("GBDATUM", "")
+    tel = os.getenv("TEL", "")
+    email = os.getenv("EMAIL", "")
+    adres = os.getenv("ADRES", "")
+    postcode = os.getenv("POSTCODE", "")
 
     # WIZARD STEP 3
-    zeersteVRijbewijsDatum = ""
-    zhuidigVRijbewijsDatum = ""
-    zhuidigVRijbewijsGeldigTot = ""
+    zeersteVRijbewijsDatum = os.getenv("ZEERSTE_V_RIJBEWIJS_DATUM", "")
+    zhuidigVRijbewijsDatum = os.getenv("ZHUIDIG_V_RIJBEWIJS_DATUM", "")
+    zhuidigVRijbewijsGeldigTot = os.getenv("ZHUIDIG_V_RIJBEWIJS_GELDIG_TOT", "")
 
     with Camoufox(os=["macos", "windows"], geoip=True, humanize=True) as browser:
         page = browser.new_page()
@@ -128,6 +133,10 @@ def main():
                 print("This might be due to a session timeout, rate limit, or block.")
                 print("Exiting the program gracefully.")
                 break
+        
+        browser.close()
+        time.sleep(5)
+        main()
 
 if __name__ == "__main__":
     main()
