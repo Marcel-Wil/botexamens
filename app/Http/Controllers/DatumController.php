@@ -12,10 +12,14 @@ class DatumController extends Controller
     public function compare(Request $request)
     {
         $request->validate([
-            'newdatums' => 'required|array',
+            'newdatums' => 'array',
             'newdatums.*.date' => 'required|string',
             'newdatums.*.text' => 'required|string',
         ]);
+
+        if (empty($request->input('newdatums'))) {
+            return response()->json(['message' => 'No dates provided.'], 400);
+        }
 
         $incomingDatums = collect($request->input('newdatums'))
             ->map(function ($item) {
