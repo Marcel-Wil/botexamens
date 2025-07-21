@@ -33,7 +33,7 @@ class DatumController extends Controller
         }
 
         $datum = Datum::latest()->first();
-        $existingDatums = collect($datum->datums ?? []);
+        $existingDatums = collect($datum->olddatums ?? []);
 
         $earliestDatumInDb = $existingDatums->sortBy('date')->first();
 
@@ -44,16 +44,12 @@ class DatumController extends Controller
                 ->first(fn($item) => $item['date'] < $earliestDatumInDb['date']);
         }
 
-        $combinedDatums = $existingDatums
-            ->merge($incomingDatums)
-            ->unique('date')
-            ->sortBy('date')
-            ->values();
+        $newDatumsToStore = $incomingDatums->sortBy('date')->values();
 
         if ($datum) {
-            $datum->update(['datums' => $combinedDatums->toArray()]);
+            $datum->update(['olddatums' => $newDatumsToStore->toArray()]);
         } else {
-            Datum::create(['datums' => $combinedDatums->toArray()]);
+            Datum::create(['olddatums' => $newDatumsToStore->toArray()]);
         }
 
         if ($earlierFound) {
