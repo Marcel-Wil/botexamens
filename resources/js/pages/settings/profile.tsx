@@ -86,7 +86,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email">Email address (Let op! Als u uw e-mail verandert, moet u dit nogmaals verifiëren)</Label>
 
                             <Input
                                 id="email"
@@ -103,7 +103,9 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="whatsapp">Whatsapp Nummer</Label>
+                            <Label htmlFor="whatsapp">
+                                Whatsapp Nummer (Let op! Controleer uw whatsapp nummer DUBBEL! Deze nummer wordt gebruikt voor de notificaties!)
+                            </Label>
 
                             <Input
                                 id="whatsapp"
