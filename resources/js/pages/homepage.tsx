@@ -2,7 +2,7 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs2';
-import NumberFlow from '@number-flow/react';
+
 import { Badge } from '@/components/ui/badge2';
 import { Button } from '@/components/ui/button2';
 import {
@@ -14,66 +14,60 @@ import {
   CardTitle,
 } from '@/components/ui/card2';
 import { cn } from '@/lib/utils';
-import { Sparkles, ArrowRight, Check, Star, Zap, Shield } from 'lucide-react';
+import { Sparkles, ArrowRight, Check, Bell, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const plans = [
   {
-    id: 'hobby',
-    name: 'Hobby',
-    icon: Star,
+    id: 'notificatie',
+    name: 'Notificatie',
+    icon: Bell,
     price: {
-      monthly: 'Free forever',
-      yearly: 'Free forever',
+      monthly: '€59,99',
     },
-    description:
-      'The perfect starting place for your web app or personal project.',
+    description: 'Word direct gewaarschuwd wanneer er nieuwe examendata beschikbaar komen.',
     features: [
-      '50 API calls / month',
-      '60 second checks',
-      'Single-user account',
-      '5 monitors',
-      'Basic email support',
+      'Directe e-mailmelding bij nieuwe data',
+      'WhatsApp bericht bij beschikbaarheid',
+      '24/7 monitoring van het CBR systeem',
+      'Eenvoudig zelf in te stellen',
+      'Geen abonnement, eenmalige betaling',
     ],
-    cta: 'Get started for free',
+    cta: 'Kies Notificatie',
   },
   {
-    id: 'pro',
-    name: 'Pro',
+    id: 'automatisch',
+    name: 'Automatische Inschrijving',
     icon: Zap,
     price: {
-      monthly: 90,
-      yearly: 75,
+      monthly: '€139,99',
     },
-    description: 'Everything you need to build and scale your business.',
+    description: 'Wij schrijven je direct in zodra er een plek vrijkomt.',
     features: [
-      'Unlimited API calls',
-      '30 second checks',
-      'Multi-user account',
-      '10 monitors',
-      'Priority email support',
+      'Automatische inschrijving bij beschikbaarheid',
+      'E-mail- en WhatsApp bevestiging',
+      '24/7 monitoring van het CBR systeem',
+      'Geen gedoe, wij regelen alles',
     ],
-    cta: 'Subscribe to Pro',
-    popular: true,
+    cta: 'Kies Automatisch',
   },
   {
-    id: 'enterprise',
-    name: 'Enterprise',
-    icon: Shield,
+    id: 'per-notificatie',
+    name: 'Per Notificatie',
+    icon: Bell,
     price: {
-      monthly: 'Get in touch for pricing',
-      yearly: 'Get in touch for pricing',
+      monthly: '€2,99 per melding',
     },
-    description: 'Critical security, performance, observability and support.',
+    description: 'Betaal alleen voor de meldingen die je ontvangt.',
     features: [
-      'You can DDOS our API.',
-      'Nano-second checks.',
-      'Invite your extended family.',
-      'Unlimited monitors.',
-      "We'll sit on your desk.",
+      'Betaal per ontvangen melding',
+      'Geen abonnementskosten',
+      'E-mail- en WhatsApp meldingen',
+      '24/7 monitoring van het CBR systeem',
+      'Eerste melding is gratis',
     ],
-    cta: 'Contact us',
+    cta: 'Kies Per Melding',
   },
 ];
 
@@ -93,8 +87,8 @@ const Navbar = () => {
                 </a>
                 <div className="hidden items-center space-x-6 md:flex">
                     <a className="text-white hover:text-gray-200" href="#home">Home</a>
-                    <a className="text-white hover:text-gray-200" onClick={handleScroll}>Pricing</a>
-                    <a className="text-white hover:text-gray-200" href="#">About</a>
+                    <a className="text-white hover:text-gray-200" onClick={handleScroll}>Prijzen</a>
+                    <a className="text-white hover:text-gray-200" href="#">Over Ons</a>
                     <a className="text-white hover:text-gray-200" href="#">Contact</a>
                 </div>
                 <div className="md:hidden">
@@ -129,10 +123,10 @@ const HeroSection = () => {
 
             <div className="relative z-10 text-center">
                 <h1 className="text-5xl font-extrabold text-white">
-                    Welkom bij FastTrack Examen Alerts
+                    Mis Nooit Meer Een Examendatum
                 </h1>
                 <p className="mt-4 text-lg text-gray-300">
-                    Mis nooit meer een examendatum. Krijg direct een melding zodra er een plek vrijkomt.
+                    Krijg direct een melding zodra er een plek vrijkomt.
                 </p>
                 <a
                     onClick={handleScroll}
@@ -146,14 +140,14 @@ const HeroSection = () => {
 };
 
 function SimplePricing() {
-  const [frequency, setFrequency] = useState<string>('monthly');
+  const [frequency, setFrequency] = useState<'monthly' | 'yearly'>('monthly');
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
   if (!mounted) return null;
   return (
-    <div className="flex overflow-hidden relative flex-col gap-16 px-4 py-24 w-full text-center not-prose sm:px-8">
+    <div id="pricing" className="flex overflow-hidden relative flex-col gap-16 px-4 py-24 w-full text-center not-prose sm:px-8">
       <div className="overflow-hidden absolute inset-0 -z-10">
         <div className="bg-primary/10 absolute -top-[10%] left-[50%] h-[40%] w-[60%] -translate-x-1/2 rounded-full blur-3xl" />
         <div className="bg-primary/5 absolute -right-[10%] -bottom-[10%] h-[40%] w-[40%] rounded-full blur-3xl" />
@@ -163,61 +157,17 @@ function SimplePricing() {
         <div className="flex flex-col items-center space-y-2">
           <Badge
             variant="outline"
-            className="px-4 py-1 mb-4 text-sm font-medium rounded-full border-primary/20 bg-primary/5"
+            className="px-4 py-1 rounded-full shadow-sm bg-background text-foreground"
           >
-            <Sparkles className="text-primary mr-1 h-3.5 w-3.5 animate-pulse" />
-            Pricing Plans
+            Prijsplannen
           </Badge>
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-foreground to-foreground/30 sm:text-5xl"
-          >
-            Pick the perfect plan for your needs
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="pt-2 max-w-md text-lg text-muted-foreground"
-          >
-            Simple, transparent pricing that scales with your business. No
-            hidden fees, no surprises.
-          </motion.p>
+          <h2 className="text-3xl font-bold tracking-tight text-center text-foreground sm:text-4xl md:text-5xl">
+            Vind het perfecte plan voor jou
+          </h2>
+          <p className="max-w-2xl text-lg text-center text-muted-foreground">
+            Kies het plan dat bij je past. Alle plannen komen met onze 24/7 ondersteuning.
+          </p>
         </div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-        >
-          <Tabs
-            defaultValue={frequency}
-            onValueChange={setFrequency}
-            className="inline-block p-1 rounded-full shadow-sm bg-muted/30"
-          >
-            <TabsList className="bg-transparent">
-              <TabsTrigger
-                value="monthly"
-                className="data-[state=active]:bg-background rounded-full transition-all duration-300 data-[state=active]:shadow-sm"
-              >
-                Monthly
-              </TabsTrigger>
-              <TabsTrigger
-                value="yearly"
-                className="data-[state=active]:bg-background rounded-full transition-all duration-300 data-[state=active]:shadow-sm"
-              >
-                Yearly
-                <Badge
-                  variant="secondary"
-                  className="ml-2 bg-primary/10 text-primary hover:bg-primary/15"
-                >
-                  20% off
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </motion.div>
         <div className="grid grid-cols-1 gap-6 mt-8 w-full max-w-6xl md:grid-cols-3">
           {plans.map((plan, index) => (
             <motion.div
@@ -242,7 +192,7 @@ function SimplePricing() {
                   <div className="absolute right-0 left-0 -top-3 mx-auto w-fit">
                     <Badge className="px-4 py-1 rounded-full shadow-sm bg-primary text-primary-foreground">
                       <Sparkles className="mr-1 h-3.5 w-3.5" />
-                      Popular
+                      Populair
                     </Badge>
                   </div>
                 )}
@@ -270,40 +220,24 @@ function SimplePricing() {
                   <CardDescription className="mt-3 space-y-2">
                     <p className="text-sm">{plan.description}</p>
                     <div className="pt-2">
-                      {typeof plan.price[
-                        frequency as keyof typeof plan.price
-                      ] === 'number' ? (
-                        <div className="flex items-baseline">
-                          <NumberFlow
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={frequency}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <span
                             className={cn(
-                              'text-3xl font-bold',
+                              'text-2xl font-bold',
                               plan.popular ? 'text-primary' : 'text-foreground',
                             )}
-                            format={{
-                              style: 'currency',
-                              currency: 'USD',
-                              maximumFractionDigits: 0,
-                            }}
-                            value={
-                              plan.price[
-                                frequency as keyof typeof plan.price
-                              ] as number
-                            }
-                          />
-                          <span className="ml-1 text-sm text-muted-foreground">
-                            /month, billed {frequency}
+                          >
+                            {plan.price[frequency as keyof typeof plan.price]}
                           </span>
-                        </div>
-                      ) : (
-                        <span
-                          className={cn(
-                            'text-2xl font-bold',
-                            plan.popular ? 'text-primary' : 'text-foreground',
-                          )}
-                        >
-                          {plan.price[frequency as keyof typeof plan.price]}
-                        </span>
-                      )}
+                        </motion.div>
+                      </AnimatePresence>
                     </div>
                   </CardDescription>
                 </CardHeader>

@@ -39,16 +39,13 @@ class DatumController extends Controller
 
         $newlyFoundEarlierDatums = collect();
         if ($earliestDatumInDb) {
-            // Check if the previously earliest date is still present in the new list.
             $earliestStillExists = $incomingDatums->firstWhere('date', $earliestDatumInDb['date']);
 
             if ($earliestStillExists) {
-                // If it exists, only notify about dates that are even earlier.
                 $newlyFoundEarlierDatums = $incomingDatums
                     ->filter(fn($item) => $item['date'] < $earliestDatumInDb['date'])
                     ->sortBy('date');
             } else {
-                // If the earliest date is gone, treat all incoming dates as new and notify the user.
                 $newlyFoundEarlierDatums = $incomingDatums->sortBy('date');
             }
         }
