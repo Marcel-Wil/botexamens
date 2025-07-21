@@ -53,7 +53,7 @@ class DatumController extends Controller
         }
 
         if ($newlyFoundEarlierDatums->isNotEmpty()) {
-            Mail::to('wilczynskimarceli@gmail.com')->queue(new NewEarlierDateFound($newlyFoundEarlierDatums));
+            Mail::to('wilczynskimarceli@gmail.com')->queue(new NewEarlierDateFound($newlyFoundEarlierDatums->toArray()));
 
             return response()->json([
                 'message' => 'New earlier dates found and email sent.',

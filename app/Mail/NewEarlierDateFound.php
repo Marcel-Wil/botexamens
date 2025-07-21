@@ -11,11 +11,11 @@ class NewEarlierDateFound extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $earlierDate;
+    public array $earlierDatums;
 
-    public function __construct($earlierDate)
+    public function __construct(array $earlierDatums)
     {
-        $this->earlierDate = $earlierDate;
+        $this->earlierDatums = $earlierDatums;
     }
 
     public function build()
@@ -23,7 +23,7 @@ class NewEarlierDateFound extends Mailable implements ShouldQueue
         return $this->subject('New Earlier Date Detected')
             ->view('emails.new_earlier_date')
             ->with([
-                'earlierDate' => $this->earlierDate,
+                'earlierDatums' => $this->earlierDatums,
             ]);
     }
 }

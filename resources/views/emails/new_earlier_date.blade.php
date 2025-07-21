@@ -29,13 +29,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>New Earlier Date Found!</h1>
+        <h1>New Earlier Dates Found!</h1>
         <p>Hello,</p>
-        <p>A new, earlier appointment date has been detected by the system.</p>
-        <div class="date-info">
-            <p><strong>Date:</strong> {{ $earlierDate['date'] }}</p>
-            <p><strong>Info:</strong> {{ $earlierDate['text'] }}</p>
-        </div>
+        <p>The following new, earlier appointment dates have been detected by the system:</p>
+        @foreach ($earlierDatums as $datum)
+            <div class="date-info" style="margin-bottom: 15px;">
+                <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($datum['date'])->format('d/m/Y') }}</p>
+                <p><strong>Info:</strong> {{ $datum['text'] }}</p>
+            </div>
+        @endforeach
         <p>Please check the booking website to see if you can secure this new slot.</p>
         <p>Thank you,</p>
         <p>Your Friendly Bot</p>
