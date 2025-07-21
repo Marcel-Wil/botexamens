@@ -21,8 +21,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 type ProfileForm = {
     voornaam: string;
+    achternaam: string;
     email: string;
-    rrn: string;
+    whatsapp: string;
 };
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
@@ -30,8 +31,9 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         voornaam: auth.user.voornaam,
+        achternaam: auth.user.achternaam,
         email: auth.user.email,
-        rrn: auth.user.rrn || '',
+        whatsapp: typeof auth.user.whatsapp === 'string' ? auth.user.whatsapp : '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -52,19 +54,35 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="voornaam">Voornaam</Label>
 
                             <Input
-                                id="name"
+                                id="voornaam"
                                 className="mt-1 block w-full"
-                                value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
+                                value={data.voornaam}
+                                onChange={(e) => setData('voornaam', e.target.value)}
                                 required
-                                autoComplete="name"
-                                placeholder="Full name"
+                                autoComplete="voornaam"
+                                placeholder="Voornaam"
                             />
 
-                            <InputError className="mt-2" message={errors.name} />
+                            <InputError className="mt-2" message={errors.voornaam} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="achternaam">Achternaam</Label>
+
+                            <Input
+                                id="achternaam"
+                                className="mt-1 block w-full"
+                                value={data.achternaam}
+                                onChange={(e) => setData('achternaam', e.target.value)}
+                                required
+                                autoComplete="achternaam"
+                                placeholder="Achternaam"
+                            />
+
+                            <InputError className="mt-2" message={errors.achternaam} />
                         </div>
 
                         <div className="grid gap-2">
@@ -85,18 +103,18 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="rrn">Rijksregisternummer</Label>
+                            <Label htmlFor="whatsapp">Whatsapp Nummer</Label>
 
                             <Input
-                                id="rrn"
+                                id="whatsapp"
                                 className="mt-1 block w-full"
-                                value={data.rrn}
-                                onChange={(e) => setData('rrn', e.target.value)}
+                                value={data.whatsapp}
+                                onChange={(e) => setData('whatsapp', e.target.value)}
                                 autoComplete="off"
-                                placeholder="00.00.00-000.00"
+                                placeholder="0000000000"
                             />
 
-                            <InputError className="mt-2" message={errors.rrn} />
+                            <InputError className="mt-2" message={errors.whatsapp} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
