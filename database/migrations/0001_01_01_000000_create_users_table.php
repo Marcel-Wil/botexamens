@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('achternaam')->nullable();
             $table->string('rrn')->nullable();
             $table->string('gbdatum')->nullable();
+            $table->string('whatsapp')->nullable();
             $table->string('tel')->nullable();
             $table->string('adres')->nullable();
             $table->string('postcode')->nullable();
