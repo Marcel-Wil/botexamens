@@ -23,7 +23,7 @@ class DatumController extends Controller
 
         $incomingDatums = collect($request->input('newdatums'))
             ->map(function ($item) {
-                $date = \DateTime::createFromFormat('d/m/Y', $item['date']);
+                $date = \DateTime::createFromFormat('!d/m/Y', $item['date']);
                 return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text']] : null;
             })
             ->filter();
@@ -37,11 +37,11 @@ class DatumController extends Controller
 
         $earliestDatumInDb = $existingDatums->sortBy('date')->first();
 
-        $earlierFound = null;
+        $newlyFoundEarlierDatums = collect();
         if ($earliestDatumInDb) {
-            $earlierFound = $incomingDatums
-                ->sortBy('date')
-                ->first(fn($item) => $item['date'] < $earliestDatumInDb['date']);
+            $newlyFoundEarlierDatums = $incomingDatums
+                ->filter(fn($item) => $item['date'] < $earliestDatumInDb['date'])
+                ->sortBy('date');
         }
 
         $newDatumsToStore = $incomingDatums->sortBy('date')->values();
@@ -52,12 +52,12 @@ class DatumController extends Controller
             Datum::create(['olddatums' => $newDatumsToStore->toArray()]);
         }
 
-        if ($earlierFound) {
-            Mail::to('wilczynskimarceli@gmail.com')->queue(new NewEarlierDateFound($earlierFound));
+        if ($newlyFoundEarlierDatums->isNotEmpty()) {
+            Mail::to('wilczynskimarceli@gmail.com')->queue(new NewEarlierDateFound($newlyFoundEarlierDatums));
 
             return response()->json([
-                'message' => 'Earlier date found and email sent.',
-                'earlier_datum' => $earlierFound,
+                'message' => 'New earlier dates found and email sent.',
+                'earlier_datums' => $newlyFoundEarlierDatums->values(),
             ]);
         }
 
