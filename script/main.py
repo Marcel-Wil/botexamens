@@ -5,6 +5,18 @@ from datetime import datetime
 from camoufox.sync_api import Camoufox
 import requests
 
+
+def main2():
+    proxy_config = {
+        'server': 'brd.superproxy.io:33335',
+        'username': 'brd-customer-hl_790542c3-zone-residential_proxy1-country-be',
+        'password': 'exz8g2ifk1c0'
+    }
+    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True, proxy=proxy_config, headless=False) as browser:
+        page = browser.new_page(ignore_https_errors=True)
+        page.goto("https://geo.brdtest.com/mygeo.json")
+        time.sleep(30)
+
 def post_dates_to_api(dates):
     server = os.getenv("SERVER", "localhost")
     port = os.getenv("PORT", "8000")
@@ -21,6 +33,8 @@ def post_dates_to_api(dates):
 from dotenv import load_dotenv
 
 def main():
+    cert_path = os.path.join(os.path.dirname(__file__), 'certs', 'new_cert', 'brightdata.crt')
+    os.environ['SSL_CERT_FILE'] = cert_path
     load_dotenv()
     naam = os.getenv("NAAM", "")
     voornaam = os.getenv("VOORNAAM", "")
@@ -139,4 +153,4 @@ def main():
         main()
 
 if __name__ == "__main__":
-    main()
+    main2()
