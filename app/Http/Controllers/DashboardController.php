@@ -14,23 +14,27 @@ class DashboardController extends Controller
         $latestDatumEntry = Datum::latest()->first();
         $earliestDate = null;
 
-        if ($latestDatumEntry && !empty($latestDatumEntry->olddatums)) {
-            $dates = $latestDatumEntry->olddatums;
+        $user = $request->user();
 
-            $carbonDates = array_map(function ($dateObject) {
-                try {
-                    return Carbon::parse($dateObject['date']);
-                } catch (\Exception $e) {
-                    return null;
+        if ($user->notification) {
+            if ($latestDatumEntry && !empty($latestDatumEntry->olddatums)) {
+                $dates = $latestDatumEntry->olddatums;
+
+                $carbonDates = array_map(function ($dateObject) {
+                    try {
+                        return Carbon::parse($dateObject['date']);
+                    } catch (\Exception $e) {
+                        return null;
+                    }
+                }, $dates);
+
+                $futureDates = array_filter($carbonDates, function ($date) {
+                    return $date && ($date->isFuture() || $date->isToday());
+                });
+
+                if (!empty($futureDates)) {
+                    $earliestDate = min($futureDates);
                 }
-            }, $dates);
-
-            $futureDates = array_filter($carbonDates, function ($date) {
-                return $date && ($date->isFuture() || $date->isToday());
-            });
-
-            if (!empty($futureDates)) {
-                $earliestDate = min($futureDates);
             }
         }
 
@@ -39,4 +43,3 @@ class DashboardController extends Controller
         ]);
     }
 }
-
