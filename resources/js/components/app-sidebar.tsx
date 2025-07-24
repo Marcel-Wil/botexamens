@@ -18,6 +18,11 @@ const mainNavItems: NavItem[] = [
         href: '/settings/profile',
         icon: Settings,
     },
+    {
+        title: 'FAQ',
+        href: '/#faq',
+        icon: Settings,
+    },
 ];
 
 const footerNavItems: NavItem[] = [];
