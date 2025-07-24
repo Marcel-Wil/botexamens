@@ -22,8 +22,12 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        Mail::to('your-inbox@inbox.mailtrap.io')->send(new ContactFormMail($validated));
+        // Send email to admin
+        $adminEmail = config('mail.from.address');
+        Mail::to($adminEmail)->queue(new ContactFormMail($validated));
 
-        return back()->with('success', 'Thank you for your message!');
+        return response()->json([
+            'message' => 'Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.'
+        ]);
     }
 }

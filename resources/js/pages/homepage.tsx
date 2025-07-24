@@ -1,5 +1,6 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs2';
 
@@ -17,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { Sparkles, ArrowRight, Check, Bell, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Navbar } from '@/components/navbar';
 
 const plans = [
   {
@@ -35,6 +37,7 @@ const plans = [
       'Geen abonnement, eenmalige betaling',
     ],
     cta: 'Kies Notificatie',
+    popular: false,
   },
   {
     id: 'automatisch',
@@ -51,6 +54,7 @@ const plans = [
       'Geen gedoe, wij regelen alles',
     ],
     cta: 'Kies Automatisch',
+    popular: true,
   },
   {
     id: 'per-notificatie',
@@ -68,40 +72,9 @@ const plans = [
       'Eerste melding is gratis',
     ],
     cta: 'Kies Per Melding',
+    popular: false,
   },
 ];
-
-// You can create a dedicated component for this
-const Navbar = () => {
-    const handleScroll = () => {
-        const target = document.getElementById("pricing");
-        if (target) {
-            target.scrollIntoView({ behavior: "smooth" });
-        }
-    };
-    return (
-        <nav className="fixed top-0 z-10 w-full bg-transparent shadow-lg backdrop-blur-lg">
-            <div className="container flex justify-between items-center px-6 py-3 mx-auto">
-                <a className="text-xl font-bold text-white" href="#">
-                    FastTrack Examen Alerts
-                </a>
-                <div className="hidden items-center space-x-6 md:flex">
-                    <a className="text-white hover:text-gray-200" href="#home">Home</a>
-                    <a className="text-white hover:text-gray-200" onClick={handleScroll}>Prijzen</a>
-                    <a className="text-white hover:text-gray-200" href="#">Over Ons</a>
-                    <a className="text-white hover:text-gray-200" href="#">Contact</a>
-                </div>
-                <div className="md:hidden">
-                    <button className="text-white focus:outline-none">
-                        <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                            <path d="M4 6h16M4 12h16m-7 6h7"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </nav>
-    );
-};
 
 // Hero Section
 const HeroSection = () => {
@@ -118,7 +91,6 @@ const HeroSection = () => {
                 <div className="absolute top-1/4 left-1/4 w-24 h-24 bg-purple-500 rounded-full opacity-20 animate-float"></div>
                 <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-purple-500 rounded-lg opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
                 <div className="absolute bottom-1/4 left-1/3 w-16 h-16 bg-purple-500 rounded-full opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
-                <div className="absolute right-1/3 bottom-1/2 w-20 h-20 bg-purple-500 rounded-lg opacity-20 animate-float" style={{ animationDelay: '3s' }}></div>
             </div>
 
             <div className="relative z-10 text-center">

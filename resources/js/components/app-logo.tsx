@@ -1,9 +1,11 @@
+import { Link } from '@inertiajs/react';
+
 export default function AppLogo() {
     return (
-        <>
-            <div className="ml-1 grid flex-1 text-left text-sm">
+        <Link href="/" className="block">
+            <div className="grid flex-1 ml-1 text-sm text-left">
                 <span className="mb-0.5 truncate leading-tight font-semibold">FastTrack Examen</span>
             </div>
-        </>
+        </Link>
     );
 }

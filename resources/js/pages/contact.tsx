@@ -1,102 +1,162 @@
-import React from 'react';
-import { useForm, Head } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Head, usePage } from '@inertiajs/react';
+import { Navbar } from '@/components/navbar';
 
-const Navbar = () => {
-    // A simplified navbar for the contact page, or you can import your main one
-    return (
-        <nav className="bg-white/20 backdrop-blur-lg shadow-lg fixed w-full z-10 top-0">
-            <div className="container mx-auto px-6 py-3 flex justify-between items-center">
-                <a className="text-xl font-bold text-white" href="/">
-                    FastTrack Examen Alerts
-                </a>
-                <div>
-                    <a className="text-white hover:text-gray-200" href="/">Home</a>
-                </div>
-            </div>
-        </nav>
-    );
-};
-
-export default function ContactPage() {
-    const { data, setData, post, processing, errors, wasSuccessful, reset } = useForm({
+const ContactPage = () => {
+    const [formData, setFormData] = useState({
         name: '',
         email: '',
-        message: '',
+        message: ''
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState({ text: '', type: '' });
 
-    const submit = (e: React.FormEvent) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const { csrf } = usePage().props;
+    
+    const submit = async (e: React.FormEvent) => {
         e.preventDefault();
-        post('/contact', {
-            onSuccess: () => reset(),
-        });
+        setIsSubmitting(true);
+        setMessage({ text: '', type: '' });
+
+        try {
+            const formDataToSend = new FormData();
+            formDataToSend.append('_token', csrf as string);
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('email', formData.email);
+            formDataToSend.append('message', formData.message);
+            
+            const response = await fetch('/contact', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrf as string,
+                },
+                body: formDataToSend
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                setMessage({
+                    text: data.message || 'Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.',
+                    type: 'success'
+                });
+                setFormData({ name: '', email: '', message: '' });
+            } else {
+                throw new Error(data.message || 'Er is iets misgegaan. Probeer het later opnieuw.');
+            }
+        } catch (error) {
+            setMessage({
+                text: error instanceof Error ? error.message : 'Er is iets misgegaan. Probeer het later opnieuw.',
+                type: 'error'
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
         <>
             <Head title="Contact Us" />
-            <div className="font-sans text-gray-900 antialiased bg-gradient-to-br from-blue-200 via-indigo-300 to-purple-400 min-h-screen">
+            <div className="min-h-screen font-sans antialiased text-gray-200 bg-gradient-to-br from-black via-gray-900 to-purple-900">
                 <Navbar />
-                <main className="min-h-screen flex items-center justify-center pt-20">
-                    <div className="w-full max-w-lg p-8 space-y-8 bg-white/30 backdrop-blur-xl rounded-xl shadow-lg">
+                <main className="flex justify-center items-center px-4 pt-20 min-h-screen">
+                    <div className="p-8 space-y-8 w-full max-w-lg rounded-xl border shadow-2xl backdrop-blur-lg bg-gray-800/50 border-gray-700/50">
                         <div className="text-center">
-                            <h2 className="text-4xl font-extrabold text-gray-900">Contact Us</h2>
-                            <p className="mt-2 text-lg text-gray-800">Have a question? We'd love to hear from you.</p>
+                            <h2 className="text-4xl font-extrabold text-white">Neem contact met ons op</h2>
+                            <p className="mt-2 text-lg text-gray-300">Heb je een vraag? We horen graag van je.</p>
                         </div>
 
-                        {wasSuccessful && (
-                            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md" role="alert">
-                                <p className="font-bold">Success!</p>
-                                <p>Your message has been sent successfully. We'll get back to you soon.</p>
+                        {message.text && (
+                            <div className={`p-4 rounded-md border-l-4 ${
+                                message.type === 'success' 
+                                    ? 'text-green-700 bg-green-100 border-green-500' 
+                                    : 'text-red-700 bg-red-100 border-red-500'
+                            }`} role="alert">
+                                <p className="font-bold">{message.type === 'success' ? 'Gelukt!' : 'Fout'}</p>
+                                <p>{message.text}</p>
                             </div>
                         )}
 
-                        <form onSubmit={submit} className="space-y-6">
+                        <form onSubmit={submit} className="space-y-6" id="contact-form">
                             <div>
-                                <label htmlFor="name" className="text-sm font-bold text-gray-800 block mb-2">Name</label>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                                    Naam
+                                </label>
                                 <input
                                     id="name"
+                                    name="name"
                                     type="text"
-                                    value={data.name}
-                                    onChange={e => setData('name', e.target.value)}
-                                    className="w-full p-3 bg-white/50 rounded-lg border border-transparent focus:border-indigo-500 focus:ring-indigo-500 transition"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className="block p-2 mt-1 w-full text-white rounded-md border-gray-600 shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                                     required
                                 />
-                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                                {message.type === 'error' && message.text.includes('name') && (
+                                    <p className="mt-1 text-sm text-red-400">{message.text}</p>
+                                )}
                             </div>
+
                             <div>
-                                <label htmlFor="email" className="text-sm font-bold text-gray-800 block mb-2">Email</label>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                                    Email
+                                </label>
                                 <input
                                     id="email"
+                                    name="email"
                                     type="email"
-                                    value={data.email}
-                                    onChange={e => setData('email', e.target.value)}
-                                    className="w-full p-3 bg-white/50 rounded-lg border border-transparent focus:border-indigo-500 focus:ring-indigo-500 transition"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className="block p-2 mt-1 w-full text-white rounded-md border-gray-600 shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                                     required
                                 />
-                                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                                {message.type === 'error' && message.text.includes('email') && (
+                                    <p className="mt-1 text-sm text-red-400">{message.text}</p>
+                                )}
                             </div>
+
                             <div>
-                                <label htmlFor="message" className="text-sm font-bold text-gray-800 block mb-2">Message</label>
+                                <label htmlFor="message" className="block text-sm font-medium text-gray-300">
+                                    Bericht
+                                </label>
                                 <textarea
                                     id="message"
-                                    value={data.message}
-                                    onChange={e => setData('message', e.target.value)}
-                                    className="w-full p-3 h-32 bg-white/50 rounded-lg border border-transparent focus:border-indigo-500 focus:ring-indigo-500 transition"
+                                    name="message"
+                                    rows={4}
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    className="block p-2 mt-1 w-full text-white rounded-md border-gray-600 shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                                     required
-                                />
-                                {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
+                                ></textarea>
+                                {message.type === 'error' && message.text.includes('message') && (
+                                    <p className="mt-1 text-sm text-red-400">{message.text}</p>
+                                )}
                             </div>
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="w-full py-3 px-4 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors"
-                            >
-                                {processing ? 'Sending...' : 'Send Message'}
-                            </button>
+
+                            <div>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="flex justify-center px-4 py-3 w-full text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmitting ? 'Versturen...' : 'Verstuur bericht'}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </main>
             </div>
         </>
     );
-}
+};
+
+export default ContactPage;
