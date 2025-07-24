@@ -59,7 +59,11 @@ class DatumController extends Controller
         }
 
         if ($newlyFoundEarlierDatums->isNotEmpty()) {
-            Mail::to('wilczynskimarceli@gmail.com')->queue(new NewEarlierDateFound($newlyFoundEarlierDatums->toArray()));
+            $users = User::where('notification', true)->get();
+            foreach ($users as $user) {
+                Mail::to($user->email)->queue(new NewEarlierDateFound($newlyFoundEarlierDatums->toArray()));
+                //TODO: Send notification to whatsapp
+            }
 
             return response()->json([
                 'message' => 'New earlier dates found and email sent.',
