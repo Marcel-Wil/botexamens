@@ -16,7 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send')->middleware('throttle:2,60');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
