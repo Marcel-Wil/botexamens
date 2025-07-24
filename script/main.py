@@ -1,40 +1,33 @@
 import time
 import os
 import random
+import json
 from datetime import datetime
 from camoufox.sync_api import Camoufox
 import requests
+import urllib3
+import urllib.parse
+
+from script.scrapehtml import extract_dates_from_html
 
 
-def main2():
-    proxy_config = {
-        'server': 'brd.superproxy.io:33335',
-        'username': 'brd-customer-hl_790542c3-zone-residential_proxy1-country-be',
-        'password': 'exz8g2ifk1c0'
-    }
-    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True, proxy=proxy_config, headless=False) as browser:
-        page = browser.new_page(ignore_https_errors=True)
-        page.goto("https://geo.brdtest.com/mygeo.json")
-        time.sleep(30)
 
 def post_dates_to_api(dates):
     server = os.getenv("SERVER", "localhost")
     port = os.getenv("PORT", "8000")
     url = f"http://{server}:{port}/api/compare-datums"
     try:
-        payload = {"newdatums": dates}
+        payload = dates
         headers = {"Accept": "application/json"}
         response = requests.post(url, json=payload, headers=headers)
         response.raise_for_status()
-        print(f"Successfully posted dates to {url}. Response: {response.json()}")
     except Exception as e:
         print(f"Failed to post dates to {url}: {e}")
+
 
 from dotenv import load_dotenv
 
 def main():
-    cert_path = os.path.join(os.path.dirname(__file__), 'certs', 'new_cert', 'brightdata.crt')
-    os.environ['SSL_CERT_FILE'] = cert_path
     load_dotenv()
     naam = os.getenv("NAAM", "")
     voornaam = os.getenv("VOORNAAM", "")
@@ -50,7 +43,7 @@ def main():
     zhuidigVRijbewijsDatum = os.getenv("ZHUIDIG_V_RIJBEWIJS_DATUM", "")
     zhuidigVRijbewijsGeldigTot = os.getenv("ZHUIDIG_V_RIJBEWIJS_GELDIG_TOT", "")
 
-    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True) as browser:
+    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True, headless=True) as browser:
         page = browser.new_page()
         page.goto("https://examencentrum-praktijk.autoveiligheid.be/Afspraak/nieuw")
 
@@ -93,64 +86,59 @@ def main():
         checkbox.check()
         page.wait_for_timeout(8000)
         page.click("button.btn-phone-50")
+        
+        page.wait_for_url("**/TijdSelectie", timeout=60000)
+        current_url = page.url
 
-        # WIZARD STEP 4
+        try:
+            data_id = current_url.split('/')[-2]
+        except IndexError:
+            print(f"Could not extract dataId from URL: {current_url}")
+            return
+
+
+        cookies = page.context.cookies()
+        cookie_string = "; ".join([f"{cookie['name']}={cookie['value']}" for cookie in cookies])
+
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+        post_url = "https://examencentrum-praktijk.autoveiligheid.be/TimeSelect/AjaxPartialTimeSelectNew"
+        payload = {
+            'selectedEcId': '1004',
+            'dataId': data_id
+        }
+
+        proxy = 'http://brd-customer-hl_790542c3-zone-examen:ji6jdo7xgzmb@brd.superproxy.io:33335'
+        proxies = {
+            'http': proxy,
+            'https': proxy
+        }
+        
+        target_headers = {
+            'Cookie': cookie_string
+        }
+
         while True:
             try:
-                html_content = None
-                # Wait for the button to be present. If it's not, something is wrong.
-                page.wait_for_selector("#ec1004", timeout=20000)
+                response = requests.post(post_url, data=payload, headers=target_headers, proxies=proxies, verify=False)
+                response.raise_for_status()
 
-                def handle_response(response):
-                    nonlocal html_content
-                    if "AjaxPartialTimeSelectNew" in response.url and response.request.method == "POST":
-                        print(f"Captured response from {response.url}")
-                        try:
-                            html_content = response.text()
-                        except Exception as e:
-                            print(f"Error getting response text: {e}")
 
-                # Listen for responses before clicking
-                page.on("response", handle_response)
-
-                print("Clicking the 'Deurne' button...")
-                page.click("#ec1004")
-
-                # Wait for the response to be captured
-                page.wait_for_timeout(5000)
-
-                page.remove_listener("response", handle_response)
-
-                if html_content:
-                    if not os.path.exists("logs/deurne"):
-                        os.makedirs("logs/deurne")
-                    
-                    from scrapehtml import extract_dates_from_html
-                    import json
-                    
-                    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                    filename = f"logs/deurne/outputHTML_{timestamp}.json"
-
-                    print(f"Extracting dates and saving response to {filename}")
-                    dates = extract_dates_from_html(html_content)
-                    with open(filename, "w", encoding="utf-8") as f:
-                        json.dump(dates, f, indent=4)
-                    print("Save complete.")
-                    post_dates_to_api(dates)
-                else:
-                    print("Could not capture the HTML content in this interval.")
-
-                print("Waiting for 60 seconds before next check...")
-                time.sleep(60)
-            except Exception as e:
-                print(f"An error occurred: {e}")
-                print("This might be due to a session timeout, rate limit, or block.")
-                print("Exiting the program gracefully.")
+                extracted_dates = extract_dates_from_html(response.text)
+                
+                deurne_log_dir = os.path.join(os.path.dirname(__file__), 'logs', 'deurne')
+                os.makedirs(deurne_log_dir, exist_ok=True)
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                file_path = os.path.join(deurne_log_dir, f'extracted_dates_{timestamp}.json')
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    json.dump(extracted_dates, f, indent=4)
+                post_dates_to_api(extracted_dates)
+            except requests.exceptions.RequestException as e:
+                print(f"Failed to make POST request: {e}")
                 break
+            
+            time.sleep(100)
         
-        browser.close()
-        time.sleep(5)
-        main()
 
 if __name__ == "__main__":
-    main2()
+    main()
