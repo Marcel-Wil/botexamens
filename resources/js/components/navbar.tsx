@@ -1,9 +1,11 @@
 import { SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 
 export const Navbar = () => {
     const { auth } = usePage<SharedData>().props;
     const isAuthenticated = auth?.user !== null;
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleScroll = (e: React.MouseEvent, id: string) => {
         e.preventDefault();
@@ -20,13 +22,6 @@ export const Navbar = () => {
                     FastTrack Examen Alerts
                 </a>
                 <div className="hidden items-center space-x-6 md:flex">
-                    {/* <a className="text-white hover:text-gray-200" href="/" onClick={(e) => handleScroll(e, 'home')}>
-                        Home
-                    </a>
-                    <a className="text-white hover:text-gray-200" onClick={(e) => handleScroll(e, 'pricing')}>
-                        Prijzen
-                    </a> */}
-
                     {isAuthenticated ? (
                         <>
                             <a className="text-white hover:text-gray-200" href="/dashboard">
@@ -59,8 +54,8 @@ export const Navbar = () => {
                         </>
                     )}
                 </div>
-                <div className="md:hidden">
-                    <button className="text-white focus:outline-none">
+                <div className="relative md:hidden">
+                    <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white focus:outline-none">
                         <svg
                             className="h-6 w-6"
                             fill="none"
@@ -73,6 +68,42 @@ export const Navbar = () => {
                             <path d="M4 6h16M4 12h16m-7 6h7"></path>
                         </svg>
                     </button>
+
+                    {isMobileMenuOpen && (
+                        <div className="ring-opacity-5 absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black focus:outline-none">
+                            {isAuthenticated ? (
+                                <>
+                                    <a href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Dashboard
+                                    </a>
+                                    <a href="/contact" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Contact
+                                    </a>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            router.post('/logout');
+                                        }}
+                                        className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        Uitloggen
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <a href="/login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Inloggen
+                                    </a>
+                                    <a href="/register" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Registreren
+                                    </a>
+                                    <a href="/contact" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Contact
+                                    </a>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </nav>
