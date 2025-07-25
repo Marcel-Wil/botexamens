@@ -96,7 +96,7 @@ const HeroSection = () => {
                 <p className="mt-4 text-lg text-gray-300">Krijg direct een melding zodra er een plek vrijkomt.</p>
                 <a
                     onClick={handleScroll}
-                    className="mt-8 inline-block rounded-lg bg-indigo-600 px-8 py-3 font-bold text-white transition duration-300 hover:bg-indigo-700"
+                    className="mt-8 inline-block cursor-pointer rounded-lg bg-indigo-600 px-8 py-3 font-bold text-white transition duration-300 hover:bg-indigo-700"
                 >
                     Begin Nu
                 </a>
@@ -218,7 +218,7 @@ function SimplePricing() {
                                     <Button
                                         variant={plan.popular ? 'default' : 'outline'}
                                         className={cn(
-                                            'w-full font-medium transition-all duration-300',
+                                            'w-full cursor-pointer font-medium transition-all duration-300',
                                             plan.popular
                                                 ? 'bg-primary hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20'
                                                 : 'hover:border-primary/30 hover:bg-primary/5 hover:text-primary',

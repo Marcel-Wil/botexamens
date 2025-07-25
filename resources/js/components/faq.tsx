@@ -14,7 +14,7 @@ const faqData: FaqItem[] = [
     },
     {
         question: 'Hoe werkt de service?',
-        answer: 'Na het aanmaken van het account moet u naar de instellingen gaan en uw e-mail + whatsapp nummer invullen. (Deze zijn noodzakelijk om de meldingen te kunnen ontvangen) vervolgens neem met ons contact op om de bundel te kiezen, wij zullen uw account activeren en u kunt direct beginnen met ontvangen van meldingen.',
+        answer: 'Na het aanmaken van het account moet u naar de instellingen gaan en uw e-mail + whatsapp nummer invullen. (Deze zijn noodzakelijk om de meldingen te kunnen ontvangen) vervolgens neem met ons contact op om de bundel te kiezen(Wij antwoorden binnen 24 uur), wij zullen uw account activeren en u kunt direct beginnen met ontvangen van meldingen.',
     },
     {
         question: 'Is dit legaal?',
