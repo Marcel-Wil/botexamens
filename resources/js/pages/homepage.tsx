@@ -252,6 +252,7 @@ export default function Homepage() {
     return (
         <>
             <Head title="Homepage" />
+            <meta name="description" content="Vind een vrije plek voor een examen en ontvang een melding wanneer er een vrije plek vrijkomt." />
             <div className="bg-gradient-to-br from-black via-gray-900 to-purple-900 font-sans text-gray-200 antialiased">
                 <Navbar />
                 <main>
