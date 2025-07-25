@@ -6,9 +6,8 @@ from datetime import datetime
 from camoufox.sync_api import Camoufox
 import requests
 import urllib3
-import urllib.parse
 
-from script.scrapehtml import extract_dates_from_html
+from scrapehtml import extract_dates_from_html
 
 
 
@@ -132,13 +131,16 @@ def main():
                 file_path = os.path.join(deurne_log_dir, f'extracted_dates_{timestamp}.json')
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(extracted_dates, f, indent=4)
-                post_dates_to_api(extracted_dates)
+                # post_dates_to_api(extracted_dates)
             except requests.exceptions.RequestException as e:
                 print(f"Failed to make POST request: {e}")
-                break
+                return
             
             time.sleep(100)
         
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
+        print("Process ended. Restarting in 10 seconds...")
+        time.sleep(10)
