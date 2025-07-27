@@ -15,8 +15,21 @@ class DatumController extends Controller
             'newdatums' => 'array',
             'newdatums.*.date' => 'required|string',
             'newdatums.*.text' => 'required|string',
+            'newdatums.*.times' => 'array',
         ]);
+        $notification_response = $this->send_notifications($request);
+        $auto_inschrijven_response = $this->auto_inschrijven($request);
 
+    }
+
+    public function auto_inschrijven(Request $request)
+    {
+        //TODO: Implement auto inschrijven
+        return response()->json(['message' => 'Auto inschrijven completed.']);
+    }
+
+    public function send_notifications(Request $request)
+    {
         if (empty($request->input('newdatums'))) {
             return response()->json(['message' => 'No dates provided.'], 400);
         }

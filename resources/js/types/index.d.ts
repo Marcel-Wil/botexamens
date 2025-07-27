@@ -35,6 +35,10 @@ export interface User {
     id: number;
     voornaam: string;
     achternaam: string;
+    startDatum: string;
+    endDatum: string;
+    startUur: string;
+    endUur: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
