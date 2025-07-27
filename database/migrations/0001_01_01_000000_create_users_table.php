@@ -24,6 +24,10 @@ return new class extends Migration {
             $table->string('zeersteVRijbewijsDatum')->nullable();
             $table->string('zhuidigVRijbewijsDatum')->nullable();
             $table->string('zhuidigVRijbewijsGeldigTot')->nullable();
+            $table->string('startDatum')->nullable();
+            $table->string('endDatum')->nullable();
+            $table->string('startUur')->nullable();
+            $table->string('endUur')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
