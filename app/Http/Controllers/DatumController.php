@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\NewEarlierDateFound;
 use Illuminate\Http\Request;
 use App\Models\Datum;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
 class DatumController extends Controller
@@ -20,6 +21,10 @@ class DatumController extends Controller
         $notification_response = $this->send_notifications($request);
         $auto_inschrijven_response = $this->auto_inschrijven($request);
 
+        return response()->json([
+            'notification_response' => $notification_response,
+            'auto_inschrijven_response' => $auto_inschrijven_response,
+        ]);
     }
 
     public function auto_inschrijven(Request $request)
@@ -37,7 +42,11 @@ class DatumController extends Controller
         $incomingDatums = collect($request->input('newdatums'))
             ->map(function ($item) {
                 $date = \DateTime::createFromFormat('!d/m/Y', $item['date']);
-                return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text']] : null;
+                return $date ? [
+                    'date' => $date->format('Y-m-d'),
+                    'text' => $item['text'],
+                    'times' => $item['times'] ?? [],
+                ] : null;
             })
             ->filter();
 
@@ -47,24 +56,70 @@ class DatumController extends Controller
 
         $datum = Datum::latest()->first();
         $existingDatums = collect($datum->olddatums ?? []);
-
         $earliestDatumInDb = $existingDatums->sortBy('date')->first();
 
-        $newlyFoundEarlierDatums = collect();
-        if ($earliestDatumInDb) {
-            $earliestStillExists = $incomingDatums->firstWhere('date', $earliestDatumInDb['date']);
+        $user = User::first();
 
-            if ($earliestStillExists) {
-                $newlyFoundEarlierDatums = $incomingDatums
-                    ->filter(fn($item) => $item['date'] < $earliestDatumInDb['date'])
-                    ->sortBy('date');
-            } else {
-                $newlyFoundEarlierDatums = $incomingDatums->sortBy('date');
-            }
-        }
+        $startDatum = $user?->startDatum;
+        $endDatum = $user?->endDatum;
+        $startUur = $user?->startUur;
+        $endUur = $user?->endUur;
+
+        $startDatum = $user?->startDatum
+            ? \DateTime::createFromFormat('!d/m/Y', $user->startDatum)?->format('Y-m-d')
+            : null;
+
+        $endDatum = $user?->endDatum
+            ? \DateTime::createFromFormat('!d/m/Y', $user->endDatum)?->format('Y-m-d')
+            : null;
+
+        $newlyFoundEarlierDatums = $incomingDatums
+            ->filter(function ($item) use ($earliestDatumInDb, $startDatum, $endDatum, $startUur, $endUur) {
+
+                $itemDate = \DateTime::createFromFormat('Y-m-d', $item['date']);
+
+                if (!$itemDate) return false;
+
+                if ($earliestDatumInDb && isset($earliestDatumInDb['date'])) {
+                    $earliestDate = \DateTime::createFromFormat('Y-m-d', $earliestDatumInDb['date']);
+                    if ($earliestDate && $itemDate >= $earliestDate) {
+                        return false;
+                    }
+                }
+
+                if ($startDatum) {
+                    $start = \DateTime::createFromFormat('Y-m-d', $startDatum);
+                    if ($start && $itemDate < $start) {
+                        return false;
+                    }
+                }
+
+                if ($endDatum) {
+                    $end = \DateTime::createFromFormat('Y-m-d', $endDatum);
+                    if ($end && $itemDate > $end) {
+                        return false;
+                    }
+                }
+
+                if (!empty($item['times']) && $startUur && $endUur) {
+                    foreach ($item['times'] as $time) {
+                        if ($time >= $startUur && $time <= $endUur) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                if ($startUur && $endUur && empty($item['times'])) {
+                    return false;
+                }
+
+                return true;
+            })
+
+            ->sortBy('date');
 
         $newDatumsToStore = $incomingDatums->sortBy('date')->values();
-
         if ($datum) {
             $datum->update(['olddatums' => $newDatumsToStore->toArray()]);
         } else {
@@ -72,10 +127,11 @@ class DatumController extends Controller
         }
 
         if ($newlyFoundEarlierDatums->isNotEmpty()) {
-            $users = User::where('notification', true)->get();
+            $users = \App\Models\User::where('notification', false)->get();
+
             foreach ($users as $user) {
                 Mail::to($user->email)->queue(new NewEarlierDateFound($newlyFoundEarlierDatums->toArray()));
-                //TODO: Send notification to whatsapp
+                // TODO: Send WhatsApp notification
             }
 
             return response()->json([
