@@ -3,16 +3,16 @@
 namespace App\Http\Requests\Settings;
 
 use App\Models\User;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
     {
@@ -28,6 +28,15 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'whatsapp' => ['nullable', 'string', 'max:255'],
+            'rrn' => ['nullable', 'string', 'max:255'],
+            'gbdatum' => ['nullable', 'date_format:d/m/Y'],
+            'tel' => ['nullable', 'string', 'max:255'],
+            'adres' => ['nullable', 'string', 'max:255'],
+            'postcode' => ['nullable', 'string', 'max:255'],
+            'zeersteVRijbewijsDatum' => ['nullable', 'date_format:d/m/Y'],
+            'zhuidigVRijbewijsDatum' => ['nullable', 'date_format:d/m/Y'],
+            'zhuidigVRijbewijsGeldigTot' => ['nullable', 'date_format:d/m/Y'],
         ];
     }
+
 }

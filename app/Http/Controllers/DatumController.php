@@ -23,12 +23,12 @@ class DatumController extends Controller
             'newdatums.*.times' => 'array',
         ]);
 
-        $notification_response = $this->send_notifications($request);
-        // $auto_inschrijven_response = $this->auto_inschrijven($request);
+        // $notification_response = $this->send_notifications($request);
+        $auto_inschrijven_response = $this->auto_inschrijven($request);
 
         return response()->json([
-            'notification_response' => $notification_response,
-            // 'auto_inschrijven_response' => $auto_inschrijven_response,
+            // 'notification_response' => $notification_response,
+            'auto_inschrijven_response' => $auto_inschrijven_response,
         ]);
     }
 
@@ -44,9 +44,7 @@ class DatumController extends Controller
         }
 
         try {
-            Log::info("Dispatching ProcessAutoEnrollment job for user: {$enrollment->user->id}");
             ProcessAutoEnrollment::dispatch($enrollment->user);
-            Log::info("Job dispatched successfully for user: {$enrollment->user->id}");
 
             return response()->json([
                 'success' => true,

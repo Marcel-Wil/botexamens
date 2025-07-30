@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 def post_dates_to_api(dates):
     load_dotenv()
-    server = os.getenv("SERVER", "localhost")
+    server = os.getenv("SERVER", "127.0.0.1")
     port = os.getenv("PORT", "8000")
     url = f"http://{server}:{port}/api/compare-datums"
     try:
@@ -20,7 +20,7 @@ def post_dates_to_api(dates):
 
 def get_user_data_from_api(user_id: int) -> dict:
     load_dotenv()
-    server = os.getenv("SERVER", "localhost")
+    server = os.getenv("SERVER", "127.0.0.1")
     port = os.getenv("PORT", "8000")
     url = f"http://{server}:{port}/api/user/{user_id}"
     try:

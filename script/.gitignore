@@ -2,3 +2,4 @@ venv/
 *.log
 *.pid
 logs/deurne
+__pycache__
