@@ -28,6 +28,11 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
+        title: 'Abonnament',
+        href: '/settings/abonnament',
+        icon: null,
+    },
+    {
         title: 'Appearance',
         href: '/settings/appearance',
         icon: null,
