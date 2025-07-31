@@ -7,6 +7,7 @@ import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -24,9 +25,20 @@ type ProfileForm = {
     achternaam: string;
     email: string;
     whatsapp: string;
+    cities: number[];
 };
 
-export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
+export default function Profile({
+    mustVerifyEmail,
+    status,
+    cities,
+    userCities,
+}: {
+    mustVerifyEmail: boolean;
+    status?: string;
+    cities: { id: number; name: string }[];
+    userCities: number[];
+}) {
     const { auth } = usePage<SharedData>().props;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
@@ -34,6 +46,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         achternaam: auth.user.achternaam,
         email: auth.user.email,
         whatsapp: String(auth.user.whatsapp ?? ''),
+        cities: userCities,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -117,6 +130,32 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             />
 
                             <InputError className="mt-2" message={errors.whatsapp} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label>Cities</Label>
+                            <div className="grid grid-cols-2 gap-4">
+                                {cities.map((city) => (
+                                    <div key={city.id} className="flex items-center gap-2">
+                                        <Checkbox
+                                            id={`city-${city.id}`}
+                                            checked={data.cities.includes(city.id)}
+                                            onCheckedChange={(checked) => {
+                                                if (checked) {
+                                                    setData('cities', [...data.cities, city.id]);
+                                                } else {
+                                                    setData(
+                                                        'cities',
+                                                        data.cities.filter((id) => id !== city.id),
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                        <Label htmlFor={`city-${city.id}`}>{city.name}</Label>
+                                    </div>
+                                ))}
+                            </div>
+                            <InputError className="mt-2" message={errors.cities} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (

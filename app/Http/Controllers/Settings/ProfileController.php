@@ -4,28 +4,33 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\City;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
     /**
-     * Show the user's profile settings page.
+     * Display the user's profile form.
      */
     public function edit(Request $request): Response
     {
+        // Seed cities if they don't exist
+        $this->seedCities();
+
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => $request->session()->get('status'),
+            'status' => session('status'),
+            'cities' => City::all(),
+            'userCities' => $request->user()->cities()->pluck('cities.id'),
         ]);
     }
 
     /**
-     * Update the user's profile settings.
+     * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -35,29 +40,31 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        if ($request->has('cities')) {
+            $request->user()->cities()->sync($request->input('cities', []));
+        }
+
         $request->user()->save();
 
-        return to_route('profile.edit');
+        return back();
     }
 
     /**
-     * Delete the user's account.
+     * Seed the cities table if it's empty.
      */
-    public function destroy(Request $request): RedirectResponse
+    private function seedCities(): void
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
+        if (City::count() === 0) {
+            $cities = [
+                ['name' => 'Deurne', 'code' => 'ec1004'],
+                ['name' => 'Alken', 'code' => 'ec1005'],
+                ['name' => 'Kontich', 'code' => 'ec1022'],
+                ['name' => 'Geel', 'code' => 'ec1023'],
+                ['name' => 'Haasrode', 'code' => 'ec1024'],
+                ['name' => 'Bree', 'code' => 'ec1033'],
+            ];
 
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+            City::insert($cities);
+        }
     }
 }
