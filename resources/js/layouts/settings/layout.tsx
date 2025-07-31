@@ -23,6 +23,11 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
+        title: 'Auto Inschrijven',
+        href: '/settings/autoinschrijven',
+        icon: null,
+    },
+    {
         title: 'Appearance',
         href: '/settings/appearance',
         icon: null,

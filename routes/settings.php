@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AutoInschrijvenController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\DatesController;
@@ -18,6 +19,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings/dates', [DatesController::class, 'show'])->name('settings.dates.show');
     Route::patch('settings/dates', [DatesController::class, 'update'])->name('settings.dates.update');
+
+    Route::get('settings/autoinschrijven', [AutoInschrijvenController::class, 'edit'])->name('autoinschrijven.edit');
+    Route::patch('settings/autoinschrijven', [AutoInschrijvenController::class, 'update'])->name('autoinschrijven.update');
 
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/appearance');

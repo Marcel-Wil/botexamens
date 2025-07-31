@@ -147,14 +147,16 @@ export default function Dates() {
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall
-                        title="Datum & Uur"
-                        description="Stel je voorkeur voor start- en einddatum en -uur voor notificaties en inschrijvingen."
-                    />
-                    <div className="text-sm text-red-500">
-                        <p>Datum moet in format DD/MM/YYYY (voorbeeld: 27/07/2025)</p>
-                        <p>Uur moet in format HH:MM (voorbeeld: 18:00)</p>
-                        <p>De startdatum en -uur moeten voor de einddatum en -uur liggen.</p>
+                    <div className="flex flex-col space-y-2">
+                        <HeadingSmall
+                            title="Datum & Uur"
+                            description="Stel je voorkeur voor start- en einddatum en -uur voor notificaties en inschrijvingen."
+                        />
+                        <div className="text-sm text-red-500">
+                            <p>Datum moet in format DD/MM/YYYY (voorbeeld: 27/07/2025)</p>
+                            <p>Uur moet in format HH:MM (voorbeeld: 18:00)</p>
+                            <p>De startdatum en -uur moeten voor de einddatum en -uur liggen.</p>
+                        </div>
                     </div>
 
                     <form onSubmit={submit} className="space-y-6">

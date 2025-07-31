@@ -24,14 +24,6 @@ type ProfileForm = {
     achternaam: string;
     email: string;
     whatsapp: string;
-    rrn: string;
-    gbdatum: string;
-    tel: string;
-    adres: string;
-    postcode: string;
-    zeersteVRijbewijsDatum: string;
-    zhuidigVRijbewijsDatum: string;
-    zhuidigVRijbewijsGeldigTot: string;
 };
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
@@ -42,14 +34,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         achternaam: auth.user.achternaam,
         email: auth.user.email,
         whatsapp: String(auth.user.whatsapp ?? ''),
-        rrn: String(auth.user.rrn ?? ''),
-        gbdatum: String(auth.user.gbdatum ?? ''),
-        tel: String(auth.user.tel ?? ''),
-        adres: String(auth.user.adres ?? ''),
-        postcode: String(auth.user.postcode ?? ''),
-        zeersteVRijbewijsDatum: String(auth.user.zeersteVRijbewijsDatum ?? ''),
-        zhuidigVRijbewijsDatum: String(auth.user.zhuidigVRijbewijsDatum ?? ''),
-        zhuidigVRijbewijsGeldigTot: String(auth.user.zhuidigVRijbewijsGeldigTot ?? ''),
     });
 
     const submit: FormEventHandler = (e) => {
@@ -133,69 +117,6 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             />
 
                             <InputError className="mt-2" message={errors.whatsapp} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="rrn">Rijksregisternummer</Label>
-                            <Input id="rrn" value={data.rrn} onChange={(e) => setData('rrn', e.target.value)} placeholder="Rijksregisternummer" />
-                            <InputError className="mt-2" message={errors.rrn} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="gbdatum">Geboortedatum</Label>
-                            <Input id="gbdatum" value={data.gbdatum} onChange={(e) => setData('gbdatum', e.target.value)} placeholder="DD/MM/YYYY" />
-                            <InputError className="mt-2" message={errors.gbdatum} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="tel">Telefoonnummer</Label>
-                            <Input id="tel" value={data.tel} onChange={(e) => setData('tel', e.target.value)} placeholder="Telefoonnummer" />
-                            <InputError className="mt-2" message={errors.tel} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="adres">Adres</Label>
-                            <Input id="adres" value={data.adres} onChange={(e) => setData('adres', e.target.value)} placeholder="Adres" />
-                            <InputError className="mt-2" message={errors.adres} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="postcode">Postcode</Label>
-                            <Input id="postcode" value={data.postcode} onChange={(e) => setData('postcode', e.target.value)} placeholder="Postcode" />
-                            <InputError className="mt-2" message={errors.postcode} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="zeersteVRijbewijsDatum">Datum eerste rijbewijs</Label>
-                            <Input
-                                id="zeersteVRijbewijsDatum"
-                                value={data.zeersteVRijbewijsDatum}
-                                onChange={(e) => setData('zeersteVRijbewijsDatum', e.target.value)}
-                                placeholder="DD/MM/YYYY"
-                            />
-                            <InputError className="mt-2" message={errors.zeersteVRijbewijsDatum} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="zhuidigVRijbewijsDatum">Datum huidig rijbewijs</Label>
-                            <Input
-                                id="zhuidigVRijbewijsDatum"
-                                value={data.zhuidigVRijbewijsDatum}
-                                onChange={(e) => setData('zhuidigVRijbewijsDatum', e.target.value)}
-                                placeholder="DD/MM/YYYY"
-                            />
-                            <InputError className="mt-2" message={errors.zhuidigVRijbewijsDatum} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="zhuidigVRijbewijsGeldigTot">Vervaldatum huidig rijbewijs</Label>
-                            <Input
-                                id="zhuidigVRijbewijsGeldigTot"
-                                value={data.zhuidigVRijbewijsGeldigTot}
-                                onChange={(e) => setData('zhuidigVRijbewijsGeldigTot', e.target.value)}
-                                placeholder="DD/MM/YYYY"
-                            />
-                            <InputError className="mt-2" message={errors.zhuidigVRijbewijsGeldigTot} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
