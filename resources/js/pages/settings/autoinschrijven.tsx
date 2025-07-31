@@ -67,13 +67,23 @@ export default function AutoInschrijven() {
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="rrn">Rijksregisternummer</Label>
-                            <Input id="rrn" value={data.rrn} onChange={(e) => setData('rrn', e.target.value)} placeholder="Rijksregisternummer" />
+                            <Label htmlFor="rrn">Rijksregisternummer (11 cijfers aan elkaar vb. 00000000000)</Label>
+                            <Input
+                                id="rrn"
+                                value={data.rrn}
+                                onChange={(e) => {
+                                    if (e.target.value.length <= 11) {
+                                        setData('rrn', e.target.value);
+                                    }
+                                }}
+                                placeholder="00.00.00-000.00"
+                                maxLength={11}
+                            />
                             <InputError className="mt-2" message={errors.rrn} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="gbdatum">Geboortedatum</Label>
+                            <Label htmlFor="gbdatum">Geboortedatum (dd/mm/yyyy vb. 01/01/1990)</Label>
                             <Input id="gbdatum" value={data.gbdatum} onChange={(e) => setData('gbdatum', e.target.value)} placeholder="DD/MM/YYYY" />
                             <InputError className="mt-2" message={errors.gbdatum} />
                         </div>
@@ -97,7 +107,7 @@ export default function AutoInschrijven() {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="zeersteVRijbewijsDatum">Datum eerste rijbewijs</Label>
+                            <Label htmlFor="zeersteVRijbewijsDatum">Datum eerste rijbewijs (dd/mm/yyyy vb. 01/01/1990)</Label>
                             <Input
                                 id="zeersteVRijbewijsDatum"
                                 value={data.zeersteVRijbewijsDatum}

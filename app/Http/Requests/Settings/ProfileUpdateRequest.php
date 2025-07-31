@@ -28,7 +28,7 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'whatsapp' => ['nullable', 'string', 'max:255'],
-            'rrn' => ['nullable', 'string', 'max:255'],
+            'rrn' => ['nullable', 'string', 'max:11', 'min:11'],
             'gbdatum' => ['nullable', 'date_format:d/m/Y'],
             'tel' => ['nullable', 'string', 'max:255'],
             'adres' => ['nullable', 'string', 'max:255'],
