@@ -23,12 +23,12 @@ class DatumController extends Controller
             'newdatums.*.times' => 'array',
         ]);
 
-        // $notification_response = $this->send_notifications($request);
-        $auto_inschrijven_response = $this->auto_inschrijven($request);
+        $notification_response = $this->send_notifications($request);
+        // $auto_inschrijven_response = $this->auto_inschrijven($request);
 
         return response()->json([
-            // 'notification_response' => $notification_response,
-            'auto_inschrijven_response' => $auto_inschrijven_response,
+            'notification_response' => $notification_response,
+            // 'auto_inschrijven_response' => $auto_inschrijven_response,
         ]);
     }
 
@@ -94,6 +94,7 @@ class DatumController extends Controller
         } else {
             Datum::create(['olddatums' => $newDatumsToStore->toArray()]);
         }
+
         foreach ($users as $user) {
             $startDatum = $user?->startDatum;
             $endDatum = $user?->endDatum;
@@ -108,49 +109,62 @@ class DatumController extends Controller
                 : null;
 
             $newlyFoundEarlierDatums = $incomingDatums
-                ->filter(function ($item) use ($earliestDatumInDb, $startDatum, $endDatum, $startUur, $endUur) {
+                ->map(function ($item) use ($earliestDatumInDb, $startDatum, $endDatum, $startUur, $endUur) {
                     $itemDate = \DateTime::createFromFormat('Y-m-d', $item['date']);
 
-                    if (!$itemDate)
-                        return false;
+                    if (!$itemDate) return null;
 
                     if ($earliestDatumInDb && isset($earliestDatumInDb['date'])) {
                         $earliestDate = \DateTime::createFromFormat('Y-m-d', $earliestDatumInDb['date']);
                         if ($earliestDate && $itemDate >= $earliestDate) {
-                            return false;
+                            return null;
                         }
                     }
 
                     if ($startDatum) {
                         $start = \DateTime::createFromFormat('Y-m-d', $startDatum);
                         if ($start && $itemDate < $start) {
-                            return false;
+                            return null;
                         }
                     }
 
                     if ($endDatum) {
                         $end = \DateTime::createFromFormat('Y-m-d', $endDatum);
                         if ($end && $itemDate > $end) {
-                            return false;
+                            return null;
                         }
                     }
 
+                    // FILTER TIMES
+                    $filteredTimes = [];
                     if (!empty($item['times']) && $startUur && $endUur) {
-                        foreach ($item['times'] as $time) {
-                            if ($time >= $startUur && $time <= $endUur) {
-                                return true;
-                            }
-                        }
-                        return false;
+                        $filteredTimes = array_filter($item['times'], function ($time) use ($startUur, $endUur) {
+                            return $time >= $startUur && $time <= $endUur;
+                        });
+
+                        if (empty($filteredTimes)) return null;
+
+                        return [
+                            'date' => $item['date'],
+                            'text' => $item['text'],
+                            'times' => array_values($filteredTimes),
+                        ];
                     }
 
                     if ($startUur && $endUur && empty($item['times'])) {
-                        return false;
+                        return null;
                     }
 
-                    return true;
+                    return [
+                        'date' => $item['date'],
+                        'text' => $item['text'],
+                        'times' => [],
+                    ];
                 })
-                ->sortBy('date');
+                ->filter()
+                ->sortBy('date')
+                ->values();
+
 
             if ($newlyFoundEarlierDatums->isEmpty()) {
                 continue;
