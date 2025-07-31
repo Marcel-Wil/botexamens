@@ -2,35 +2,48 @@ import random
 import time
 import os
 import sys
+from datetime import datetime
 from camoufox import Camoufox
 from utils import get_user_data_from_api
 
 
 addons = ["/home/linux/Desktop/firefox_addons/nocaptcha"]
 
+def get_required_field(data_dict, key):
+    """Gets a field from a dictionary or raises a ValueError if it's missing or empty."""
+    value = data_dict.get(key)
+    if not value:
+        raise ValueError(f"Missing or empty required field: '{key}'")
+    return value
+
+
 def auto_inschrijven(user_id: int):
     try:
         user_data = get_user_data_from_api(user_id)
-    
         if not user_data:
-            print("Failed to get user data.")
-            return
-        personal_info = user_data.get("personal_info", {})
-        achternaam = personal_info.get("achternaam", "")
-        voornaam = personal_info.get("voornaam", "")
-        rrn = personal_info.get("rrn", "")
-        gbdatum = personal_info.get("gbdatum", "")
-        tel = personal_info.get("tel", "")
-        email = personal_info.get("email", "")
-        adres = personal_info.get("adres", "")
-        postcode = personal_info.get("postcode", "")
+            raise ValueError("Failed to get user data from API.")
 
-        license_info = user_data.get("license_info", {})
-        zeersteVRijbewijsDatum = license_info.get("zeersteVRijbewijsDatum", "")
-        zhuidigVRijbewijsDatum = license_info.get("zhuidigVRijbewijsDatum", "")
-        zhuidigVRijbewijsGeldigTot = license_info.get("zhuidigVRijbewijsGeldigTot", "")
-        
-        with Camoufox(os=["macos", "windows"], humanize=True, headless=False, addons=addons) as browser:
+        personal_info = get_required_field(user_data, "personal_info")
+        achternaam = get_required_field(personal_info, "achternaam")
+        voornaam = get_required_field(personal_info, "voornaam")
+        rrn = get_required_field(personal_info, "rrn")
+        gbdatum = get_required_field(personal_info, "gbdatum")
+        tel = get_required_field(personal_info, "tel")
+        email = get_required_field(personal_info, "email")
+        adres = get_required_field(personal_info, "adres")
+        postcode = get_required_field(personal_info, "postcode")
+
+        license_info = get_required_field(user_data, "license_info")
+        zeersteVRijbewijsDatum = get_required_field(license_info, "zeersteVRijbewijsDatum")
+        zhuidigVRijbewijsDatum = get_required_field(license_info, "zhuidigVRijbewijsDatum")
+        zhuidigVRijbewijsGeldigTot = get_required_field(license_info, "zhuidigVRijbewijsGeldigTot")
+
+        preferences = user_data.get("preferences", {})
+        start_date_pref = preferences.get("startDatum")
+        end_date_pref = preferences.get("endDatum")
+        start_time_pref = preferences.get("startUur")
+        end_time_pref = preferences.get("endUur")
+        with Camoufox(os=["macos", "windows"], humanize=True, headless=False) as browser:
             page = browser.new_page()
 
             page.goto("https://examencentrum-praktijk.autoveiligheid.be/Afspraak/nieuw")
@@ -52,14 +65,14 @@ def auto_inschrijven(user_id: int):
             human_type("#email", email)
             human_type("#adres", adres)
             human_type("#postcode", postcode)
-            page.wait_for_timeout(8000)
+            page.wait_for_timeout(4000)
             page.click("#submitButton")
 
             # WIZARD STEP 2
             page.wait_for_selector("#catBE2")
             page.click("#catBE2")
             page.click("button.m-2:nth-child(4)")
-            page.wait_for_timeout(8000)
+            page.wait_for_timeout(4000)
 
             # WIZARD STEP 3
             page.wait_for_selector("#voorwaardenCheck")
@@ -67,36 +80,48 @@ def auto_inschrijven(user_id: int):
             modelrijbewijs = page.locator("#modelVRijbewijs")
             modelrijbewijs.select_option("M36")
             human_type("#zeersteVRijbewijsDatum", zeersteVRijbewijsDatum)
-            page.click('body') 
+            page.click('body')
             human_type("#zhuidigVRijbewijsDatum", zhuidigVRijbewijsDatum)
-            page.click('body') 
+            page.click('body')
             human_type("#zhuidigVRijbewijsGeldigTot", zhuidigVRijbewijsGeldigTot)
-            page.click('body') 
+            page.click('body')
             checkbox.check()
-            page.wait_for_timeout(8000)
+            page.wait_for_timeout(2000)
             page.click("button.btn-phone-50")
             page.wait_for_url("**/TijdSelectie", timeout=60000)
+            page.click("#ec1005"); #click op deurne
 
-            #functionaliteit van button clicken en inschrijven via modal
-            page.click("#ec1005");
+            # Scrape the date range from the header to determine the correct year
+            # The locator resolves to multiple spans, so we take the last one.
+            page.wait_for_selector("div.card-header span.text-nowrap")
+            date_range_text = page.locator("div.card-header span.text-nowrap").last.inner_text()
+            clean_text = date_range_text.strip().strip('()')
+            start_range_str, end_range_str = clean_text.split(' - ')
+            range_start_date = datetime.strptime(start_range_str, "%d/%m/%Y")
+            range_end_date = datetime.strptime(end_range_str, "%d/%m/%Y")
 
-            #pak uren uit de lijst
-            time_select_collapse = page.locator("#timeSelectCollapse")
-            date_list_items = time_select_collapse.locator("li.TimeSlotListItem")
-            #click op de eerste datum in de lijst en kies de eerste uur
-            item = date_list_items.nth(0)
-            date_header = item.locator("li.hover-pointer")
-            if date_header:
-                date_header.click()
-                first_button = item.locator("button.buttenAsLink").first
-                first_button.click()
-                #click op bevesitg button maar wacht misschien 10 seconden zodat captcha zeker solved is
-                page.wait_for_timeout(10000)
-                print("ENROLLMENT_SUCCESS")
-                return
-                #TODO: CLICK OP BEVESTIG BUTTON + maybe send info to our server
-            
-            print("Tijdstip niet gevonden")
+            # Loop through available dates to find a match
+            date_list_items = page.locator("li.TimeSlotListItem")
+            for item in date_list_items.all():
+                date_str = item.locator("li.hover-pointer").inner_text().strip()  # "vr 01/08"
+
+                # Check if date is in user's preferred range
+                if is_date_in_range(date_str, start_date_pref, end_date_pref, range_start_date, range_end_date):
+                    item.locator("li.hover-pointer").click()
+
+                    # Loop through available times
+                    time_buttons = item.locator("button.buttenAsLink")
+                    for time_button in time_buttons.all():
+                        time_str = time_button.inner_text().strip() # "HH:MM"
+
+                        # Check if time is in user's preferred range
+                        if is_time_in_range(time_str, start_time_pref, end_time_pref):
+                            time_button.click()
+                            page.wait_for_timeout(10000) # Wait for captcha
+                            # TODO: Click confirmation button
+                            print("ENROLLMENT_SUCCESS")
+                            return
+
             print("ENROLLMENT_FAILED")
             return
 
@@ -104,6 +129,52 @@ def auto_inschrijven(user_id: int):
         print("ENROLLMENT_FAILED")
         print(f"An error occurred during automation for user {user_id}: {e}")
         # The absence of the success message will indicate failure to the Laravel job
+
+def is_date_in_range(date_str, start_date_pref, end_date_pref, range_start_date, range_end_date):
+    try:
+        # date_str is like 'vr 01/08', so we split by space and take the date part
+        date_part = date_str.split(' ')[-1] # "01/08"
+        day, month = map(int, date_part.split('/'))
+
+        # Determine correct year by checking against the scraped range
+        slot_date = None
+        date_with_start_year = datetime(range_start_date.year, month, day)
+
+        if range_start_date <= date_with_start_year <= range_end_date:
+            slot_date = date_with_start_year
+        elif range_start_date.year != range_end_date.year:
+            # If the years are different, check the end year as well
+            date_with_end_year = datetime(range_end_date.year, month, day)
+            if range_start_date <= date_with_end_year <= range_end_date:
+                slot_date = date_with_end_year
+
+        if not slot_date:
+            return False # Could not determine a valid date in the range
+
+        # Now check against user's preferences
+        if not start_date_pref or not end_date_pref:
+            return True # No preference set, so any valid date is fine
+
+        start_pref = datetime.strptime(start_date_pref, "%d/%m/%Y")
+        end_pref = datetime.strptime(end_date_pref, "%d/%m/%Y")
+
+        return start_pref <= slot_date <= end_pref
+    except (ValueError, IndexError):
+        # Handle cases where the format is unexpected
+        return False
+
+def is_time_in_range(time_str, start_time_pref, end_time_pref):
+    if not start_time_pref or not end_time_pref:
+        return True # No preference set
+
+    try:
+        slot_time = datetime.strptime(time_str, "%H:%M").time()
+        start_time = datetime.strptime(start_time_pref, "%H:%M").time()
+        end_time = datetime.strptime(end_time_pref, "%H:%M").time()
+
+        return start_time <= slot_time <= end_time
+    except ValueError:
+        return False # Invalid time format
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

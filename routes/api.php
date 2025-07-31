@@ -33,6 +33,12 @@ Route::middleware('allow-only-local-requests')->group(function () {
                 'zhuidigVRijbewijsDatum' => $user->zhuidigVRijbewijsDatum,
                 'zhuidigVRijbewijsGeldigTot' => $user->zhuidigVRijbewijsGeldigTot,
             ],
+            'preferences' => [
+                'startDatum' => $user->startDatum,
+                'endDatum' => $user->endDatum,
+                'startUur' => $user->startUur,
+                'endUur' => $user->endUur,
+            ],
         ]);
     });
 
