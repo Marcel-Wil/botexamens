@@ -17,9 +17,9 @@ export const Navbar = () => {
 
     return (
         <nav className="fixed top-0 z-10 w-full bg-transparent shadow-lg backdrop-blur-lg">
-            <div className="container mx-auto flex items-center justify-between px-6 py-3">
+            <div className="container flex justify-between items-center px-6 py-3 mx-auto">
                 <a className="text-xl font-bold text-white" href="/">
-                    FastTrack Examen Alerts
+                    RijexamenMeldingen
                 </a>
                 <div className="hidden items-center space-x-6 md:flex">
                     {isAuthenticated ? (
@@ -35,7 +35,7 @@ export const Navbar = () => {
                                     e.preventDefault();
                                     router.post('/logout');
                                 }}
-                                className="cursor-pointer text-white hover:text-gray-200"
+                                className="text-white cursor-pointer hover:text-gray-200"
                             >
                                 Uitloggen
                             </button>
@@ -57,7 +57,7 @@ export const Navbar = () => {
                 <div className="relative md:hidden">
                     <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white focus:outline-none">
                         <svg
-                            className="h-6 w-6"
+                            className="w-6 h-6"
                             fill="none"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -70,7 +70,7 @@ export const Navbar = () => {
                     </button>
 
                     {isMobileMenuOpen && (
-                        <div className="ring-opacity-5 absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black focus:outline-none">
+                        <div className="absolute right-0 py-1 mt-2 w-48 bg-white rounded-md ring-1 ring-black ring-opacity-5 shadow-lg origin-top-right focus:outline-none">
                             {isAuthenticated ? (
                                 <>
                                     <a href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -84,7 +84,7 @@ export const Navbar = () => {
                                             e.preventDefault();
                                             router.post('/logout');
                                         }}
-                                        className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                                        className="block px-4 py-2 w-full text-sm text-left text-gray-700 cursor-pointer hover:bg-gray-100"
                                     >
                                         Uitloggen
                                     </button>

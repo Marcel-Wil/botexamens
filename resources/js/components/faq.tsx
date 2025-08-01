@@ -5,6 +5,10 @@ interface FaqItem {
 
 const faqData: FaqItem[] = [
     {
+        question: 'Hoe werkt de notificatie-abonnement?',
+        answer: 'Na het kiezen van een abonnement ontvang je een betaallink via PayPal. Na betaling activeren wij je account en ontvang je direct meldingen over vrijgekomen examendata op je opgegeven e-mailadres.',
+    },
+    {
         question: 'Welke examencentra kan ik kiezen?',
         answer: 'Je kunt kiezen uit de volgende examencentra: Autoveiligheid.be (Deurne, Geel, Kontich, Alken, Bree, Haasrode) ',
     },
@@ -29,12 +33,12 @@ const faqData: FaqItem[] = [
 
 export function Faq() {
     return (
-        <div id="faq" className="mx-auto max-w-2xl py-16">
-            <h2 className="mb-10 text-center text-3xl font-bold tracking-tight text-white sm:text-4xl">Veelgestelde Vragen</h2>
+        <div id="faq" className="py-16 mx-auto max-w-2xl">
+            <h2 className="mb-10 text-3xl font-bold tracking-tight text-center text-white sm:text-4xl">Veelgestelde Vragen</h2>
             <div className="divide-y divide-gray-600">
                 {faqData.map((faq, index) => (
                     <div key={faq.question} className={index > 0 ? 'pt-8' : ''}>
-                        <dt className="text-2xl leading-7 font-semibold text-white">{faq.question}</dt>
+                        <dt className="text-2xl font-semibold leading-7 text-white">{faq.question}</dt>
                         <dd className="mt-2 text-base leading-7 text-white">{faq.answer}</dd>
                     </div>
                 ))}
