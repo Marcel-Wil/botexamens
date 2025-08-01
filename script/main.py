@@ -12,6 +12,17 @@ from dotenv import load_dotenv
 from scrapehtml import extract_dates_from_html
 from utils import get_user_data_from_api, post_dates_to_api, get_cities_from_api
 
+import sentry_sdk
+load_dotenv()
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+   
+)
+
 
 def make_post_request(payload, cookie_string):
     """Makes a POST request to the specified URL with the given payload and cookies."""
