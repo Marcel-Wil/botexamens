@@ -17,7 +17,7 @@ def get_required_field(data_dict, key):
     return value
 
 
-def auto_inschrijven(user_id: int):
+def auto_inschrijven(user_id: int, city_code: str):
     try:
         user_data = get_user_data_from_api(user_id)
         if not user_data:
@@ -89,7 +89,7 @@ def auto_inschrijven(user_id: int):
             page.wait_for_timeout(2000)
             page.click("button.btn-phone-50")
             page.wait_for_url("**/TijdSelectie", timeout=60000)
-            page.click("#ec1005"); #click op deurne
+            page.click(f"#ec{city_code}"); #click op deurne
 
             # Scrape the date range from the header to determine the correct year
             # The locator resolves to multiple spans, so we take the last one.
@@ -177,12 +177,13 @@ def is_time_in_range(time_str, start_time_pref, end_time_pref):
         return False # Invalid time format
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Error: No user ID provided.")
+    if len(sys.argv) < 3    :
+        print("Error: No user ID or city name provided.")
         sys.exit(1)
     try:
         user_id = int(sys.argv[1])
-        auto_inschrijven(user_id)
+        city_code = sys.argv[2]
+        auto_inschrijven(user_id, city_code)
     except ValueError:
-        print("Error: User ID must be an integer.")
+        print("user_id must be an integer, city_name must be a string")
         sys.exit(1)

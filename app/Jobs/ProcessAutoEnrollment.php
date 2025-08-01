@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\EnrollmentSuccess;
+use App\Models\City;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -19,13 +20,15 @@ class ProcessAutoEnrollment implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $user;
+    public $city;
     public $tries = 3;
     public $timeout = 600;
     public $failOnTimeout = true;
 
-    public function __construct(User $user)
+    public function __construct(User $user, City $city)
     {
         $this->user = $user;
+        $this->city = $city;
     }
 
     public function uniqueId(): string
@@ -44,7 +47,7 @@ class ProcessAutoEnrollment implements ShouldQueue
         $pythonPath = env('PYTHON_PATH', base_path('.venv/bin/python3'));
         $scriptPath = base_path('script/auto_inschrijven.py');
 
-        $command = [$pythonPath, $scriptPath, $this->user->id];
+        $command = [$pythonPath, $scriptPath, $this->user->id, $this->city->code];
         $process = Process::timeout(300)->run($command);
 
         if ($process->successful()) {

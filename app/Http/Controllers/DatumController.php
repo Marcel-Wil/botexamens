@@ -25,30 +25,12 @@ class DatumController extends Controller
         ]);
 
         $notification_response = $this->send_notifications($request);
-        // $auto_inschrijven_response = $this->auto_inschrijven($request);
 
         return response()->json([
             'notification_response' => $notification_response,
-            // 'auto_inschrijven_response' => $auto_inschrijven_response,
         ]);
     }
 
-    public function auto_inschrijven(Request $request)
-    {
-        // This logic can be further refined to select users based on city preferences
-        $enrollment = EnrollmentAutoInschrijven::oldest()->first();
-
-        if (!$enrollment) {
-            return response()->json(['success' => false, 'message' => 'No enrollment found in queue.'], 404);
-        }
-
-        try {
-            ProcessAutoEnrollment::dispatch($enrollment->user);
-            return response()->json(['success' => true, 'message' => "Auto enrollment job dispatched for user {$enrollment->user->name}."]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while dispatching auto enrollment job.', 'error' => $e->getMessage()], 500);
-        }
-    }
 
     public function send_notifications(Request $request)
     {
@@ -71,6 +53,9 @@ class DatumController extends Controller
 
             if ($newlyFoundEarlierDatums->isNotEmpty()) {
                 $this->sendNotifications($newlyFoundEarlierDatums, $user);
+                if ($user->enrollment_auto_inschrijven) {
+                    ProcessAutoEnrollment::dispatch($user, $city);
+                }
                 $foundNewerDatums = true;
                 $allNewlyFoundDatums = $allNewlyFoundDatums->merge($newlyFoundEarlierDatums);
             }
