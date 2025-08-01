@@ -18,9 +18,6 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        // Seed cities if they don't exist
-        $this->seedCities();
-
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -47,24 +44,5 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return back();
-    }
-
-    /**
-     * Seed the cities table if it's empty.
-     */
-    private function seedCities(): void
-    {
-        if (City::count() === 0) {
-            $cities = [
-                ['name' => 'Deurne', 'code' => 'ec1004'],
-                ['name' => 'Alken', 'code' => 'ec1005'],
-                ['name' => 'Kontich', 'code' => 'ec1022'],
-                ['name' => 'Geel', 'code' => 'ec1023'],
-                ['name' => 'Haasrode', 'code' => 'ec1024'],
-                ['name' => 'Bree', 'code' => 'ec1033'],
-            ];
-
-            City::insert($cities);
-        }
     }
 }

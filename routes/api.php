@@ -45,6 +45,10 @@ Route::middleware('allow-only-local-requests')->group(function () {
     Route::post('enroll', [EnrollmentController::class, 'enroll'])->name('api.enroll');
 
     Route::post('compare-datums', [DatumController::class, 'compare']);
-
-    Route::post('whatsapp', [ContactController::class, 'sendWhatsapp'])->name('whatsapp.send');
 });
+
+Route::get('/cities', function () {
+    return \App\Models\City::all();
+})->middleware('allow-only-local-requests');
+
+// Route::post('/whatsapp', [ContactController::class, 'sendWhatsapp'])->name('whatsapp.send');
