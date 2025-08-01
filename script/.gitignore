@@ -1,5 +1,5 @@
 venv/
 *.log
 *.pid
-logs/deurne
-__pycache__
+logs/*
+__pycache__/*
