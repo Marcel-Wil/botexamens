@@ -10,8 +10,30 @@ import requests
 import urllib3
 from dotenv import load_dotenv
 from scrapehtml import extract_dates_from_html
-from utils import get_user_data_from_api, post_dates_to_api
+from utils import get_user_data_from_api, post_dates_to_api, get_cities_from_api
 
+
+def make_post_request(payload, cookie_string):
+    """Makes a POST request to the specified URL with the given payload and cookies."""
+    post_url = "https://examencentrum-praktijk.autoveiligheid.be/TimeSelect/AjaxPartialTimeSelectNew"
+    
+    proxy = 'http://brd-customer-hl_790542c3-zone-examen:ji6jdo7xgzmb@brd.superproxy.io:33335'
+    proxies = {
+        'http': proxy,
+        'https': proxy
+    }
+    
+    headers = {
+        'Cookie': cookie_string
+    }
+
+    try:
+        response = requests.post(post_url, data=payload, headers=headers, proxies=proxies, verify=False)
+        response.raise_for_status()
+        return response.text
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to make POST request: {e}")
+        return None
 
 def session_maker():
     load_dotenv()
@@ -49,14 +71,14 @@ def session_maker():
         human_type("#email", email)
         human_type("#adres", adres)
         human_type("#postcode", postcode)
-        page.wait_for_timeout(8000)
+        page.wait_for_timeout(4000)
         page.click("#submitButton")
 
         # WIZARD STEP 2
         page.wait_for_selector("#catBE2")
         page.click("#catBE2")
         page.click("button.m-2:nth-child(4)")
-        page.wait_for_timeout(8000)
+        page.wait_for_timeout(4000)
 
         # WIZARD STEP 3
         page.wait_for_selector("#voorwaardenCheck")
@@ -70,7 +92,7 @@ def session_maker():
         human_type("#zhuidigVRijbewijsGeldigTot", zhuidigVRijbewijsGeldigTot)
         page.click('body') 
         checkbox.check()
-        page.wait_for_timeout(8000)
+        page.wait_for_timeout(4000)
         page.click("button.btn-phone-50")
         
         page.wait_for_url("**/TijdSelectie", timeout=60000)
@@ -88,41 +110,31 @@ def session_maker():
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-        post_url = "https://examencentrum-praktijk.autoveiligheid.be/TimeSelect/AjaxPartialTimeSelectNew"
-        payload = {
-            'selectedEcId': '1004',
-            'dataId': data_id
-        }
-
-        proxy = 'http://brd-customer-hl_790542c3-zone-examen:ji6jdo7xgzmb@brd.superproxy.io:33335'
-        proxies = {
-            'http': proxy,
-            'https': proxy
-        }
-        
-        target_headers = {
-            'Cookie': cookie_string
-        }
-
+  
         while True:
             try:
-                response = requests.post(post_url, data=payload, headers=target_headers, proxies=proxies, verify=False)
-                response.raise_for_status()
-
-
-                extracted_dates = extract_dates_from_html(response.text)
-                
-                deurne_log_dir = os.path.join(os.path.dirname(__file__), 'logs', 'deurne')
-                os.makedirs(deurne_log_dir, exist_ok=True)
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                file_path = os.path.join(deurne_log_dir, f'extracted_dates_{timestamp}.json')
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    json.dump(extracted_dates, f, indent=4)
-                # post_dates_to_api(extracted_dates)
-            except requests.exceptions.RequestException as e:
-                print(f"Failed to make POST request: {e}")
+                cities = get_cities_from_api()
+            except Exception as e:
+                print(f"Error fetching cities from API: {e}")
                 return
             
+            for city in cities:
+                payload = {
+                    'selectedEcId': city['code'],
+                    'dataId': data_id
+                }
+
+                response_text = make_post_request(payload, cookie_string)
+                if response_text:
+                    extracted_dates = extract_dates_from_html(response_text)
+                    
+                    city_log_dir = os.path.join(os.path.dirname(__file__), 'logs', city['name'].lower())
+                    os.makedirs(city_log_dir, exist_ok=True)
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    file_path = os.path.join(city_log_dir, f'extracted_dates_{timestamp}.json')
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        json.dump(extracted_dates, f, indent=4)
+                    post_dates_to_api(extracted_dates, city['name'])
             time.sleep(100)
         
 
