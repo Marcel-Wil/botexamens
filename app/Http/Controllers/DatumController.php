@@ -141,6 +141,9 @@ class DatumController extends Controller
     private function parseAndValidateDatums(Request $request): Collection
     {
         if (empty($request->input('newdatums'))) {
+            $city = City::where('name', $request->city)->firstOrFail();
+            $datum = Datum::where('city_id', $city->id)->latest()->first();
+            $this->updateDatums($datum, collect(), $city->id);
             abort(response()->json(['message' => 'No dates provided.'], 400));
         }
 
