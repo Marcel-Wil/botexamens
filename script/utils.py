@@ -23,6 +23,25 @@ def post_dates_to_api(dates, city_name):
         if 'response' in locals():
             print(f"Response content: {response.text}")
 
+def post_dates_to_api_sbat(dates, city_name):
+    load_dotenv()
+    server = os.getenv("SERVER", "127.0.0.1")
+    port = os.getenv("PORT", "8000")
+    url = f"http://{server}:{port}/api/compare-datums-sbat"
+    try:
+        payload = {
+            'newdatums': dates['newdatums'],  
+            'city': city_name
+        }
+        headers = {"Accept": "application/json"}
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        print(f"Successfully posted dates for {city_name}.")
+    except Exception as e:
+        print(f"Failed to post dates to {url} for {city_name}: {e}")
+        if 'response' in locals():
+            print(f"Response content: {response.text}")
+
 
 def get_user_data_from_api(user_id: int) -> dict:
     load_dotenv()
