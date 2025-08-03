@@ -31,6 +31,63 @@ class DatumController extends Controller
         ]);
     }
 
+    public function compare_sbat(Request $request)
+    {
+        $request->validate([
+            'newdatums' => 'array',
+            'newdatums.*.date' => 'required|string',
+            'newdatums.*.text' => 'required|string',
+            'newdatums.*.times' => 'array',
+            'city' => 'required|string',
+        ]);
+
+        $notification_response = $this->send_notifications_sbat($request);
+
+        return response()->json([
+            'notification_response' => $notification_response,
+        ]);
+    }
+
+    public function send_notifications_sbat(Request $request)
+    {
+        $incomingDatums = $this->parseAndValidateDatums($request);
+        $city = City::where('name', $request->city)->firstOrFail();
+        $datum = Datum::where('city_id', $city->id)->latest()->first();
+
+        $usersSubscribedToCity = $city->users;
+        $existingDatums = collect($datum->olddatums ?? []);
+        $earliestDatumInDb = $existingDatums->sortBy('date')->first();
+        $foundNewerDatums = false;
+        $allNewlyFoundDatums = collect();
+
+        foreach ($usersSubscribedToCity as $user) {
+            if (!$user->send_notifications) {
+                continue;
+            }
+            $filters = $this->getFilterParameters($user);
+            $newlyFoundEarlierDatums = $this->findNewlyFoundEarlierDatums($incomingDatums, $earliestDatumInDb, $filters);
+            if ($newlyFoundEarlierDatums->isNotEmpty()) {
+                $this->sendNotifications($newlyFoundEarlierDatums, $user);
+                //TODO: Autoinschrijven voor SBAT
+                $foundNewerDatums = true;
+                $allNewlyFoundDatums = $allNewlyFoundDatums->merge($newlyFoundEarlierDatums);
+            }
+        }
+        $this->updateDatums($datum, $incomingDatums, $city->id);
+
+        if ($foundNewerDatums) {
+            return response()->json([
+                'message' => "New earlier dates found for {$city->name} and notifications sent.",
+                'earlier_datums' => $allNewlyFoundDatums->unique('date')->values(),
+            ]);
+        }
+
+        return response()->json([
+            'message' => "No new earlier dates found for {$city->name}.",
+            'earliest_in_db' => $earliestDatumInDb,
+        ]);
+    }
+
 
     public function send_notifications(Request $request)
     {
@@ -74,6 +131,11 @@ class DatumController extends Controller
             'message' => "No new earlier dates found for {$city->name}.",
             'earliest_in_db' => $earliestDatumInDb,
         ]);
+    }
+
+    private function findNewlyFoundEarlierDatumsSBAT(Collection $incomingDatums, ?array $earliestDatumInDb, array $filters)
+    {
+
     }
 
     private function parseAndValidateDatums(Request $request): Collection

@@ -45,6 +45,8 @@ Route::middleware('allow-only-local-requests')->group(function () {
     Route::post('enroll', [EnrollmentController::class, 'enroll'])->name('api.enroll');
 
     Route::post('compare-datums', [DatumController::class, 'compare']);
+
+    Route::post('compare-datums-sbat', [DatumController::class, 'compare_sbat']);
 });
 
 Route::get('/cities', function () {

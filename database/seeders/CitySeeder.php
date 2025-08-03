@@ -23,6 +23,13 @@ class CitySeeder extends Seeder
             ['name' => 'Geel', 'code' => '1023'],
             ['name' => 'Haasrode', 'code' => '1024'],
             ['name' => 'Bree', 'code' => '1033'],
+
+            // SBAT exam centers
+            ['name' => 'Sint-Denijs-Westrem', 'code' => '1'],
+            ['name' => 'Brakel', 'code' => '7'],
+            ['name' => 'Eeklo', 'code' => '8'],
+            ['name' => 'Erembodegem', 'code' => '9'],
+            ['name' => 'Sint-Niklaas', 'code' => '10'],
         ];
 
         foreach ($cities as $city) {
