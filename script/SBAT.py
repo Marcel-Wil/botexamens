@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import requests
 from datetime import datetime
 from utils import post_dates_to_api_sbat
-
+import json
 
 exam_centers = {
     "Sint-Denijs-Westrem": 1,
@@ -136,6 +136,14 @@ if __name__ == "__main__":
             for city, center_id in exam_centers.items():
                 try:
                     available_date = get_available_exam_dates(token, center_id, city)
+
+                    city_log_dir = os.path.join(os.path.dirname(__file__), 'logs', city.lower())
+                    os.makedirs(city_log_dir, exist_ok=True)
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    file_path = os.path.join(city_log_dir, f'extracted_dates_{timestamp}.json')
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        json.dump(available_date, f, indent=4)
+
                     post_dates_to_api_sbat(available_date, city)
                 except Exception as e:
                     error_msg = str(e).lower()
