@@ -276,28 +276,28 @@ function SimplePricing() {
 const ReviewSection = () => {
     const reviews = [
         {
-            name: 'Lisa de Vries',
+            name: 'Lisa V.',
             role: 'Rijstudent',
             content:
                 'Binnen een dag na mijn inschrijving kreeg ik al een melding van een vrije plek! Super service en gebruiksvriendelijk. Dankzij deze dienst kon ik mijn examen veel eerder doen dan verwacht.',
             rating: 5,
-            date: '15 juli 2024',
+            date: '15 juli 2025',
         },
         {
-            name: 'Thomas Jansen',
+            name: 'Thomas J.',
             role: 'Rijinstructeur',
             content:
                 'Ik raad al mijn leerlingen aan om deze service te gebruiken. Het scheelt ze veel tijd en gedoe met continu de CBR site te moeten verversen. De automatische inschrijving is een uitkomst!',
             rating: 5,
-            date: '2 augustus 2024',
+            date: '2 juni 2025',
         },
         {
-            name: 'Sanne Bakker',
+            name: 'Sanne B.',
             role: 'Rijstudent',
             content:
                 'Eindelijk een betrouwbare manier om een examen te vinden! De meldingen komen direct binnen en ik hoefde niet meer uren te spenderen aan het zoeken naar een plek. Binnen een week had ik al een examen kunnen plannen.',
             rating: 5,
-            date: '28 juli 2024',
+            date: '21 juli 2025',
         },
     ];
 
