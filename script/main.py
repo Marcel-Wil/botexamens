@@ -20,7 +20,6 @@ sentry_sdk.init(
     # Add data like request headers and IP for users,
     # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
     send_default_pii=True,
-   
 )
 
 
@@ -146,7 +145,7 @@ def session_maker():
                     with open(file_path, 'w', encoding='utf-8') as f:
                         json.dump(extracted_dates, f, indent=4)
                     post_dates_to_api(extracted_dates, city['name'])
-            time.sleep(100)
+            time.sleep(60)
         
 
 if __name__ == "__main__":
