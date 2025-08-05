@@ -16,7 +16,7 @@ const plans = [
         name: 'Notificatie',
         icon: Bell,
         price: {
-            monthly: '€49,99',
+            monthly: '49.99',
         },
         description: 'Word direct gewaarschuwd wanneer er nieuwe examendata beschikbaar komen.',
         features: [
@@ -28,13 +28,15 @@ const plans = [
         ],
         cta: 'Kies Notificatie',
         popular: false,
+        isDiscounted: true,
+        discountLabel: '50',
     },
     {
         id: 'automatisch',
         name: 'Automatische Inschrijving',
         icon: Zap,
         price: {
-            monthly: '€99,99',
+            monthly: '99.99',
         },
         description: 'Wij schrijven je direct in zodra er een plek vrijkomt.',
         features: [
@@ -46,13 +48,14 @@ const plans = [
         cta: 'Kies Automatisch',
         popular: true,
         disabled: true,
+        isDiscounted: false,
     },
     {
         id: 'per-notificatie',
         name: 'Per Notificatie',
         icon: Bell,
         price: {
-            monthly: '€0,99 per melding',
+            monthly: '0.99 per melding',
         },
         description: 'Betaal alleen voor de meldingen die je ontvangt.',
         features: [
@@ -65,10 +68,10 @@ const plans = [
         cta: 'Kies Per Melding',
         popular: false,
         disabled: true,
+        isDiscounted: false,
     },
 ];
 
-// Hero Section
 const HeroSection = () => {
     const handleScroll = () => {
         const target = document.getElementById('pricing');
@@ -76,19 +79,13 @@ const HeroSection = () => {
             target.scrollIntoView({ behavior: 'smooth' });
         }
     };
+    
     return (
         <section id="home" className="flex overflow-hidden relative justify-center items-center pt-16 min-h-screen">
-            {/* Animated shapes */}
             <div className="absolute top-0 left-0 z-0 w-full h-full">
                 <div className="absolute top-1/4 left-1/4 w-24 h-24 bg-purple-500 rounded-full opacity-20 animate-float"></div>
-                <div
-                    className="absolute top-1/2 right-1/4 w-32 h-32 bg-purple-500 rounded-lg opacity-20 animate-float"
-                    style={{ animationDelay: '1s' }}
-                ></div>
-                <div
-                    className="absolute bottom-1/4 left-1/3 w-16 h-16 bg-purple-500 rounded-full opacity-20 animate-float"
-                    style={{ animationDelay: '2s' }}
-                ></div>
+                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-purple-500 rounded-lg opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute bottom-1/4 left-1/3 w-16 h-16 bg-purple-500 rounded-full opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
             </div>
 
             <div className="relative z-10 text-center">
@@ -112,6 +109,7 @@ function SimplePricing() {
         setMounted(true);
     }, []);
     if (!mounted) return null;
+
     return (
         <div id="pricing" className="flex overflow-hidden relative flex-col gap-16 px-4 py-24 w-full text-center not-prose sm:px-8">
             <div className="overflow-hidden absolute inset-0 -z-10">
@@ -119,18 +117,16 @@ function SimplePricing() {
                 <div className="absolute -right-[10%] -bottom-[10%] h-[40%] w-[40%] rounded-full bg-primary/5 blur-3xl" />
                 <div className="absolute -bottom-[10%] -left-[10%] h-[40%] w-[40%] rounded-full bg-primary/5 blur-3xl" />
             </div>
+
             <div className="flex flex-col gap-8 justify-center items-center">
                 <div className="flex flex-col items-center space-y-2">
-                    <Badge variant="outline" className="px-4 py-1 text-white rounded-full shadow-sm bg-background">
-                        Prijsplannen
-                    </Badge>
-                    <h2 className="text-3xl font-bold tracking-tight text-center text-white sm:text-4xl md:text-5xl">
-                        Vind het perfecte plan voor jou
-                    </h2>
+                    <Badge variant="outline" className="px-4 py-1 text-white rounded-full shadow-sm bg-background">Prijsplannen</Badge>
+                    <h2 className="text-3xl font-bold tracking-tight text-center text-white sm:text-4xl md:text-5xl">Vind het perfecte plan voor jou</h2>
                     <p className="max-w-2xl text-lg text-center text-muted-foreground">
                         Kies het plan dat bij je past. Alle plannen komen met onze 24/7 ondersteuning.
                     </p>
                 </div>
+
                 <div className="grid grid-cols-1 gap-6 mt-8 w-full max-w-6xl md:grid-cols-3">
                     {plans.map((plan, index) => (
                         <motion.div
@@ -149,6 +145,16 @@ function SimplePricing() {
                                     plan.disabled ? 'cursor-not-allowed opacity-60' : '',
                                 )}
                             >
+                                {plan.isDiscounted && (
+                                <div className="absolute -top-3 left-4 z-10">
+                                    <Badge className="px-2 py-1 text-xs text-white bg-green-600 rounded-full shadow-md">
+                                    {plan.discountLabel + '% Korting'}
+                                    </Badge>
+                                </div>
+                                )}
+
+
+                                {/* Populair badge */}
                                 {plan.popular && (
                                     <div className="absolute right-0 left-0 -top-3 mx-auto w-fit">
                                         <Badge className="px-4 py-1 rounded-full shadow-sm bg-primary text-primary-foreground">
@@ -157,11 +163,14 @@ function SimplePricing() {
                                         </Badge>
                                     </div>
                                 )}
+
+                                {/* Binnenkort beschikbaar badge */}
                                 {plan.disabled && (
                                     <div className="absolute top-4 right-4 px-3 py-1 text-xs font-semibold leading-5 text-white bg-orange-500 rounded-full">
                                         Binnenkort beschikbaar
                                     </div>
                                 )}
+
                                 <CardHeader className={cn('pb-4', plan.popular && 'pt-8')}>
                                     <div className="flex gap-2 items-center">
                                         <div
@@ -185,14 +194,39 @@ function SimplePricing() {
                                                     exit={{ opacity: 0, y: 10 }}
                                                     transition={{ duration: 0.2 }}
                                                 >
-                                                    <span className={cn('text-2xl font-bold', plan.popular ? 'text-white' : 'text-white')}>
-                                                        {plan.price[frequency as keyof typeof plan.price]}
-                                                    </span>
+                                                   {(() => {
+                                                    const price = plan.price[frequency as keyof typeof plan.price];
+                                                    const isDiscounted = plan.isDiscounted;
+                                                    const discount = Number(plan.discountLabel);
+
+                                                    if (isDiscounted) {
+                                                        const salePrice = (price * (discount/100)).toFixed(2);
+                                                        return (
+                                                        <div className="space-y-1">
+                                                            <div className="flex gap-2 items-center">
+                                                            <span className="text-lg text-gray-400 line-through">
+                                                                €{price}
+                                                            </span>
+                                                            <span className="text-2xl font-bold text-white">
+                                                                €{salePrice}
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <span className="text-2xl font-bold text-white">
+                                                        €{price}
+                                                        </span>
+                                                    );
+                                                    })()}
                                                 </motion.div>
                                             </AnimatePresence>
                                         </div>
                                     </CardDescription>
                                 </CardHeader>
+
                                 <CardContent className="grid gap-3 pb-6">
                                     {plan.features.map((feature, index) => (
                                         <motion.div
@@ -214,6 +248,7 @@ function SimplePricing() {
                                         </motion.div>
                                     ))}
                                 </CardContent>
+
                                 <CardFooter>
                                     <Button
                                         variant={plan.popular ? 'default' : 'outline'}
@@ -230,7 +265,8 @@ function SimplePricing() {
                                         <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                                     </Button>
                                 </CardFooter>
-                                {/* Subtle gradient effects */}
+
+                                {/* Decorative overlays */}
                                 {plan.popular ? (
                                     <>
                                         <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-1/2 rounded-b-lg bg-gradient-to-t from-primary/[0.05] to-transparent" />
@@ -275,14 +311,14 @@ const ReviewSection = () => {
 
     return (
         <section className="py-16">
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Wat onze gebruikers zeggen</h2>
-                    <p className="text-gray-400 max-w-2xl mx-auto">Meer dan 1.000 tevreden gebruikers hebben hun examen eerder kunnen doen</p>
+            <div className="container px-4 mx-auto">
+                <div className="mb-12 text-center">
+                    <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">Wat onze gebruikers zeggen</h2>
+                    <p className="mx-auto max-w-2xl text-gray-400">Meer dan 1.000 tevreden gebruikers hebben hun examen eerder kunnen doen</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     {reviews.map((review, index) => (
-                        <div key={index} className="bg-gray-900/30 rounded-xl p-6 border border-gray-800 hover:border-indigo-500/30 transition-all duration-300 shadow-lg">
+                        <div key={index} className="p-6 rounded-xl border border-gray-800 shadow-lg transition-all duration-300 bg-gray-900/30 hover:border-indigo-500/30">
                             <div className="flex items-center mb-4">
                                 {[...Array(5)].map((_, i) => (
                                     <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -290,13 +326,13 @@ const ReviewSection = () => {
                                     </svg>
                                 ))}
                             </div>
-                            <p className="text-gray-300 mb-6">"{review.content}"</p>
+                            <p className="mb-6 text-gray-300">"{review.content}"</p>
                             <div className="flex items-center">
-                                <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold mr-3">
+                                <div className="flex justify-center items-center mr-3 w-10 h-10 font-bold text-white bg-indigo-600 rounded-full">
                                     {review.name.charAt(0)}
                                 </div>
                                 <div>
-                                    <h4 className="text-white font-medium">{review.name}</h4>
+                                    <h4 className="font-medium text-white">{review.name}</h4>
                                     <p className="text-sm text-gray-400">{review.role} • {review.date}</p>
                                 </div>
                             </div>

@@ -14,6 +14,7 @@ class City extends Model
     protected $fillable = [
         'name',
         'code',
+        'company',
     ];
 
     public function users(): BelongsToMany
