@@ -56,7 +56,7 @@ const plans = [
         name: 'Per Notificatie',
         icon: Bell,
         price: {
-            monthly: '0.99 per melding',
+            monthly: '0.99',
         },
         description: 'Betaal alleen voor de meldingen die je ontvangt.',
         features: [
