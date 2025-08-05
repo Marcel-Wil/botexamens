@@ -41,14 +41,6 @@ Route::middleware('allow-only-local-requests')->group(function () {
             ],
         ]);
     });
-
-    Route::post('autoveiligheid/enroll', [EnrollmentController::class, 'enroll_autoveiligheid'])->name('api.enroll.autoveiligheid');
-    Route::post('autoveiligheid/unenroll', [EnrollmentController::class, 'unenroll_autoveilgheid'])->name('api.unenroll.autoveiligheid');
-
-    Route::post('sbat/enroll', [EnrollmentController::class, 'enroll_sbat'])->name('api.enroll.sbat');
-    Route::post('sbat/unenroll', [EnrollmentController::class, 'unenroll_sbat'])->name('api.unenroll.sbat');
-
-
     Route::post('compare-datums', [DatumController::class, 'compare']);
 
     Route::post('compare-datums-sbat', [DatumController::class, 'compare_sbat']);
