@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class AbonnamentController extends Controller
+class AbonnementController extends Controller
 {
     //
     public function edit()
     {
-        return Inertia::render('settings/abonnament');
+        return Inertia::render('settings/abonnement');
     }
 }

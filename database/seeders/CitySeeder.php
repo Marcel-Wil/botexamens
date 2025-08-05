@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\City;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class CitySeeder extends Seeder
 {
@@ -17,19 +15,19 @@ class CitySeeder extends Seeder
         City::truncate();
 
         $cities = [
-            ['name' => 'Deurne', 'code' => '1004'],
-            ['name' => 'Alken', 'code' => '1005'],
-            ['name' => 'Kontich', 'code' => '1022'],
-            ['name' => 'Geel', 'code' => '1023'],
-            ['name' => 'Haasrode', 'code' => '1024'],
-            ['name' => 'Bree', 'code' => '1033'],
+            ['name' => 'Deurne', 'code' => '1004', 'company' => 'Autoveiligheid'],
+            ['name' => 'Alken', 'code' => '1005', 'company' => 'Autoveiligheid'],
+            ['name' => 'Kontich', 'code' => '1022', 'company' => 'Autoveiligheid'],
+            ['name' => 'Geel', 'code' => '1023', 'company' => 'Autoveiligheid'],
+            ['name' => 'Haasrode', 'code' => '1024', 'company' => 'Autoveiligheid'],
+            ['name' => 'Bree', 'code' => '1033', 'company' => 'Autoveiligheid'],
 
             // SBAT exam centers
-            ['name' => 'Sint-Denijs-Westrem', 'code' => '1'],
-            ['name' => 'Brakel', 'code' => '7'],
-            ['name' => 'Eeklo', 'code' => '8'],
-            ['name' => 'Erembodegem', 'code' => '9'],
-            ['name' => 'Sint-Niklaas', 'code' => '10'],
+            ['name' => 'Sint-Denijs-Westrem', 'code' => '1', 'company' => 'SBAT'],
+            ['name' => 'Brakel', 'code' => '7', 'company' => 'SBAT'],
+            ['name' => 'Eeklo', 'code' => '8', 'company' => 'SBAT'],
+            ['name' => 'Erembodegem', 'code' => '9', 'company' => 'SBAT'],
+            ['name' => 'Sint-Niklaas', 'code' => '10', 'company' => 'SBAT'],
         ];
 
         foreach ($cities as $city) {

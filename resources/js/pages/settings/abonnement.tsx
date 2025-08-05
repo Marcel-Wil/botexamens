@@ -7,22 +7,22 @@ import SettingsLayout from '@/layouts/settings/layout';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Abonnament',
-        href: '/settings/abonnament',
+        title: 'Abonnement',
+        href: '/settings/abonnement',
     },
 ];
 
-export default function Abonnament() {
+export default function Abonnement() {
     const { auth } = usePage<SharedData>().props;
     console.log(auth.user);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Abonnament" />
+            <Head title="Abonnement" />
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Abonnament" description="Hier kunt u uw active abonnementen beheren." />
+                    <HeadingSmall title="Abonnement" description="Hier kunt u uw active abonnementen beheren." />
 
                     {Boolean(auth.user.notification) && (
                         <div className="flex flex-col space-y-2">

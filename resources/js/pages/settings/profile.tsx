@@ -20,6 +20,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type City = {
+    id: number;
+    name: string;
+    company: string;
+};
+
 type ProfileForm = {
     voornaam: string;
     achternaam: string;
@@ -36,7 +42,7 @@ export default function Profile({
 }: {
     mustVerifyEmail: boolean;
     status?: string;
-    cities: { id: number; name: string }[];
+    cities: City[];
     userCities: number[];
 }) {
     const { auth } = usePage<SharedData>().props;
@@ -71,7 +77,7 @@ export default function Profile({
 
                             <Input
                                 id="voornaam"
-                                className="mt-1 block w-full"
+                                className="block mt-1 w-full"
                                 value={data.voornaam}
                                 onChange={(e) => setData('voornaam', e.target.value)}
                                 required
@@ -87,7 +93,7 @@ export default function Profile({
 
                             <Input
                                 id="achternaam"
-                                className="mt-1 block w-full"
+                                className="block mt-1 w-full"
                                 value={data.achternaam}
                                 onChange={(e) => setData('achternaam', e.target.value)}
                                 required
@@ -104,7 +110,7 @@ export default function Profile({
                             <Input
                                 id="email"
                                 type="email"
-                                className="mt-1 block w-full"
+                                className="block mt-1 w-full"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
@@ -122,7 +128,7 @@ export default function Profile({
 
                             <Input
                                 id="whatsapp"
-                                className="mt-1 block w-full"
+                                className="block mt-1 w-full"
                                 value={data.whatsapp}
                                 onChange={(e) => setData('whatsapp', e.target.value)}
                                 autoComplete="off"
@@ -132,28 +138,55 @@ export default function Profile({
                             <InputError className="mt-2" message={errors.whatsapp} />
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label>Cities</Label>
-                            <div className="grid grid-cols-2 gap-4">
-                                {cities.map((city) => (
-                                    <div key={city.id} className="flex items-center gap-2">
-                                        <Checkbox
-                                            id={`city-${city.id}`}
-                                            checked={data.cities.includes(city.id)}
-                                            onCheckedChange={(checked) => {
-                                                if (checked) {
-                                                    setData('cities', [...data.cities, city.id]);
-                                                } else {
-                                                    setData(
-                                                        'cities',
-                                                        data.cities.filter((id) => id !== city.id),
-                                                    );
-                                                }
-                                            }}
-                                        />
-                                        <Label htmlFor={`city-${city.id}`}>{city.name}</Label>
-                                    </div>
-                                ))}
+                        <div className="grid gap-4">
+                            <div>
+                                <h3 className="text-lg font-medium">Autoveiligheid Cities</h3>
+                                <div className="grid grid-cols-2 gap-4 mt-2">
+                                    {cities.filter(city => city.company === 'Autoveiligheid').map((city) => (
+                                        <div key={city.id} className="flex gap-2 items-center">
+                                            <Checkbox
+                                                id={`city-${city.id}`}
+                                                checked={data.cities.includes(city.id)}
+                                                onCheckedChange={(checked) => {
+                                                    if (checked) {
+                                                        setData('cities', [...data.cities, city.id]);
+                                                    } else {
+                                                        setData(
+                                                            'cities',
+                                                            data.cities.filter((id) => id !== city.id),
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                            <Label htmlFor={`city-${city.id}`}>{city.name}</Label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lg font-medium">SBAT Cities</h3>
+                                <div className="grid grid-cols-2 gap-4 mt-2">
+                                    {cities.filter(city => city.company === 'SBAT').map((city) => (
+                                        <div key={city.id} className="flex gap-2 items-center">
+                                            <Checkbox
+                                                id={`city-${city.id}`}
+                                                checked={data.cities.includes(city.id)}
+                                                onCheckedChange={(checked) => {
+                                                    if (checked) {
+                                                        setData('cities', [...data.cities, city.id]);
+                                                    } else {
+                                                        setData(
+                                                            'cities',
+                                                            data.cities.filter((id) => id !== city.id),
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                            <Label htmlFor={`city-${city.id}`}>{city.name}</Label>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                             <InputError className="mt-2" message={errors.cities} />
                         </div>
@@ -180,7 +213,7 @@ export default function Profile({
                             </div>
                         )}
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex gap-4 items-center">
                             <Button disabled={processing}>Save</Button>
 
                             <Transition

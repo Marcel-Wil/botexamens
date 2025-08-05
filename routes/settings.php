@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\AbonnamentController;
+use App\Http\Controllers\AbonnementController;
 use App\Http\Controllers\AutoInschrijvenController;
+use App\Http\Controllers\AutoInschrijvenSbatController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\DatesController;
@@ -24,7 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/autoinschrijven', [AutoInschrijvenController::class, 'edit'])->name('autoinschrijven.edit');
     Route::patch('settings/autoinschrijven', [AutoInschrijvenController::class, 'update'])->name('autoinschrijven.update');
 
-    Route::get('settings/abonnament', [AbonnamentController::class, 'edit'])->name('abonnament.edit');
+    Route::get('settings/autoinschrijvensbat', [AutoInschrijvenSbatController::class, 'edit'])->name('autoinschrijvensbat.edit');
+    Route::patch('settings/autoinschrijvensbat', [AutoInschrijvenSbatController::class, 'update'])->name('autoinschrijvensbat.update');
+
+    Route::get('settings/abonnement', [AbonnementController::class, 'edit'])->name('abonnement.edit');
 
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/appearance');

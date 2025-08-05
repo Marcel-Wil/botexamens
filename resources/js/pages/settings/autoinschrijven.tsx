@@ -139,7 +139,7 @@ export default function AutoInschrijven() {
                             <InputError className="mt-2" message={errors.zhuidigVRijbewijsGeldigTot} />
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex gap-4 items-center">
                             <Button disabled={processing}>Save</Button>
 
                             <Transition
