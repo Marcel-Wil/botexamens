@@ -12,8 +12,6 @@ class CitySeeder extends Seeder
      */
     public function run(): void
     {
-        City::truncate();
-
         $cities = [
             ['name' => 'Deurne', 'code' => '1004', 'company' => 'Autoveiligheid'],
             ['name' => 'Alken', 'code' => '1005', 'company' => 'Autoveiligheid'],
