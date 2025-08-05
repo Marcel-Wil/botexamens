@@ -47,7 +47,7 @@ const plans = [
         ],
         cta: 'Kies Automatisch',
         popular: true,
-        disabled: true,
+        disabled: false,
         isDiscounted: false,
     },
     {
@@ -93,7 +93,7 @@ const HeroSection = () => {
                 <p className="mt-4 text-lg text-gray-300">Krijg direct een melding zodra er een plek vrijkomt.</p>
                 <a
                     onClick={handleScroll}
-                    className="inline-block px-8 py-3 mt-8 font-bold text-white bg-indigo-600 rounded-lg transition duration-300 cursor-pointer hover:bg-indigo-700"
+                    className="mt-8 inline-block cursor-pointer rounded-lg bg-indigo-600 px-8 py-3 font-bold text-white transition duration-300 hover:bg-indigo-700"
                 >
                     Begin Nu
                 </a>
@@ -111,8 +111,8 @@ function SimplePricing() {
     if (!mounted) return null;
 
     return (
-        <div id="pricing" className="flex overflow-hidden relative flex-col gap-16 px-4 py-24 w-full text-center not-prose sm:px-8">
-            <div className="overflow-hidden absolute inset-0 -z-10">
+        <div id="pricing" className="not-prose relative flex w-full flex-col gap-16 overflow-hidden px-4 py-24 text-center sm:px-8">
+            <div className="absolute inset-0 -z-10 overflow-hidden">
                 <div className="absolute -top-[10%] left-[50%] h-[40%] w-[60%] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
                 <div className="absolute -right-[10%] -bottom-[10%] h-[40%] w-[40%] rounded-full bg-primary/5 blur-3xl" />
                 <div className="absolute -bottom-[10%] -left-[10%] h-[40%] w-[40%] rounded-full bg-primary/5 blur-3xl" />
@@ -139,9 +139,7 @@ function SimplePricing() {
                         >
                             <Card
                                 className={cn(
-                                    'relative h-full w-full bg-secondary/20 text-left transition-all duration-300 hover:shadow-lg',
-                                    plan.popular ? 'shadow-md ring-2 ring-primary/50 dark:shadow-primary/10' : 'hover:border-primary/30',
-                                    plan.popular && 'bg-gradient-to-b from-primary/[0.03] to-transparent',
+                                    'relative h-full w-full bg-gradient-to-b from-primary/5 to-transparent text-left shadow-md ring-2 ring-primary/50 transition-all duration-300 hover:shadow-lg dark:from-primary/[0.03] dark:shadow-primary/10',
                                     plan.disabled ? 'cursor-not-allowed opacity-60' : '',
                                 )}
                             >
@@ -156,8 +154,8 @@ function SimplePricing() {
 
                                 {/* Populair badge */}
                                 {plan.popular && (
-                                    <div className="absolute right-0 left-0 -top-3 mx-auto w-fit">
-                                        <Badge className="px-4 py-1 rounded-full shadow-sm bg-primary text-primary-foreground">
+                                    <div className="absolute -top-3 right-0 left-0 mx-auto w-fit">
+                                        <Badge className="rounded-full bg-primary px-4 py-1 text-primary-foreground shadow-sm">
                                             <Sparkles className="mr-1 h-3.5 w-3.5" />
                                             Populair
                                         </Badge>
@@ -166,22 +164,17 @@ function SimplePricing() {
 
                                 {/* Binnenkort beschikbaar badge */}
                                 {plan.disabled && (
-                                    <div className="absolute top-4 right-4 px-3 py-1 text-xs font-semibold leading-5 text-white bg-orange-500 rounded-full">
+                                    <div className="absolute top-4 right-4 rounded-full bg-orange-500 px-3 py-1 text-xs leading-5 font-semibold text-white">
                                         Binnenkort beschikbaar
                                     </div>
                                 )}
 
                                 <CardHeader className={cn('pb-4', plan.popular && 'pt-8')}>
-                                    <div className="flex gap-2 items-center">
-                                        <div
-                                            className={cn(
-                                                'flex h-8 w-8 items-center justify-center rounded-full',
-                                                plan.popular ? 'bg-primary/10 text-primary' : 'bg-secondary text-white',
-                                            )}
-                                        >
-                                            <plan.icon className="w-4 h-4" />
+                                    <div className="flex items-center gap-2">
+                                        <div className={cn('flex h-8 w-8 items-center justify-center rounded-full bg-white text-black')}>
+                                            <plan.icon className="h-4 w-4" />
                                         </div>
-                                        <CardTitle className={cn('text-xl font-bold', plan.popular && 'text-white')}>{plan.name}</CardTitle>
+                                        <CardTitle className={cn('text-xl font-bold text-white')}>{plan.name}</CardTitle>
                                     </div>
                                     <CardDescription className="mt-3 space-y-2">
                                         <p className="text-sm">{plan.description}</p>
@@ -234,17 +227,12 @@ function SimplePricing() {
                                             initial={{ opacity: 0, x: -5 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ duration: 0.3, delay: 0.5 + index * 0.05 }}
-                                            className="flex gap-2 items-center text-sm"
+                                            className="flex items-center gap-2 text-sm"
                                         >
-                                            <div
-                                                className={cn(
-                                                    'flex h-5 w-5 items-center justify-center rounded-full',
-                                                    plan.popular ? 'bg-primary/10 text-primary' : 'bg-secondary text-white',
-                                                )}
-                                            >
+                                            <div className={cn('flex h-5 w-5 items-center justify-center rounded-full bg-white text-black')}>
                                                 <Check className="h-3.5 w-3.5" />
                                             </div>
-                                            <span className={plan.popular ? 'text-white' : 'text-white'}>{feature}</span>
+                                            <span className="text-white">{feature}</span>
                                         </motion.div>
                                     ))}
                                 </CardContent>
@@ -262,7 +250,7 @@ function SimplePricing() {
                                         disabled={plan.disabled}
                                     >
                                         {plan.cta}
-                                        <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                                        <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                                     </Button>
                                 </CardFooter>
 
@@ -270,10 +258,10 @@ function SimplePricing() {
                                 {plan.popular ? (
                                     <>
                                         <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-1/2 rounded-b-lg bg-gradient-to-t from-primary/[0.05] to-transparent" />
-                                        <div className="absolute inset-0 rounded-lg border pointer-events-none border-primary/20" />
+                                        <div className="pointer-events-none absolute inset-0 rounded-lg border border-primary/20" />
                                     </>
                                 ) : (
-                                    <div className="absolute inset-0 rounded-lg border border-transparent opacity-0 transition-opacity duration-300 pointer-events-none hover:border-primary/10 hover:opacity-100" />
+                                    <div className="pointer-events-none absolute inset-0 rounded-lg border border-transparent opacity-0 transition-opacity duration-300 hover:border-primary/10 hover:opacity-100" />
                                 )}
                             </Card>
                         </motion.div>
@@ -289,24 +277,27 @@ const ReviewSection = () => {
         {
             name: 'Lisa de Vries',
             role: 'Rijstudent',
-            content: 'Binnen een dag na mijn inschrijving kreeg ik al een melding van een vrije plek! Super service en gebruiksvriendelijk. Dankzij deze dienst kon ik mijn examen veel eerder doen dan verwacht.',
+            content:
+                'Binnen een dag na mijn inschrijving kreeg ik al een melding van een vrije plek! Super service en gebruiksvriendelijk. Dankzij deze dienst kon ik mijn examen veel eerder doen dan verwacht.',
             rating: 5,
-            date: '15 juli 2024'
+            date: '15 juli 2024',
         },
         {
             name: 'Thomas Jansen',
             role: 'Rijinstructeur',
-            content: 'Ik raad al mijn leerlingen aan om deze service te gebruiken. Het scheelt ze veel tijd en gedoe met continu de CBR site te moeten verversen. De automatische inschrijving is een uitkomst!',
+            content:
+                'Ik raad al mijn leerlingen aan om deze service te gebruiken. Het scheelt ze veel tijd en gedoe met continu de CBR site te moeten verversen. De automatische inschrijving is een uitkomst!',
             rating: 5,
-            date: '2 augustus 2024'
+            date: '2 augustus 2024',
         },
         {
             name: 'Sanne Bakker',
             role: 'Rijstudent',
-            content: 'Eindelijk een betrouwbare manier om een examen te vinden! De meldingen komen direct binnen en ik hoefde niet meer uren te spenderen aan het zoeken naar een plek. Binnen een week had ik al een examen kunnen plannen.',
+            content:
+                'Eindelijk een betrouwbare manier om een examen te vinden! De meldingen komen direct binnen en ik hoefde niet meer uren te spenderen aan het zoeken naar een plek. Binnen een week had ik al een examen kunnen plannen.',
             rating: 5,
-            date: '28 juli 2024'
-        }
+            date: '28 juli 2024',
+        },
     ];
 
     return (
@@ -321,7 +312,7 @@ const ReviewSection = () => {
                         <div key={index} className="p-6 rounded-xl border border-gray-800 shadow-lg transition-all duration-300 bg-gray-900/30 hover:border-indigo-500/30">
                             <div className="flex items-center mb-4">
                                 {[...Array(5)].map((_, i) => (
-                                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg key={i} className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
                                 ))}
@@ -349,7 +340,7 @@ export default function Homepage() {
         <>
             <Head title="Homepage" />
             <meta name="description" content="Vind een vrije plek voor een examen en ontvang een melding wanneer er een vrije plek vrijkomt." />
-            <div className="font-sans antialiased text-gray-200 bg-gradient-to-br from-black via-gray-900 to-purple-900">
+            <div className="bg-gradient-to-br from-black via-gray-900 to-purple-900 font-sans text-gray-200 antialiased">
                 <Navbar />
                 <main>
                     <HeroSection />
