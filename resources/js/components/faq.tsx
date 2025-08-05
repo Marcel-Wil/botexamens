@@ -6,11 +6,11 @@ interface FaqItem {
 const faqData: FaqItem[] = [
     {
         question: 'Hoe werkt de notificatie-abonnement?',
-        answer: 'Na het kiezen van een abonnement ontvang je een betaallink via PayPal. Na betaling activeren wij je account en ontvang je direct meldingen over vrijgekomen examendata op je opgegeven e-mailadres.',
+        answer: 'Na het kiezen van een abonnement moet je ons contqcteren via mail en wij gaan je een betaallink sturen. Na betaling activeren wij je account en ontvang je direct meldingen over vrijgekomen examendata op je opgegeven e-mailadres.',
     },
     {
         question: 'Welke examencentra kan ik kiezen?',
-        answer: 'Je kunt kiezen uit de volgende examencentra: Autoveiligheid.be (Deurne, Geel, Kontich, Alken, Bree, Haasrode) ',
+        answer: 'Je kunt kiezen uit de volgende examencentra: Autoveiligheid.ben sbat.be (Deurne, Geel, Kontich, Alken, Bree, Haasrode, Sint-Denijs-Westrem, Brakel, Eeklo, Erembodegem, Sint-Niklaas) ',
     },
     {
         question: 'Hoe snel kan ik een eerdere examendatum vinden?',
