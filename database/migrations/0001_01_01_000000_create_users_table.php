@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('rrn')->nullable();
             $table->string('gbdatum')->nullable();
             $table->string('whatsapp')->nullable();
-            $table->boolean('notification')->default(false);
+            $table->boolean('send_notifications')->default(false);
             $table->string('tel')->nullable();
             $table->string('adres')->nullable();
             $table->string('postcode')->nullable();
