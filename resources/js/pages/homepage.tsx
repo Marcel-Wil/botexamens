@@ -16,7 +16,7 @@ const plans = [
         name: 'Notificatie',
         icon: Bell,
         price: {
-            monthly: '€49,99',
+            monthly: '49.99',
         },
         description: 'Word direct gewaarschuwd wanneer er nieuwe examendata beschikbaar komen.',
         features: [
@@ -28,13 +28,15 @@ const plans = [
         ],
         cta: 'Kies Notificatie',
         popular: false,
+        isDiscounted: true,
+        discountLabel: '50',
     },
     {
         id: 'automatisch',
         name: 'Automatische Inschrijving',
         icon: Zap,
         price: {
-            monthly: '€99,99',
+            monthly: '99.99',
         },
         description: 'Wij schrijven je direct in zodra er een plek vrijkomt.',
         features: [
@@ -46,13 +48,14 @@ const plans = [
         cta: 'Kies Automatisch',
         popular: true,
         disabled: false,
+        isDiscounted: false,
     },
     {
         id: 'per-notificatie',
         name: 'Per Notificatie',
         icon: Bell,
         price: {
-            monthly: '€0,99 per melding',
+            monthly: '0.99 per melding',
         },
         description: 'Betaal alleen voor de meldingen die je ontvangt.',
         features: [
@@ -65,10 +68,10 @@ const plans = [
         cta: 'Kies Per Melding',
         popular: false,
         disabled: true,
+        isDiscounted: false,
     },
 ];
 
-// Hero Section
 const HeroSection = () => {
     const handleScroll = () => {
         const target = document.getElementById('pricing');
@@ -76,19 +79,13 @@ const HeroSection = () => {
             target.scrollIntoView({ behavior: 'smooth' });
         }
     };
+    
     return (
-        <section id="home" className="relative flex min-h-screen items-center justify-center overflow-hidden pt-16">
-            {/* Animated shapes */}
-            <div className="absolute top-0 left-0 z-0 h-full w-full">
-                <div className="animate-float absolute top-1/4 left-1/4 h-24 w-24 rounded-full bg-purple-500 opacity-20"></div>
-                <div
-                    className="animate-float absolute top-1/2 right-1/4 h-32 w-32 rounded-lg bg-purple-500 opacity-20"
-                    style={{ animationDelay: '1s' }}
-                ></div>
-                <div
-                    className="animate-float absolute bottom-1/4 left-1/3 h-16 w-16 rounded-full bg-purple-500 opacity-20"
-                    style={{ animationDelay: '2s' }}
-                ></div>
+        <section id="home" className="flex overflow-hidden relative justify-center items-center pt-16 min-h-screen">
+            <div className="absolute top-0 left-0 z-0 w-full h-full">
+                <div className="absolute top-1/4 left-1/4 w-24 h-24 bg-purple-500 rounded-full opacity-20 animate-float"></div>
+                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-purple-500 rounded-lg opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute bottom-1/4 left-1/3 w-16 h-16 bg-purple-500 rounded-full opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
             </div>
 
             <div className="relative z-10 text-center">
@@ -112,6 +109,7 @@ function SimplePricing() {
         setMounted(true);
     }, []);
     if (!mounted) return null;
+
     return (
         <div id="pricing" className="not-prose relative flex w-full flex-col gap-16 overflow-hidden px-4 py-24 text-center sm:px-8">
             <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -119,19 +117,17 @@ function SimplePricing() {
                 <div className="absolute -right-[10%] -bottom-[10%] h-[40%] w-[40%] rounded-full bg-primary/5 blur-3xl" />
                 <div className="absolute -bottom-[10%] -left-[10%] h-[40%] w-[40%] rounded-full bg-primary/5 blur-3xl" />
             </div>
-            <div className="flex flex-col items-center justify-center gap-8">
+
+            <div className="flex flex-col gap-8 justify-center items-center">
                 <div className="flex flex-col items-center space-y-2">
-                    <Badge variant="outline" className="rounded-full bg-background px-4 py-1 text-white shadow-sm">
-                        Prijsplannen
-                    </Badge>
-                    <h2 className="text-center text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-                        Vind het perfecte plan voor jou
-                    </h2>
-                    <p className="max-w-2xl text-center text-lg text-muted-foreground">
+                    <Badge variant="outline" className="px-4 py-1 text-white rounded-full shadow-sm bg-background">Prijsplannen</Badge>
+                    <h2 className="text-3xl font-bold tracking-tight text-center text-white sm:text-4xl md:text-5xl">Vind het perfecte plan voor jou</h2>
+                    <p className="max-w-2xl text-lg text-center text-muted-foreground">
                         Kies het plan dat bij je past. Alle plannen komen met onze 24/7 ondersteuning.
                     </p>
                 </div>
-                <div className="mt-8 grid w-full max-w-6xl grid-cols-1 gap-6 md:grid-cols-3">
+
+                <div className="grid grid-cols-1 gap-6 mt-8 w-full max-w-6xl md:grid-cols-3">
                     {plans.map((plan, index) => (
                         <motion.div
                             key={plan.id}
@@ -147,6 +143,16 @@ function SimplePricing() {
                                     plan.disabled ? 'cursor-not-allowed opacity-60' : '',
                                 )}
                             >
+                                {plan.isDiscounted && (
+                                <div className="absolute -top-3 left-4 z-10">
+                                    <Badge className="px-2 py-1 text-xs text-white bg-green-600 rounded-full shadow-md">
+                                    {plan.discountLabel + '% Korting'}
+                                    </Badge>
+                                </div>
+                                )}
+
+
+                                {/* Populair badge */}
                                 {plan.popular && (
                                     <div className="absolute -top-3 right-0 left-0 mx-auto w-fit">
                                         <Badge className="rounded-full bg-primary px-4 py-1 text-primary-foreground shadow-sm">
@@ -155,11 +161,14 @@ function SimplePricing() {
                                         </Badge>
                                     </div>
                                 )}
+
+                                {/* Binnenkort beschikbaar badge */}
                                 {plan.disabled && (
                                     <div className="absolute top-4 right-4 rounded-full bg-orange-500 px-3 py-1 text-xs leading-5 font-semibold text-white">
                                         Binnenkort beschikbaar
                                     </div>
                                 )}
+
                                 <CardHeader className={cn('pb-4', plan.popular && 'pt-8')}>
                                     <div className="flex items-center gap-2">
                                         <div className={cn('flex h-8 w-8 items-center justify-center rounded-full bg-white text-black')}>
@@ -178,14 +187,39 @@ function SimplePricing() {
                                                     exit={{ opacity: 0, y: 10 }}
                                                     transition={{ duration: 0.2 }}
                                                 >
-                                                    <span className={cn('text-2xl font-bold text-white')}>
-                                                        {plan.price[frequency as keyof typeof plan.price]}
-                                                    </span>
+                                                   {(() => {
+                                                    const price = plan.price[frequency as keyof typeof plan.price];
+                                                    const isDiscounted = plan.isDiscounted;
+                                                    const discount = Number(plan.discountLabel);
+
+                                                    if (isDiscounted) {
+                                                        const salePrice = (price * (discount/100)).toFixed(2);
+                                                        return (
+                                                        <div className="space-y-1">
+                                                            <div className="flex gap-2 items-center">
+                                                            <span className="text-lg text-gray-400 line-through">
+                                                                €{price}
+                                                            </span>
+                                                            <span className="text-2xl font-bold text-white">
+                                                                €{salePrice}
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <span className="text-2xl font-bold text-white">
+                                                        €{price}
+                                                        </span>
+                                                    );
+                                                    })()}
                                                 </motion.div>
                                             </AnimatePresence>
                                         </div>
                                     </CardDescription>
                                 </CardHeader>
+
                                 <CardContent className="grid gap-3 pb-6">
                                     {plan.features.map((feature, index) => (
                                         <motion.div
@@ -202,6 +236,7 @@ function SimplePricing() {
                                         </motion.div>
                                     ))}
                                 </CardContent>
+
                                 <CardFooter>
                                     <Button
                                         variant={plan.popular ? 'default' : 'outline'}
@@ -218,7 +253,8 @@ function SimplePricing() {
                                         <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                                     </Button>
                                 </CardFooter>
-                                {/* Subtle gradient effects */}
+
+                                {/* Decorative overlays */}
                                 {plan.popular ? (
                                     <>
                                         <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-1/2 rounded-b-lg bg-gradient-to-t from-primary/[0.05] to-transparent" />
@@ -266,18 +302,15 @@ const ReviewSection = () => {
 
     return (
         <section className="py-16">
-            <div className="container mx-auto px-4">
+            <div className="container px-4 mx-auto">
                 <div className="mb-12 text-center">
                     <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">Wat onze gebruikers zeggen</h2>
                     <p className="mx-auto max-w-2xl text-gray-400">Meer dan 1.000 tevreden gebruikers hebben hun examen eerder kunnen doen</p>
                 </div>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     {reviews.map((review, index) => (
-                        <div
-                            key={index}
-                            className="rounded-xl border border-gray-800 bg-gray-900/30 p-6 shadow-lg transition-all duration-300 hover:border-indigo-500/30"
-                        >
-                            <div className="mb-4 flex items-center">
+                        <div key={index} className="p-6 rounded-xl border border-gray-800 shadow-lg transition-all duration-300 bg-gray-900/30 hover:border-indigo-500/30">
+                            <div className="flex items-center mb-4">
                                 {[...Array(5)].map((_, i) => (
                                     <svg key={i} className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -286,14 +319,12 @@ const ReviewSection = () => {
                             </div>
                             <p className="mb-6 text-gray-300">"{review.content}"</p>
                             <div className="flex items-center">
-                                <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 font-bold text-white">
+                                <div className="flex justify-center items-center mr-3 w-10 h-10 font-bold text-white bg-indigo-600 rounded-full">
                                     {review.name.charAt(0)}
                                 </div>
                                 <div>
                                     <h4 className="font-medium text-white">{review.name}</h4>
-                                    <p className="text-sm text-gray-400">
-                                        {review.role} • {review.date}
-                                    </p>
+                                    <p className="text-sm text-gray-400">{review.role} • {review.date}</p>
                                 </div>
                             </div>
                         </div>
