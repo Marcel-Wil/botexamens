@@ -15,10 +15,19 @@ class AllowOnlyLocalRequests
      */
     public function handle($request, Closure $next)
     {
-        $allowed = ['127.0.0.1', '::1'];
-        if (!in_array($request->ip(), $allowed)) {
-            return response()->json(['message' => 'Forbidden'], 403);
+        $ip = $request->ip();
+
+        // Allow local IPs
+        if (in_array($ip, ['127.0.0.1', '::1'])) {
+            return $next($request);
         }
-        return $next($request);
+
+        // Optionally allow internal network IPs (like 192.168.x.x)
+        if (preg_match('/^192\.168\./', $ip) || preg_match('/^10\./', $ip)) {
+            return $next($request);
+        }
+
+        return response()->json(['message' => 'Forbidden'], 403);
     }
+
 }

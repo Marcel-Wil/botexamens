@@ -36,11 +36,29 @@ beforeEach(function () {
     ]);
 });
 
+test('compare-datums: sends notifications if the same date but earlier time', function () {
+    $response = $this->postJson('/api/compare-datums', [
+        'newdatums' => [
+            [
+                'date' => '10/08/2025',
+                'text' => 'New early date',
+                'times' => ['09:00'],
+            ],
+        ],
+        'city' => 'Deurne',
+    ]);
+
+    $response->assertOk();
+    $response->assertJsonFragment([
+        'message' => 'New earlier dates found for Deurne and notifications sent.',
+    ]);
+});
+
 test('compare-datums: sends notifications if earlier datums found for Deurne', function () {
     $response = $this->postJson('/api/compare-datums', [
         'newdatums' => [
             [
-                'date' => '01/08/2025',
+                'date' => '10/08/2025',
                 'text' => 'New early date',
                 'times' => ['09:00'],
             ],
@@ -88,6 +106,10 @@ test('compare-datums: returns 400 when newdatums is empty', function () {
         'newdatums' => [],
         'city' => 'Deurne',
     ]);
+
+    $latestDatum = Datum::latest()->first();
+
+    $this->assertCount(0, $latestDatum->olddatums);
 
     $response->assertStatus(400);
     $response->assertJson([

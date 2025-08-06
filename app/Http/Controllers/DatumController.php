@@ -68,9 +68,10 @@ class DatumController extends Controller
             $newlyFoundEarlierDatums = $this->findNewlyFoundEarlierDatums($incomingDatums, $earliestDatumInDb, $filters);
             if ($newlyFoundEarlierDatums->isNotEmpty()) {
                 $this->sendNotifications($newlyFoundEarlierDatums, $user);
-                if ($user->enrollment_auto_inschrijven && $user->enrollment_auto_inschrijven->examencentrum == 'SBAT') {
-                    ProcessAutoEnrollment::dispatch($user, $city);
-                }
+                //TODO
+                // if ($user->enrollment_auto_inschrijven && $user->enrollment_auto_inschrijven->examencentrum == 'SBAT') {
+                //     ProcessAutoEnrollment::dispatch($user, $city);
+                // }
                 $foundNewerDatums = true;
                 $allNewlyFoundDatums = $allNewlyFoundDatums->merge($newlyFoundEarlierDatums);
             }
