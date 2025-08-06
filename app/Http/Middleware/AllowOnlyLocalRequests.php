@@ -13,6 +13,11 @@ class AllowOnlyLocalRequests
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
+
+    protected $proxies = '*'; // or ['127.0.0.1'] if you want to be strict
+
+    protected $headers = Request::HEADER_X_FORWARDED_ALL;
+
     public function handle($request, Closure $next)
     {
         $ip = $request->ip();
