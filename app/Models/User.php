@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\HoeveelstePoging;
+use App\Enums\TypeVoorlopigRijbewijs;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,6 +40,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'zeersteVRijbewijsDatum',
         'zhuidigVRijbewijsDatum',
         'zhuidigVRijbewijsGeldigTot',
+        'sbat_email',
+        'sbat_password',
+        'datum_slagen_theorieB',
+        'type_voorlopig_rijbewijs',
+        'afgiftedatum_voorlopig_rijbewijsB',
+        'hoeveelste_poging',
     ];
 
     /**
@@ -60,6 +68,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'type_voorlopig_rijbewijs' => TypeVoorlopigRijbewijs::class,
+            'hoeveelste_poging' => HoeveelstePoging::class,
         ];
     }
 

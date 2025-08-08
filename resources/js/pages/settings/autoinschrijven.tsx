@@ -59,7 +59,7 @@ export default function AutoInschrijven() {
                 <div className="space-y-6">
                     <div className="flex flex-col space-y-2">
                         <HeadingSmall
-                            title="Automatisch Inschrijven"
+                            title="Automatisch Inschrijven voor praktijkexamen B Autoveiligheid"
                             description="Deze instellingen worden gebruikt voor het automatisch inschrijven voor de examen."
                         />
                         <p className="text-sm text-red-600"> (Deze instellingen zijn verplicht in te vullen als u deze functie wilt gebruiken)</p>
@@ -139,7 +139,7 @@ export default function AutoInschrijven() {
                             <InputError className="mt-2" message={errors.zhuidigVRijbewijsGeldigTot} />
                         </div>
 
-                        <div className="flex gap-4 items-center">
+                        <div className="flex items-center gap-4">
                             <Button disabled={processing}>Save</Button>
 
                             <Transition
