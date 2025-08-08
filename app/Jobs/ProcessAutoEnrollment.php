@@ -6,12 +6,10 @@ use App\Mail\EnrollmentSuccess;
 use App\Models\City;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Process;
 
@@ -53,9 +51,11 @@ class ProcessAutoEnrollment implements ShouldQueue
         if ($process->successful()) {
             $output = $process->output();
             if (str_contains($output, 'ENROLLMENT_SUCCESS')) {
-                $enrollment = \App\Models\EnrollmentAutoInschrijven::where('user_id', $this->user->id)->first();
-                if ($enrollment) {
-                    $enrollment->delete();
+                $enrollments = \App\Models\EnrollmentAutoInschrijven::where('user_id', $this->user->id)->get();
+                if ($enrollments) {
+                    foreach ($enrollments as $enrollment) {
+                        $enrollment->delete();
+                    }
                     Mail::to($this->user->email)->queue(new EnrollmentSuccess($this->user));
                 }
                 return true;
