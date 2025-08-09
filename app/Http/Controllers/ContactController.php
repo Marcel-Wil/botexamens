@@ -23,8 +23,8 @@ class ContactController extends Controller
         ]);
 
         // Send email to admin
-        $adminEmail = config('mail.from.address');
-        Mail::to($adminEmail)->queue(new ContactFormMail($validated));
+
+        Mail::to("satumbusiness@gmail.com")->queue(new ContactFormMail($validated));
 
         return response()->json([
             'message' => 'Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.'
