@@ -11,11 +11,11 @@ class AbonnementController extends Controller
     //
     public function edit()
     {
-        // Eager load the enrollmentAutoInschrijven relationship
         $user = Auth::user()->load('enrollmentAutoInschrijven');
-        
+        $enrollmentsUser = $user->enrollmentAutoInschrijven;
+
         return Inertia::render('settings/abonnement', [
-            'enrollmentStatus' => $user->enrollmentAutoInschrijven !== null
+            'enrollmentStatus' => $enrollmentsUser->isNotEmpty()
         ]);
     }
 }
