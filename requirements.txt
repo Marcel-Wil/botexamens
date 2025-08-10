@@ -27,6 +27,7 @@ python-dotenv==1.1.1
 PyYAML==6.0.2
 requests==2.32.4
 screeninfo==0.8.1
+sentry-sdk==2.34.1
 soupsieve==2.7
 tqdm==4.67.1
 typing_extensions==4.14.1
