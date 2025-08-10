@@ -15,7 +15,7 @@ class AllowOnlyLocalRequests
      */
     public function handle(Request $request, Closure $next)
     {
-        if (in_array($request->ip(), ['146.190.235.81', '127.0.0.1', '::1'])) {
+        if (in_array($request->ip(), ['159.223.13.156', '127.0.0.1', '::1'])) {
             return $next($request);
         }
 
