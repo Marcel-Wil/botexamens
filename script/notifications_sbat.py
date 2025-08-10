@@ -47,4 +47,19 @@ if __name__ == "__main__":
                     else:
                         continue
             print("sleeping zzz...")
-            time.sleep(60)
+
+            current_time = datetime.now()
+            hour = current_time.hour
+            minute = current_time.minute
+
+            if 0 <= hour < 7:
+                # Between midnight and 7 AM
+                sleep_seconds = 300
+            elif (hour == 7 and 0 <= minute < 30) or (16 <= hour < 17):
+                # Between 7:00-7:29 and 16:00-16:59
+                sleep_seconds = 30
+            else:
+                # All other times
+                sleep_seconds = 60
+
+            time.sleep(sleep_seconds)
