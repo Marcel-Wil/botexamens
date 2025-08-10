@@ -52,7 +52,7 @@ class DatumController extends Controller
 
     public function send_notifications_sbat(Request $request)
     {
-        $incomingDatums = $this->parseAndValidateDatums($request);
+        $incomingDatums = $this->parseAndValidateSbatDatums($request);
 
         $city = City::where('name', $request->city)->firstOrFail();
         $datum = Datum::where('city_id', $city->id)->latest()->first();
@@ -149,6 +149,23 @@ class DatumController extends Controller
     }
 
     private function parseAndValidateDatums(Request $request): Collection
+    {
+        if (empty($request->input('newdatums'))) {
+            $city = City::where('name', $request->city)->firstOrFail();
+            $datum = Datum::where('city_id', $city->id)->latest()->first();
+            $this->updateDatums($datum, collect(), $city->id);
+            abort(response()->json(['message' => 'No dates provided.'], 400));
+        }
+
+        return collect($request->input('newdatums'))
+            ->map(function ($item) {
+                $date = \DateTime::createFromFormat('!d/m/Y', $item['date']);
+                return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text'], 'times' => $item['times'] ?? []] : null;
+            })
+            ->filter();
+    }
+
+    private function parseAndValidateSbatDatums(Request $request): Collection
     {
         if (empty($request->input('newdatums'))) {
             $city = City::where('name', $request->city)->firstOrFail();

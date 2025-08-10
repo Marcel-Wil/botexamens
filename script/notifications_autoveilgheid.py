@@ -86,12 +86,14 @@ def session_maker():
 
         # WIZARD STEP 2
         page.wait_for_selector("#catBE2")
+        print("wij zijn bij stap 2")
         page.click("#catBE2")
         page.click("button.m-2:nth-child(4)")
         page.wait_for_timeout(4000)
 
         # WIZARD STEP 3
         page.wait_for_selector("#voorwaardenCheck")
+        print("wij zijn bij stap 3")
         checkbox = page.locator("#voorwaardenCheck")
         modelrijbewijs = page.locator("#modelVRijbewijs")
         modelrijbewijs.select_option("M36")
@@ -106,7 +108,9 @@ def session_maker():
         page.click("button.btn-phone-50")
         
         page.wait_for_url("**/TijdSelectie", timeout=60000)
+        print("wij zijn bij stap 4")
         current_url = page.url
+        print("current_url: " + current_url)
 
         try:
             data_id = current_url.split('/')[-2]
@@ -117,7 +121,7 @@ def session_maker():
 
         cookies = page.context.cookies()
         cookie_string = "; ".join([f"{cookie['name']}={cookie['value']}" for cookie in cookies])
-
+        print(cookie_string)
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         try:
             cities = get_cities_from_api()
@@ -131,7 +135,7 @@ def session_maker():
                     'selectedEcId': city['code'],
                     'dataId': data_id
                 }
-
+                print(payload)
                 response_text = make_post_request(payload, cookie_string)
                 if response_text:
                     extracted_dates = extract_dates_from_html(response_text)
