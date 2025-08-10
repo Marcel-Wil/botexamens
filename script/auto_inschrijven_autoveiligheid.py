@@ -54,7 +54,7 @@ def auto_inschrijven(user_id: int, city_code: str):
         end_date_pref = preferences.get("endDatum")
         start_time_pref = preferences.get("startUur")
         end_time_pref = preferences.get("endUur")
-        with Camoufox(os=["macos", "windows"], humanize=True, headless=False) as browser:
+        with Camoufox(os=["macos", "windows"], humanize=True, headless=False, addons=addons) as browser:
             page = browser.new_page()
 
             page.goto("https://examencentrum-praktijk.autoveiligheid.be/Afspraak/nieuw")
@@ -130,6 +130,7 @@ def auto_inschrijven(user_id: int, city_code: str):
                             time_button.click()
                             page.wait_for_timeout(10000) # Wait for captcha
                             # TODO: Click confirmation button
+                            page.click('#btnBevestigAfspraak')
                             print("ENROLLMENT_SUCCESS")
                             return
 

@@ -43,7 +43,7 @@ class ProcessAutoEnrollment implements ShouldQueue
     {
 
         $pythonPath = env('PYTHON_PATH', base_path('.venv/bin/python3'));
-        $scriptPath = base_path('script/auto_inschrijven.py');
+        $scriptPath = base_path('script/auto_inschrijven_autoveiligheid.py');
 
         $command = [$pythonPath, $scriptPath, $this->user->id, $this->city->code];
         $process = Process::timeout(300)->run($command);
