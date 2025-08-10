@@ -137,7 +137,11 @@ def session_maker():
                     'selectedEcId': city['code'],
                     'dataId': data_id
                 }
-                response_text = make_post_request(payload, cookie_string)
+                try:
+                    response_text = make_post_request(payload, cookie_string)
+                except Exception as e:
+                    print(f"Error making POST request: {e}")
+                    break
                 if response_text:
                     extracted_dates = extract_dates_from_html(response_text)
                     
@@ -158,6 +162,7 @@ def session_maker():
 
 if __name__ == "__main__":
     while True:
+        print("Starting session...")
         session_maker()        
         print("Process ended. Restarting in 10 seconds...")
         time.sleep(10)
