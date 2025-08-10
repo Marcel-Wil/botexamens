@@ -147,9 +147,13 @@ def session_maker():
                     file_path = os.path.join(city_log_dir, f'extracted_dates_{timestamp}.json')
                     with open(file_path, 'w', encoding='utf-8') as f:
                         json.dump(extracted_dates, f, indent=4)
-                    # post_dates_to_api(extracted_dates, city['name'])
-                
-            time.sleep(60)
+                    post_dates_to_api(extracted_dates, city['name'])
+            current_hour = datetime.now().hour
+            if 0 <= current_hour < 6:
+                sleep_seconds = 300  # Sleep 5 minutes between midnight and 6 AM
+            else:
+                sleep_seconds = 60   # Sleep 1 minute otherwise
+            time.sleep(sleep_seconds)
         
 
 if __name__ == "__main__":
