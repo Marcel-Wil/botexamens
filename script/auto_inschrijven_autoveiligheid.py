@@ -54,7 +54,7 @@ def auto_inschrijven(user_id: int, city_code: str):
         end_date_pref = preferences.get("endDatum")
         start_time_pref = preferences.get("startUur")
         end_time_pref = preferences.get("endUur")
-        with Camoufox(os=["macos", "windows"], humanize=True, headless=False, addons=addons) as browser:
+        with Camoufox(os=["macos", "windows"], humanize=True, headless=True, addons=addons) as browser:
             page = browser.new_page()
 
             page.goto("https://examencentrum-praktijk.autoveiligheid.be/Afspraak/nieuw")
