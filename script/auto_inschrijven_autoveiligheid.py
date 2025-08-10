@@ -18,7 +18,7 @@ sentry_sdk.init(
    
 )
 
-addons = ["/home/linux/Desktop/firefox_addons/nocaptcha"]
+addons = [os.getenv("ADDON_PATH", "")]
 
 def get_required_field(data_dict, key):
     """Gets a field from a dictionary or raises a ValueError if it's missing or empty."""
