@@ -10,7 +10,7 @@ import requests
 import urllib3
 from dotenv import load_dotenv
 from scrapehtml import extract_dates_from_html
-from utils import get_user_data_from_api, post_dates_to_api, get_cities_from_api
+from utils import post_dates_to_api, get_cities_from_api
 
 import sentry_sdk
 load_dotenv()
@@ -38,10 +38,12 @@ def make_post_request(payload, cookie_string):
     }
 
     try:
-        response = requests.post(post_url, data=payload, headers=headers, proxies=proxies, verify=False)
+        response = requests.post(post_url, data=payload, headers=headers, verify=False, proxies=proxies)
         response.raise_for_status()
         return response.text
     except requests.exceptions.RequestException as e:
+        if 'response' in locals():
+            print(f"Server returned status {response.status_code} with body:\n{response.text}")
         print(f"Failed to make POST request: {e}")
         return None
 
@@ -121,7 +123,7 @@ def session_maker():
 
         cookies = page.context.cookies()
         cookie_string = "; ".join([f"{cookie['name']}={cookie['value']}" for cookie in cookies])
-        print(cookie_string)
+        
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         try:
             cities = get_cities_from_api()
@@ -135,7 +137,6 @@ def session_maker():
                     'selectedEcId': city['code'],
                     'dataId': data_id
                 }
-                print(payload)
                 response_text = make_post_request(payload, cookie_string)
                 if response_text:
                     extracted_dates = extract_dates_from_html(response_text)
@@ -146,7 +147,8 @@ def session_maker():
                     file_path = os.path.join(city_log_dir, f'extracted_dates_{timestamp}.json')
                     with open(file_path, 'w', encoding='utf-8') as f:
                         json.dump(extracted_dates, f, indent=4)
-                    post_dates_to_api(extracted_dates, city['name'])
+                    # post_dates_to_api(extracted_dates, city['name'])
+                
             time.sleep(60)
         
 

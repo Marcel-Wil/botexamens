@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DatumController;
+use App\Models\City;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -52,8 +53,8 @@ Route::middleware('allow-only-local-requests')->group(function () {
     Route::post('compare-datums-sbat', [DatumController::class, 'compare_sbat']);
 });
 
-Route::get('/cities', function () {
-    return \App\Models\City::all();
+Route::get('/cities-sbat', function () {
+    return City::all()->where('company', 'Autoveiligheid');
 })->middleware('allow-only-local-requests');
 
 // Route::post('/whatsapp', [ContactController::class, 'sendWhatsapp'])->name('whatsapp.send');

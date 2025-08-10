@@ -61,7 +61,7 @@ def get_cities_from_api():
     load_dotenv()
     server = os.getenv("SERVER", "127.0.0.1")
     port = os.getenv("PORT", "8000")
-    url = f"{server}/api/cities"
+    url = f"{server}/api/cities-sbat"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
