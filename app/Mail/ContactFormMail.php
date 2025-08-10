@@ -31,7 +31,7 @@ class ContactFormMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: "satumbusiness@gmail.com",
+            from: "noreply@rijbewijsboeker.be",
             subject: 'New Contact Form Submission',
         );
     }
