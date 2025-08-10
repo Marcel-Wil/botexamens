@@ -119,15 +119,13 @@ def session_maker():
         cookie_string = "; ".join([f"{cookie['name']}={cookie['value']}" for cookie in cookies])
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        try:
+            cities = get_cities_from_api()
+        except Exception as e:
+            print(f"Error fetching cities from API: {e}")
+            return
 
-  
         while True:
-            try:
-                cities = get_cities_from_api()
-            except Exception as e:
-                print(f"Error fetching cities from API: {e}")
-                return
-            
             for city in cities:
                 payload = {
                     'selectedEcId': city['code'],

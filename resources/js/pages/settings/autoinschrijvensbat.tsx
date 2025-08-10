@@ -71,7 +71,7 @@ export default function AutoInschrijvenSbat() {
 
                         {/* Password */}
                         <div className="grid gap-2">
-                            <Label htmlFor="password">SBAT Password</Label>
+                            <Label htmlFor="password">SBAT Password (password wordt niet getoond)</Label>
                             <Input id="password" value={data.password} onChange={(e) => setData('password', e.target.value)} placeholder="Password" />
                             <InputError className="mt-2" message={errors.password} />
                         </div>

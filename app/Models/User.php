@@ -7,6 +7,7 @@ use App\Enums\HoeveelstePoging;
 use App\Enums\TypeVoorlopigRijbewijs;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -76,9 +77,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get the auto-enrollment record associated with the user.
      */
-    public function enrollmentAutoInschrijven(): HasOne
+    public function enrollmentAutoInschrijven(): HasMany
     {
-        return $this->hasOne(EnrollmentAutoInschrijven::class);
+        return $this->hasMany(EnrollmentAutoInschrijven::class);
     }
 
     public function cities(): BelongsToMany

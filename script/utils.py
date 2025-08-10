@@ -8,7 +8,7 @@ def post_dates_to_api(dates, city_name):
     load_dotenv()
     server = os.getenv("SERVER", "127.0.0.1")
     port = os.getenv("PORT", "8000")
-    url = f"http://{server}:{port}/api/compare-datums"
+    url = f"{server}/api/compare-datums"
     try:
         payload = {
             'newdatums': dates['newdatums'],  
@@ -27,7 +27,7 @@ def post_dates_to_api_sbat(dates, city_name):
     load_dotenv()
     server = os.getenv("SERVER", "127.0.0.1")
     port = os.getenv("PORT", "8000")
-    url = f"http://{server}:{port}/api/compare-datums-sbat"
+    url = f"{server}/api/compare-datums-sbat"
     try:
         payload = {
             'newdatums': dates['newdatums'],  
@@ -47,7 +47,7 @@ def get_user_data_from_api(user_id: int) -> dict:
     load_dotenv()
     server = os.getenv("SERVER", "127.0.0.1")
     port = os.getenv("PORT", "8000")
-    url = f"http://{server}:{port}/api/user/{user_id}"
+    url = f"{server}/api/user/{user_id}"
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -61,7 +61,7 @@ def get_cities_from_api():
     load_dotenv()
     server = os.getenv("SERVER", "127.0.0.1")
     port = os.getenv("PORT", "8000")
-    url = f"http://{server}:{port}/api/cities"
+    url = f"{server}/api/cities"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()

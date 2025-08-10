@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ProcessAutoEnrollment;
+use App\Jobs\ProcessAutoEnrollmentSBAT;
 use App\Mail\NewEarlierDateFound;
 use App\Models\City;
-use App\Models\EnrollmentAutoInschrijven;
 use Illuminate\Http\Request;
 use App\Models\Datum;
 use App\Models\User;
@@ -38,7 +38,9 @@ class DatumController extends Controller
             'newdatums.*.date' => 'required|string',
             'newdatums.*.text' => 'required|string',
             'newdatums.*.times' => 'array',
+            'newdatums.*.id_afspraak' => 'required|int',
             'city' => 'required|string',
+
         ]);
 
         $notification_response = $this->send_notifications_sbat($request);
@@ -51,6 +53,7 @@ class DatumController extends Controller
     public function send_notifications_sbat(Request $request)
     {
         $incomingDatums = $this->parseAndValidateDatums($request);
+
         $city = City::where('name', $request->city)->firstOrFail();
         $datum = Datum::where('city_id', $city->id)->latest()->first();
 
@@ -61,17 +64,21 @@ class DatumController extends Controller
         $allNewlyFoundDatums = collect();
 
         foreach ($usersSubscribedToCity as $user) {
-            if (!$user->send_notifications) {
-                continue;
-            }
+            $enrollmentsUsers = $user->enrollmentAutoInschrijven;
             $filters = $this->getFilterParameters($user);
             $newlyFoundEarlierDatums = $this->findNewlyFoundEarlierDatums($incomingDatums, $earliestDatumInDb, $filters);
+
             if ($newlyFoundEarlierDatums->isNotEmpty()) {
-                $this->sendNotifications($newlyFoundEarlierDatums, $user);
-                //TODO
-                // if ($user->enrollment_auto_inschrijven && $user->enrollment_auto_inschrijven->examencentrum == 'SBAT') {
-                //     ProcessAutoEnrollment::dispatch($user, $city);
-                // }
+                if ($user->send_notifications) {
+                    $this->sendNotifications($newlyFoundEarlierDatums, $user);
+                }
+                if ($enrollmentsUsers) {
+                    foreach ($enrollmentsUsers as $enrollmentUser) {
+                        if ($enrollmentUser->examencentrum == 'SBAT') {
+                            ProcessAutoEnrollmentSBAT::dispatch($user, $city, $newlyFoundEarlierDatums);
+                        }
+                    }
+                }
                 $foundNewerDatums = true;
                 $allNewlyFoundDatums = $allNewlyFoundDatums->merge($newlyFoundEarlierDatums);
             }
@@ -105,16 +112,21 @@ class DatumController extends Controller
         $allNewlyFoundDatums = collect();
 
         foreach ($usersSubscribedToCity as $user) {
-            if (!$user->send_notifications) {
-                continue;
-            }
+
             $filters = $this->getFilterParameters($user);
             $newlyFoundEarlierDatums = $this->findNewlyFoundEarlierDatums($incomingDatums, $earliestDatumInDb, $filters);
+            $enrollmentsUsers = $user->enrollmentAutoInschrijven;
 
             if ($newlyFoundEarlierDatums->isNotEmpty()) {
-                $this->sendNotifications($newlyFoundEarlierDatums, $user);
-                if ($user->enrollment_auto_inschrijven && $user->enrollment_auto_inschrijven->examencentrum == 'Autoveiligheid') {
-                    ProcessAutoEnrollment::dispatch($user, $city);
+                if ($user->send_notifications) {
+                    $this->sendNotifications($newlyFoundEarlierDatums, $user);
+                }
+                if ($enrollmentsUsers) {
+                    foreach ($enrollmentsUsers as $enrollmentUser) {
+                        if ($enrollmentUser->examencentrum == 'Autoveiligheid') {
+                            ProcessAutoEnrollment::dispatch($user, $city);
+                        }
+                    }
                 }
                 $foundNewerDatums = true;
                 $allNewlyFoundDatums = $allNewlyFoundDatums->merge($newlyFoundEarlierDatums);
@@ -136,11 +148,6 @@ class DatumController extends Controller
         ]);
     }
 
-    private function findNewlyFoundEarlierDatumsSBAT(Collection $incomingDatums, ?array $earliestDatumInDb, array $filters)
-    {
-
-    }
-
     private function parseAndValidateDatums(Request $request): Collection
     {
         if (empty($request->input('newdatums'))) {
@@ -153,7 +160,7 @@ class DatumController extends Controller
         return collect($request->input('newdatums'))
             ->map(function ($item) {
                 $date = \DateTime::createFromFormat('!d/m/Y', $item['date']);
-                return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text'], 'times' => $item['times'] ?? []] : null;
+                return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text'], 'times' => $item['times'] ?? [], 'id_afspraak' => $item['id_afspraak']] : null;
             })
             ->filter();
     }
@@ -205,6 +212,5 @@ class DatumController extends Controller
     private function sendNotifications(Collection $newlyFoundEarlierDatums, User $user): void
     {
         Mail::to($user->email)->queue(new NewEarlierDateFound($newlyFoundEarlierDatums->toArray()));
-        // TODO: Send WhatsApp notification
     }
 }

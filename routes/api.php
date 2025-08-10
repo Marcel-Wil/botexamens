@@ -27,6 +27,12 @@ Route::middleware('allow-only-local-requests')->group(function () {
                 'email' => $user->email,
                 'adres' => $user->adres,
                 'postcode' => $user->postcode,
+                'sbat_email' => $user->sbat_email,
+                'sbat_password' => $user->sbat_password,
+                'datum_slagen_theorieB' => $user->datum_slagen_theorieB,
+                'type_voorlopig_rijbewijs' => $user->type_voorlopig_rijbewijs,
+                'afgiftedatum_voorlopig_rijbewijsB' => $user->afgiftedatum_voorlopig_rijbewijsB,
+                'hoeveelste_poging' => $user->hoeveelste_poging,
             ],
             'license_info' => [
                 'zeersteVRijbewijsDatum' => $user->zeersteVRijbewijsDatum,
