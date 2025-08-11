@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\UserEnrolledAutoInschrijven;
 use Illuminate\Console\Command;
 use App\Models\EnrollmentAutoInschrijven;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class ManageEnrollment extends Command
 {
@@ -35,7 +37,7 @@ class ManageEnrollment extends Command
 
         $center = $validCenters[$centerInput];
 
-        $user = User::find($userId);
+        $user = User::find($userId)->first();
         if (!$user) {
             $this->error("User with ID {$userId} not found.");
             return self::FAILURE;
@@ -46,6 +48,7 @@ class ManageEnrollment extends Command
                 'user_id' => $user->id,
                 'examencentrum' => $center,
             ]);
+            Mail::to($user->email)->queue(new UserEnrolledAutoInschrijven($user));
             $this->info("{$user->name} has been enrolled in {$center}.");
         } elseif ($action === 'unenroll') {
             EnrollmentAutoInschrijven::where('user_id', $user->id)
