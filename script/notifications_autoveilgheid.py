@@ -63,7 +63,7 @@ def session_maker():
     zhuidigVRijbewijsDatum = os.getenv("ZHUIDIG_V_RIJBEWIJS_DATUM", "")
     zhuidigVRijbewijsGeldigTot = os.getenv("ZHUIDIG_V_RIJBEWIJS_GELDIG_TOT", "")
 
-    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True, headless=False) as browser:
+    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True, headless=True) as browser:
         page = browser.new_page()
         page.goto("https://examencentrum-praktijk.autoveiligheid.be/Afspraak/nieuw")
 
