@@ -40,7 +40,6 @@ class DatumController extends Controller
             'newdatums.*.times' => 'array',
             'newdatums.*.id_afspraak' => 'required|int',
             'city' => 'required|string',
-
         ]);
 
         $notification_response = $this->send_notifications_sbat($request);
@@ -70,7 +69,7 @@ class DatumController extends Controller
 
             if ($newlyFoundEarlierDatums->isNotEmpty()) {
                 if ($user->send_notifications) {
-                    $this->sendNotifications($newlyFoundEarlierDatums, $user);
+                    $this->sendNotifications($newlyFoundEarlierDatums, $user, $city->name);
                 }
                 if ($enrollmentsUsers) {
                     foreach ($enrollmentsUsers as $enrollmentUser) {
@@ -98,7 +97,6 @@ class DatumController extends Controller
         ]);
     }
 
-
     public function send_notifications(Request $request)
     {
         $incomingDatums = $this->parseAndValidateDatums($request);
@@ -112,14 +110,13 @@ class DatumController extends Controller
         $allNewlyFoundDatums = collect();
 
         foreach ($usersSubscribedToCity as $user) {
-
             $filters = $this->getFilterParameters($user);
             $newlyFoundEarlierDatums = $this->findNewlyFoundEarlierDatums($incomingDatums, $earliestDatumInDb, $filters);
             $enrollmentsUsers = $user->enrollmentAutoInschrijven;
 
             if ($newlyFoundEarlierDatums->isNotEmpty()) {
                 if ($user->send_notifications) {
-                    $this->sendNotifications($newlyFoundEarlierDatums, $user);
+                    $this->sendNotifications($newlyFoundEarlierDatums, $user, $city->name);
                 }
                 if ($enrollmentsUsers) {
                     foreach ($enrollmentsUsers as $enrollmentUser) {
@@ -158,9 +155,14 @@ class DatumController extends Controller
         }
 
         return collect($request->input('newdatums'))
-            ->map(function ($item) {
+            ->map(function ($item) use ($request) {
                 $date = \DateTime::createFromFormat('!d/m/Y', $item['date']);
-                return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text'], 'times' => $item['times'] ?? []] : null;
+                return $date ? [
+                    'date' => $date->format('Y-m-d'),
+                    'text' => $item['text'],
+                    'times' => $item['times'] ?? [],
+                    'city' => $request->city
+                ] : null;
             })
             ->filter();
     }
@@ -175,9 +177,15 @@ class DatumController extends Controller
         }
 
         return collect($request->input('newdatums'))
-            ->map(function ($item) {
+            ->map(function ($item) use ($request) {
                 $date = \DateTime::createFromFormat('!d/m/Y', $item['date']);
-                return $date ? ['date' => $date->format('Y-m-d'), 'text' => $item['text'], 'times' => $item['times'] ?? [], 'id_afspraak' => $item['id_afspraak']] : null;
+                return $date ? [
+                    'date' => $date->format('Y-m-d'),
+                    'text' => $item['text'],
+                    'times' => $item['times'] ?? [],
+                    'id_afspraak' => $item['id_afspraak'],
+                    'city' => $request->city
+                ] : null;
             })
             ->filter();
     }
@@ -226,8 +234,11 @@ class DatumController extends Controller
         }
     }
 
-    private function sendNotifications(Collection $newlyFoundEarlierDatums, User $user): void
+    private function sendNotifications(Collection $newlyFoundEarlierDatums, User $user, string $cityName): void
     {
-        Mail::to($user->email)->queue(new NewEarlierDateFound($newlyFoundEarlierDatums->toArray()));
+        Mail::to($user->email)->queue(new NewEarlierDateFound(
+            $newlyFoundEarlierDatums->toArray(),
+            $cityName
+        ));
     }
 }

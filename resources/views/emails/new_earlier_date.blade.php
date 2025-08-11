@@ -57,7 +57,7 @@
 
 <body>
     <div class="container">
-        <h1>New Earlier Dates Found!</h1>
+        <h1>New Earlier Dates Found in {{ $city }}!</h1>
 
         <p>Hello,</p>
         <p>The system has found the following new earlier appointment dates that may suit your schedule:</p>
@@ -65,6 +65,9 @@
         @foreach ($earlierDatums as $datum)
         <div class="date-info">
             <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($datum['date'])->format('d/m/Y') }}</p>
+            @if(!empty($datum['city']))
+            <p><strong>City:</strong> {{ $datum['city'] }}</p>
+            @endif
             <p><strong>Info:</strong> {{ $datum['text'] }}</p>
             @if (!empty($datum['times']))
             <p class="times"><strong>Times:</strong> {{ implode(', ', $datum['times']) }}</p>
