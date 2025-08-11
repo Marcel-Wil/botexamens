@@ -45,7 +45,7 @@ def make_post_request(payload, cookie_string):
         if 'response' in locals():
             print(f"Server returned status {response.status_code} with body:\n{response.text}")
         print(f"Failed to make POST request: {e}")
-        return None
+        raise
 
 def session_maker():
     load_dotenv()
@@ -63,7 +63,7 @@ def session_maker():
     zhuidigVRijbewijsDatum = os.getenv("ZHUIDIG_V_RIJBEWIJS_DATUM", "")
     zhuidigVRijbewijsGeldigTot = os.getenv("ZHUIDIG_V_RIJBEWIJS_GELDIG_TOT", "")
 
-    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True, headless=True) as browser:
+    with Camoufox(os=["macos", "windows"], geoip=True, humanize=True, headless=False) as browser:
         page = browser.new_page()
         page.goto("https://examencentrum-praktijk.autoveiligheid.be/Afspraak/nieuw")
 
@@ -130,7 +130,7 @@ def session_maker():
         except Exception as e:
             print(f"Error fetching cities from API: {e}")
             return
-
+        
         while True:
             for city in cities:
                 payload = {
@@ -141,7 +141,7 @@ def session_maker():
                     response_text = make_post_request(payload, cookie_string)
                 except Exception as e:
                     print(f"Error making POST request: {e}")
-                    break
+                    return
                 if response_text:
                     extracted_dates = extract_dates_from_html(response_text)
                     
