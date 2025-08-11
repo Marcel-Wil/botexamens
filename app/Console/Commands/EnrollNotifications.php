@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\UserEnrolledNotification;
 use Illuminate\Console\Command;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class EnrollNotifications extends Command
 {
@@ -37,7 +39,7 @@ class EnrollNotifications extends Command
 
         $booleanStatus = filter_var($status, FILTER_VALIDATE_BOOLEAN);
 
-        $user = User::find($userId);
+        $user = User::find($userId)->first();
 
         if (!$user) {
             $this->error("User with ID {$userId} not found.");
@@ -46,6 +48,9 @@ class EnrollNotifications extends Command
 
         $user->send_notifications = $booleanStatus;
         $user->save();
+        if ($booleanStatus) {
+            Mail::to($user->email)->queue(new UserEnrolledNotification($user));
+        }
 
         $this->info("User ID {$userId} send_notifications set to " . ($booleanStatus ? 'true' : 'false') . ".");
         return 0;
