@@ -1,6 +1,8 @@
 import requests
 import json
 from datetime import datetime
+import os
+import traceback
 
 def get_required_field(data_dict, key):
     """Gets a field from a dictionary or raises a ValueError if it's missing or empty."""
@@ -69,7 +71,6 @@ def enroll_in_exam(token:str, id_afspraak:int, personal_info):
         "examType": "E2",
         "licenseType": "B"
     }
-    return
     response = requests.post(url, json=payload, headers=headers)
     print(f"Status Code: {response.status_code}")
     try:
@@ -98,6 +99,11 @@ def make_session_sbat_login(email, psswd):
         return response.text.strip()
 
 def get_available_exam_dates(token, id_examencentra, name_examencentra):
+    proxy = 'http://brd-customer-hl_790542c3-zone-examen:ji6jdo7xgzmb@brd.superproxy.io:33335'
+    proxies = {
+        'http': proxy,
+        'https': proxy
+    }
     url = "https://api.rijbewijs.sbat.be/praktijk/api/exam/available"
     #PRAKTIJEXAMEN B - AUTO
     #B - licenseType
@@ -132,24 +138,64 @@ def get_available_exam_dates(token, id_examencentra, name_examencentra):
         "Priority": "u=0"
     }
 
-    response = requests.post(url, json=payload, headers=headers)
+    try:
+        response = requests.post(url, json=payload, headers=headers, proxies=proxies)
+        response.raise_for_status()
 
-    if response.status_code == 200:
+        json_response = response.json()
+        # Validate that the response has the expected structure
+        if not isinstance(json_response, list):
+            raise ValueError(f"Expected JSON list, got {type(json_response).__name__}: {json_response}")
+
+        newdatums = transform_sbat_response(json_response)
+        return {
+            "newdatums": newdatums['newdatums'],
+            "city": name_examencentra
+        }
+    except Exception as e:
+        # Create error folder
+        error_folder = f"{name_examencentra}-errors"
+        error_dir = os.path.join(os.path.dirname(__file__), error_folder)
+        os.makedirs(error_dir, exist_ok=True)
+
+        # Generate timestamp for error file
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        error_filename = f"error_{timestamp}.json"
+        error_filepath = os.path.join(error_dir, error_filename)
+
+        # Prepare error data
+        error_data = {
+            "timestamp": datetime.now().isoformat(),
+            "city": name_examencentra,
+            "exam_center_id": id_examencentra,
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "traceback": traceback.format_exc(),
+            "request_details": {
+                "url": url,
+                "payload": payload,
+                "headers": {k: v for k, v in headers.items() if k != "Authorization"}  # Exclude token for security
+            }
+        }
+
+        # Add response details if available
+        if 'response' in locals():
+            error_data["response_details"] = {
+                "status_code": response.status_code,
+                "headers": dict(response.headers),
+                "text": response.text[:1000] if hasattr(response, 'text') else None  # Limit text length
+            }
+        
+        # Write error to file
         try:
-            response = requests.post(url, json=payload, headers=headers)
-            response.raise_for_status()
-            newdatums = transform_sbat_response(response.json())
-            return {
-                "newdatums": newdatums['newdatums'],
-                "city": name_examencentra
-            }
-        except Exception as e:
-            print(f"Failed to fetch or process data for {name_examencentra} (ID: {id_examencentra}): {e}")
-            return {
-                "newdatums": [],
-                "city": name_examencentra
-            }
-    return response
+            with open(error_filepath, 'w', encoding='utf-8') as f:
+                json.dump(error_data, f, indent=4, ensure_ascii=False)
+            print(f"Error logged to: {error_filepath}")
+        except Exception as file_error:
+            print(f"Failed to write error log: {file_error}")
+        
+        print(f"Failed to get available exam dates for {name_examencentra} (ID: {id_examencentra}): {e}")
+        raise
 
 def transform_sbat_response(raw_sbat_data):
     if not raw_sbat_data:

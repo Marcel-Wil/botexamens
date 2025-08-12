@@ -38,9 +38,7 @@ def post_dates_to_api_sbat(dates, city_name):
         response.raise_for_status()
         print(f"Successfully posted dates for {city_name}.")
     except Exception as e:
-        print(f"Failed to post dates to {url} for {city_name}: {e}")
-        if 'response' in locals():
-            print(f"Response content: {response.text}")
+        pass
 
 
 def get_user_data_from_api(user_id: int) -> dict:

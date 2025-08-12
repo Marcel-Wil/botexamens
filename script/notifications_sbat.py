@@ -24,7 +24,7 @@ def main():
         print("using token: " + token)
     except Exception as e:
         print(f"Failed to get token: {e}")
-        time.sleep(30)
+        time.sleep(60)
         return
     while True:
         for city, center_id in exam_centers.items():
@@ -61,6 +61,9 @@ def main():
 
 if __name__ == "__main__":
     while True:
-        main()
-        print("Process ended. Restarting in 10 seconds...")
-        time.sleep(10)
+        try:
+            main()
+        except Exception as e:
+            print(f"Main process error: {e}")
+        print("Process ended. Restarting in 60 seconds...")
+        time.sleep(60)
