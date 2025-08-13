@@ -75,13 +75,11 @@ def create_session_and_get_cookies():
         'password': 'ji6jdo7xgzmb'
     }) as browser:
         page = browser.new_page()
-        page.goto("https://www.browserscan.net/")
-        time.sleep(20)
         page.goto("https://examencentrum-praktijk.autoveiligheid.be/Afspraak/nieuw")
 
         # Wait for the first input to be visible
         def human_type(selector, text):
-            delay = random.choice([100, 150, 200])
+            delay = random.choice([111, 144, 187])
             page.locator(selector).type(text, delay=delay)
 
         # WIZARD STEP 1
@@ -97,6 +95,8 @@ def create_session_and_get_cookies():
         human_type("#adres", adres)
         human_type("#postcode", postcode)
         page.wait_for_timeout(4000)
+        page.click('body')  # Click away to close the date picker
+        page.wait_for_timeout(1000)
         page.click("#submitButton")
 
         # WIZARD STEP 2
