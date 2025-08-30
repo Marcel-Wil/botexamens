@@ -11,6 +11,7 @@ class City extends Model
 {
     use HasFactory;
 
+    /** @var list<string> */
     protected $fillable = [
         'name',
         'code',

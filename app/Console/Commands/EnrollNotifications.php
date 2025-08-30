@@ -3,56 +3,71 @@
 namespace App\Console\Commands;
 
 use App\Mail\UserEnrolledNotification;
-use Illuminate\Console\Command;
 use App\Models\User;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
 class EnrollNotifications extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:enroll-notifications {user_id} {status}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Enable or disable send_notifications for a user';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    /** @var list<string> */
+    private array $validStatuses = ['true', 'false', '1', '0'];
+
+    public function handle(): int
     {
         $userId = $this->argument('user_id');
         $status = strtolower($this->argument('status'));
 
-        // Validate the status input
-        if (!in_array($status, ['true', 'false', '1', '0'], true)) {
-            $this->error("Invalid status. Use true/false or 1/0.");
-            return 1;
+        if (!$this->isValidStatus($status)) {
+            $this->error('Invalid status. Use true/false or 1/0.');
+            return self::FAILURE;
+        }
+
+        $user = $this->findUser($userId);
+        if (!$user) {
+            $this->error("User with ID {$userId} not found.");
+            return self::FAILURE;
         }
 
         $booleanStatus = filter_var($status, FILTER_VALIDATE_BOOLEAN);
 
-        $user = User::find($userId)->first();
+        $this->updateUserNotificationStatus($user, $booleanStatus);
 
-        if (!$user) {
-            $this->error("User with ID {$userId} not found.");
-            return 1;
-        }
-
-        $user->send_notifications = $booleanStatus;
-        $user->save();
         if ($booleanStatus) {
-            Mail::to($user->email)->queue(new UserEnrolledNotification($user));
+            $this->sendNotificationEmail($user);
         }
 
-        $this->info("User ID {$userId} send_notifications set to " . ($booleanStatus ? 'true' : 'false') . ".");
-        return 0;
+        $this->displaySuccessMessage($userId, $booleanStatus);
+
+        return self::SUCCESS;
+    }
+
+    private function isValidStatus(string $status): bool
+    {
+        return in_array($status, $this->validStatuses, true);
+    }
+
+    private function findUser(mixed $userId): ?User
+    {
+        return User::find($userId);
+    }
+
+    private function updateUserNotificationStatus(User $user, bool $status): void
+    {
+        $user->update(['send_notifications' => $status]);
+    }
+
+    private function sendNotificationEmail(User $user): void
+    {
+        Mail::to($user->email)->queue(new UserEnrolledNotification($user));
+    }
+
+    private function displaySuccessMessage(mixed $userId, bool $status): void
+    {
+        $statusText = $status ? 'enabled' : 'disabled';
+        $this->info("User ID {$userId} notifications have been {$statusText}.");
     }
 }

@@ -8,18 +8,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AllowOnlyLocalRequests
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next)
+    /** @var list<string> */
+    private array $allowedIps = [
+        '159.223.13.156',
+        '127.0.0.1',
+        '::1',
+    ];
+
+    public function handle(Request $request, Closure $next): Response
     {
-        if (in_array($request->ip(), ['159.223.13.156', '127.0.0.1', '::1'])) {
-            return $next($request);
+        if (!in_array($request->ip(), $this->allowedIps)) {
+            abort(403);
         }
 
-        abort(403);
+        return $next($request);
     }
 
 }
