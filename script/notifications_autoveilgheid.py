@@ -27,7 +27,7 @@ def make_post_request(payload, cookie_string):
     """Makes a POST request to the specified URL with the given payload and cookies."""
     post_url = "https://examencentrum-praktijk.autoveiligheid.be/TimeSelect/AjaxPartialTimeSelectNew"
     
-    proxy = 'http://brd-customer-hl_790542c3-zone-examen:ji6jdo7xgzmb@brd.superproxy.io:33335'
+    proxy = os.getenv("PROXY", "")
     proxies = {
         'http': proxy,
         'https': proxy
