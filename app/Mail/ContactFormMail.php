@@ -3,11 +3,11 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ContactFormMail extends Mailable implements ShouldQueue
 {
@@ -23,7 +23,7 @@ class ContactFormMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: "noreply@rijbewijsboeker.be",
+            from: 'noreply@rijbewijsboeker.be',
             subject: 'New Contact Form Submission',
         );
     }

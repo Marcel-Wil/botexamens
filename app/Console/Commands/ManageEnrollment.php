@@ -29,14 +29,16 @@ class ManageEnrollment extends Command
         $centerInput = strtolower($this->argument('center'));
         $userId = $this->argument('user_id');
 
-        if (!$this->isValidCenter($centerInput)) {
+        if (! $this->isValidCenter($centerInput)) {
             $this->error('Invalid exam center. Allowed values: autoveiligheid, sbat.');
+
             return self::FAILURE;
         }
 
         $user = $this->findUser($userId);
-        if (!$user) {
+        if (! $user) {
             $this->error("User with ID {$userId} not found.");
+
             return self::FAILURE;
         }
 

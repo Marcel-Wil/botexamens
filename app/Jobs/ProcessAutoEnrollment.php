@@ -19,9 +19,13 @@ class ProcessAutoEnrollment implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public User $user;
+
     public City $city;
+
     public int $tries = 3;
+
     public int $timeout = 600;
+
     public bool $failOnTimeout = true;
 
     public function __construct(User $user, City $city)
@@ -44,13 +48,13 @@ class ProcessAutoEnrollment implements ShouldQueue
         $command = [$pythonPath, $scriptPath, $this->user->id, $this->city->code];
         $process = Process::timeout($processTimeout)->run($command);
 
-        if (!$process->successful()) {
+        if (! $process->successful()) {
             throw new \Exception("Failed to enroll user {$this->user->id}: Python script execution failed.");
         }
 
         $output = $process->output();
 
-        if (!str_contains($output, 'ENROLLMENT_SUCCESS')) {
+        if (! str_contains($output, 'ENROLLMENT_SUCCESS')) {
             throw new \Exception("Failed to enroll user {$this->user->id}: Python script did not return ENROLLMENT_SUCCESS. Output: {$output}");
         }
 

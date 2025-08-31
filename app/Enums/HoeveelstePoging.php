@@ -32,6 +32,6 @@ enum HoeveelstePoging: string
 
     public static function fromValue(string $value): ?self
     {
-        return collect(self::cases())->first(fn($case) => $case->value === $value);
+        return collect(self::cases())->first(fn ($case) => $case->value === $value);
     }
 }

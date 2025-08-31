@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 class SbatController extends Controller
 {
     use ProcessesDatums;
+
     public function compare(Request $request): JsonResponse
     {
         $request->validate([
@@ -35,7 +36,7 @@ class SbatController extends Controller
         }
 
         return collect($request->input('newdatums'))
-            ->map(fn($item) => $this->mapSbatDatumItem($item, $request->city))
+            ->map(fn ($item) => $this->mapSbatDatumItem($item, $request->city))
             ->filter();
     }
 
@@ -43,7 +44,7 @@ class SbatController extends Controller
     {
         $date = DateTime::createFromFormat('!d/m/Y', $item['date']);
 
-        if (!$date) {
+        if (! $date) {
             return null;
         }
 

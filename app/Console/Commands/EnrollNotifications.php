@@ -21,14 +21,16 @@ class EnrollNotifications extends Command
         $userId = $this->argument('user_id');
         $status = strtolower($this->argument('status'));
 
-        if (!$this->isValidStatus($status)) {
+        if (! $this->isValidStatus($status)) {
             $this->error('Invalid status. Use true/false or 1/0.');
+
             return self::FAILURE;
         }
 
         $user = $this->findUser($userId);
-        if (!$user) {
+        if (! $user) {
             $this->error("User with ID {$userId} not found.");
+
             return self::FAILURE;
         }
 

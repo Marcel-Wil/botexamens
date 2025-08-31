@@ -35,7 +35,7 @@ class AutoveiligheidController extends Controller
         }
 
         return collect($request->input('newdatums'))
-            ->map(fn($item) => $this->mapDatumItem($item, $request->city))
+            ->map(fn ($item) => $this->mapDatumItem($item, $request->city))
             ->filter();
     }
 
@@ -43,7 +43,7 @@ class AutoveiligheidController extends Controller
     {
         $date = DateTime::createFromFormat('!d/m/Y', $item['date']);
 
-        if (!$date) {
+        if (! $date) {
             return null;
         }
 

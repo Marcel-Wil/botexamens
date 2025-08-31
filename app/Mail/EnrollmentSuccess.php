@@ -15,12 +15,10 @@ class EnrollmentSuccess extends Mailable implements ShouldQueue
 
     public $user;
 
-
     public function __construct($user)
     {
         $this->user = $user;
     }
-
 
     public function envelope(): Envelope
     {

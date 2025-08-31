@@ -1,13 +1,13 @@
 <?php
 
 use App\Enums\HoeveelstePoging;
+use App\Enums\TypeVoorlopigRijbewijs;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\TypeVoorlopigRijbewijs;
 
-
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */

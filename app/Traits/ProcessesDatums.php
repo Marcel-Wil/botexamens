@@ -145,15 +145,15 @@ trait ProcessesDatums
         return $incomingDatums->filter(function ($item) use ($earliestDatumInDb, $filters) {
             $itemDate = DateTime::createFromFormat('Y-m-d', $item['date']);
 
-            if (!$itemDate) {
+            if (! $itemDate) {
                 return false;
             }
 
-            if (!$this->isEarlierThanExisting($itemDate, $earliestDatumInDb)) {
+            if (! $this->isEarlierThanExisting($itemDate, $earliestDatumInDb)) {
                 return false;
             }
 
-            if (!$this->isWithinDateRange($itemDate, $filters)) {
+            if (! $this->isWithinDateRange($itemDate, $filters)) {
                 return false;
             }
 
@@ -163,7 +163,7 @@ trait ProcessesDatums
 
     private function isEarlierThanExisting(DateTime $itemDate, ?array $earliestDatumInDb): bool
     {
-        if (!$earliestDatumInDb || !isset($earliestDatumInDb['date'])) {
+        if (! $earliestDatumInDb || ! isset($earliestDatumInDb['date'])) {
             return true;
         }
 
@@ -193,7 +193,7 @@ trait ProcessesDatums
 
     private function isWithinTimeRange(array $item, array $filters): bool
     {
-        if (!$filters['startUur'] || !$filters['endUur']) {
+        if (! $filters['startUur'] || ! $filters['endUur']) {
             return true;
         }
 
@@ -202,7 +202,7 @@ trait ProcessesDatums
         }
 
         return collect($item['times'])->contains(
-            fn($time) => $time >= $filters['startUur'] && $time <= $filters['endUur']
+            fn ($time) => $time >= $filters['startUur'] && $time <= $filters['endUur']
         );
     }
 
@@ -212,6 +212,7 @@ trait ProcessesDatums
 
         if ($datum) {
             $datum->update(['olddatums' => $newDatumsToStore]);
+
             return;
         }
 
@@ -228,5 +229,4 @@ trait ProcessesDatums
             $cityName
         ));
     }
-
 }

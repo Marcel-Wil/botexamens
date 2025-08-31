@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $user = $request->user();
         $earliestDate = null;
 
-        if (!$user->notification) {
+        if (! $user->notification) {
             return Inertia::render('dashboard', [
                 'latestDate' => null,
             ]);
@@ -23,7 +23,7 @@ class DashboardController extends Controller
 
         $latestDatumEntry = Datum::latest()->first();
 
-        if (!$latestDatumEntry || empty($latestDatumEntry->olddatums)) {
+        if (! $latestDatumEntry || empty($latestDatumEntry->olddatums)) {
             return Inertia::render('dashboard', [
                 'latestDate' => null,
             ]);
@@ -43,7 +43,7 @@ class DashboardController extends Controller
             return $date && ($date->isFuture() || $date->isToday());
         });
 
-        if (!empty($futureDates)) {
+        if (! empty($futureDates)) {
             $earliestDate = min($futureDates);
         }
 

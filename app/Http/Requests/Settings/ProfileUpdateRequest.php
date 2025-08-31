@@ -32,5 +32,4 @@ class ProfileUpdateRequest extends FormRequest
             'zhuidigVRijbewijsGeldigTot' => ['nullable', 'date_format:d/m/Y'],
         ];
     }
-
 }

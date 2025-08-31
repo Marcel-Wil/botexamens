@@ -17,11 +17,10 @@ class AllowOnlyLocalRequests
 
     public function handle(Request $request, Closure $next): Response
     {
-        if (!in_array($request->ip(), $this->allowedIps)) {
+        if (! in_array($request->ip(), $this->allowedIps)) {
             abort(403);
         }
 
         return $next($request);
     }
-
 }

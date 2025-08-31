@@ -6,13 +6,11 @@ use App\Mail\EnrollmentSuccess;
 use App\Models\City;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Collection;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Mail;
-
-
+use Illuminate\Support\Facades\Process;
 
 class ProcessAutoEnrollmentSBAT implements ShouldQueue
 {
@@ -21,13 +19,16 @@ class ProcessAutoEnrollmentSBAT implements ShouldQueue
     /**
      * Create a new job instance.
      */
-
     public $tries = 3;
+
     public $timeout = 300;
+
     public $failOnTimeout = true;
 
     public $user;
+
     public $city;
+
     public $incomingDatums;
 
     public function __construct(User $user, City $city, Collection $incomingDatums)
@@ -36,7 +37,6 @@ class ProcessAutoEnrollmentSBAT implements ShouldQueue
         $this->city = $city;
         $this->incomingDatums = $incomingDatums;
     }
-
 
     /**
      * Execute the job.
@@ -48,6 +48,7 @@ class ProcessAutoEnrollmentSBAT implements ShouldQueue
         $idAfspraak = $this->incomingDatums->first()['id_afspraak'];
         $command = [$pythonPath, $scriptPath, $this->user->id, $this->city->code, $idAfspraak];
         Log::info($command);
+
         return;
         $process = Process::timeout(600)->run($command);
         if ($process->successful()) {
@@ -60,9 +61,10 @@ class ProcessAutoEnrollmentSBAT implements ShouldQueue
                     }
                     Mail::to($this->user->email)->queue(new EnrollmentSuccess($this->user));
                 }
+
                 return true;
             } else {
-                throw new \Exception("Failed to enroll user {$this->user->id}: Python script did not return ENROLLMENT_SUCCESS. Output: " . $output);
+                throw new \Exception("Failed to enroll user {$this->user->id}: Python script did not return ENROLLMENT_SUCCESS. Output: ".$output);
             }
         } else {
             throw new \Exception("Failed to enroll user {$this->user->id}: Python script execution failed.");

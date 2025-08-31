@@ -14,6 +14,7 @@ class NewEarlierDateFound extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public array $earlierDatums;
+
     public string $city;
 
     public function __construct(array $earlierDatums, string $city)
@@ -26,7 +27,7 @@ class NewEarlierDateFound extends Mailable implements ShouldQueue
     {
         $subject = 'New Earlier Date Detected';
 
-        if (!empty($this->city)) {
+        if (! empty($this->city)) {
             $subject .= " in {$this->city}";
         }
 

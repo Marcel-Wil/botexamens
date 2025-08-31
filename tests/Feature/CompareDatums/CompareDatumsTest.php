@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->city = City::factory()->create([
         'name' => 'Deurne',
         'code' => '1004',
-        'company' => 'Autoveiligheid'
+        'company' => 'Autoveiligheid',
     ]);
 
     $this->city->users()->attach($this->user);
@@ -93,7 +93,7 @@ test('compare-datums: returns message if no new earlier datums are found', funct
 test('compare-datums: fails validation with missing fields', function () {
     $response = $this->postJson('/api/compare-datums', [
         'newdatums' => [
-            ['text' => 'Missing date']
+            ['text' => 'Missing date'],
         ],
     ]);
 
