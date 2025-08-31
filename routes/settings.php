@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\AbonnementController;
-use App\Http\Controllers\AutoInschrijvenController;
-use App\Http\Controllers\AutoInschrijvenSbatController;
+use App\Http\Controllers\Autoveiligheid\AutoInschrijvenController;
+use App\Http\Controllers\Sbat\AutoInschrijvenSbatController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\DatesController;

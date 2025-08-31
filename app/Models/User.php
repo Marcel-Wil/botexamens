@@ -43,6 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'type_voorlopig_rijbewijs',
         'afgiftedatum_voorlopig_rijbewijsB',
         'hoeveelste_poging',
+        'send_notifications',
     ];
 
     /** @var list<string> */
