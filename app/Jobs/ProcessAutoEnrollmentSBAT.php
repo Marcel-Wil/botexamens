@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Mail\EnrollmentSuccess;
@@ -8,7 +10,6 @@ use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Process;
 
@@ -39,7 +40,7 @@ class ProcessAutoEnrollmentSBAT implements ShouldQueue
     }
 
     /**
-     * Execute the job.
+     * TODO: test first with py script
      */
     public function handle()
     {
@@ -47,9 +48,7 @@ class ProcessAutoEnrollmentSBAT implements ShouldQueue
         $scriptPath = base_path('script/auto_inschrijven_sbat.py');
         $idAfspraak = $this->incomingDatums->first()['id_afspraak'];
         $command = [$pythonPath, $scriptPath, $this->user->id, $this->city->code, $idAfspraak];
-        Log::info($command);
 
-        return;
         $process = Process::timeout(600)->run($command);
         if ($process->successful()) {
             $output = $process->output();
