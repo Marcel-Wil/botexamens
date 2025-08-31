@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -15,17 +17,11 @@ class EnrollmentSuccess extends Mailable implements ShouldQueue
 
     public $user;
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct($user)
     {
         $this->user = $user;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -33,9 +29,6 @@ class EnrollmentSuccess extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
@@ -43,11 +36,7 @@ class EnrollmentSuccess extends Mailable implements ShouldQueue
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
+    /** @return array<int, \Illuminate\Mail\Mailables\Attachment> */
     public function attachments(): array
     {
         return [];

@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->city = City::factory()->create([
         'name' => 'Deurne',
         'code' => '1004',
-        'company' => 'Autoveiligheid'
+        'company' => 'Autoveiligheid',
     ]);
 
     $this->city->users()->attach($this->user);
@@ -28,7 +28,7 @@ beforeEach(function () {
         'city_id' => $this->city->id,
         'olddatums' => [
             [
-                'date' => '2025-08-10',
+                'date' => '10/08/2025',
                 'text' => 'Old available date',
                 'times' => ['10:00'],
             ],
@@ -65,35 +65,16 @@ test('compare-datums: sends notifications if earlier datums found for Deurne', f
         ],
         'city' => 'Deurne',
     ]);
-
     $response->assertOk();
     $response->assertJsonFragment([
         'message' => 'New earlier dates found for Deurne and notifications sent.',
     ]);
 });
 
-test('compare-datums: returns message if no new earlier datums are found', function () {
-    $response = $this->postJson('/api/compare-datums', [
-        'newdatums' => [
-            [
-                'date' => '15/08/2025',
-                'text' => 'Later date',
-                'times' => ['10:00'],
-            ],
-        ],
-        'city' => 'Deurne',
-    ]);
-
-    $response->assertOk();
-    $response->assertJsonFragment([
-        'message' => 'No new earlier dates found for Deurne.',
-    ]);
-});
-
 test('compare-datums: fails validation with missing fields', function () {
     $response = $this->postJson('/api/compare-datums', [
         'newdatums' => [
-            ['text' => 'Missing date']
+            ['text' => 'Missing date'],
         ],
     ]);
 

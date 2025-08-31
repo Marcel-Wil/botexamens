@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,26 +12,15 @@ class EnrollmentAutoInschrijven extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
+    /** @var string */
     protected $table = 'enrollment_auto_inschrijven';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    /** @var list<string> */
     protected $fillable = [
         'user_id',
         'examencentrum',
     ];
 
-    /**
-     * Get the user that owns the enrollment.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

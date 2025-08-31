@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
@@ -21,7 +23,6 @@ class DatesController extends Controller
     /**
      * Update the user's date and time settings.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request)
@@ -32,7 +33,6 @@ class DatesController extends Controller
             'startUur' => ['nullable', 'string', 'max:255'],
             'endUur' => ['nullable', 'string', 'max:255'],
         ]);
-
 
         $request->user()->update($validated);
 

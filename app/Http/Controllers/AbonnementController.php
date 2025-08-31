@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AbonnementController extends Controller
 {
-    //
-    public function edit()
+    public function edit(): Response
     {
         $user = Auth::user()->load('enrollmentAutoInschrijven');
-        $enrollmentsUser = $user->enrollmentAutoInschrijven;
+        $enrollments = $user->enrollmentAutoInschrijven;
 
         return Inertia::render('settings/abonnement', [
-            'enrollmentStatus' => $enrollmentsUser->isNotEmpty()
+            'enrollmentStatus' => $enrollments->isNotEmpty(),
         ]);
     }
 }

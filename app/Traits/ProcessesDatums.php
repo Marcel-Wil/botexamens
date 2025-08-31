@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Traits;
 
 use App\Jobs\ProcessAutoEnrollment;
 use App\Mail\NewEarlierDateFound;
@@ -10,45 +10,13 @@ use App\Models\City;
 use App\Models\Datum;
 use App\Models\User;
 use DateTime;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 
-class DatumController extends Controller
+trait ProcessesDatums
 {
-    public function compare(Request $request): JsonResponse
-    {
-        $request->validate([
-            'newdatums' => ['array'],
-            'newdatums.*.date' => ['required', 'string'],
-            'newdatums.*.text' => ['required', 'string'],
-            'newdatums.*.times' => ['array'],
-            'city' => ['required', 'string'],
-        ]);
-
-        $response = $this->processNotifications($request, 'autoveiligheid');
-
-        return response()->json($response);
-    }
-
-    public function compareSbat(Request $request): JsonResponse
-    {
-        $request->validate([
-            'newdatums' => ['array'],
-            'newdatums.*.date' => ['required', 'string'],
-            'newdatums.*.text' => ['required', 'string'],
-            'newdatums.*.times' => ['array'],
-            'newdatums.*.id_afspraak' => ['required', 'int'],
-            'city' => ['required', 'string'],
-        ]);
-
-        $response = $this->processNotifications($request, 'sbat');
-
-        return response()->json($response);
-    }
-
-    private function processNotifications(Request $request, string $type): array
+    protected function processNotifications(Request $request, string $type): array
     {
         $incomingDatums = $type === 'sbat'
             ? $this->parseAndValidateSbatDatums($request)
@@ -60,8 +28,6 @@ class DatumController extends Controller
         $usersSubscribedToCity = $city->users;
         $existingDatums = collect($datum->olddatums ?? []);
         $earliestDatumInDb = $existingDatums->sortBy('date')->first();
-        $foundNewerDatums = false;
-        $allNewlyFoundDatums = collect();
 
         $allNewlyFoundDatums = $this->processUsersForEarlierDatums(
             $usersSubscribedToCity,
@@ -72,7 +38,6 @@ class DatumController extends Controller
         );
 
         $foundNewerDatums = $allNewlyFoundDatums->isNotEmpty();
-
         $this->updateDatums($datum, $incomingDatums, $city->id);
 
         if ($foundNewerDatums) {
@@ -88,7 +53,7 @@ class DatumController extends Controller
         ];
     }
 
-    private function processUsersForEarlierDatums(
+    protected function processUsersForEarlierDatums(
         Collection $users,
         Collection $incomingDatums,
         ?array $earliestDatumInDb,
@@ -115,7 +80,7 @@ class DatumController extends Controller
             ->flatten(1);
     }
 
-    private function processUserNotificationsAndEnrollments(
+    protected function processUserNotificationsAndEnrollments(
         User $user,
         City $city,
         string $type,
@@ -128,8 +93,12 @@ class DatumController extends Controller
         $this->processEnrollments($user, $city, $type, $newlyFoundEarlierDatums);
     }
 
-    private function processEnrollments(User $user, City $city, string $type, Collection $newlyFoundEarlierDatums): void
-    {
+    protected function processEnrollments(
+        User $user,
+        City $city,
+        string $type,
+        Collection $newlyFoundEarlierDatums
+    ): void {
         $enrollments = $user->enrollmentAutoInschrijven;
 
         if ($enrollments->isEmpty()) {
@@ -140,33 +109,11 @@ class DatumController extends Controller
             if ($type === 'autoveiligheid' && $enrollment->examencentrum === 'Autoveiligheid') {
                 ProcessAutoEnrollment::dispatch($user, $city);
             }
-            // Note: SBAT processing not implemented yet
+            // TODO: SBAT processing can be added here when implemented
         }
     }
 
-    private function parseAndValidateDatums(Request $request): Collection
-    {
-        if (empty($request->input('newdatums'))) {
-            $this->handleEmptyDatums($request);
-        }
-
-        return collect($request->input('newdatums'))
-            ->map(fn ($item) => $this->mapDatumItem($item, $request->city))
-            ->filter();
-    }
-
-    private function parseAndValidateSbatDatums(Request $request): Collection
-    {
-        if (empty($request->input('newdatums'))) {
-            $this->handleEmptyDatums($request);
-        }
-
-        return collect($request->input('newdatums'))
-            ->map(fn ($item) => $this->mapSbatDatumItem($item, $request->city))
-            ->filter();
-    }
-
-    private function handleEmptyDatums(Request $request): void
+    protected function handleEmptyDatums(Request $request): void
     {
         $city = City::where('name', $request->city)->firstOrFail();
         $datum = Datum::where('city_id', $city->id)->latest()->first();
@@ -174,40 +121,7 @@ class DatumController extends Controller
         abort(response()->json(['message' => 'No dates provided.'], 400));
     }
 
-    private function mapDatumItem(array $item, string $cityName): ?array
-    {
-        $date = DateTime::createFromFormat('!d/m/Y', $item['date']);
-
-        if (! $date) {
-            return null;
-        }
-
-        return [
-            'date' => $date->format('Y-m-d'),
-            'text' => $item['text'],
-            'times' => $item['times'] ?? [],
-            'city' => $cityName,
-        ];
-    }
-
-    private function mapSbatDatumItem(array $item, string $cityName): ?array
-    {
-        $date = DateTime::createFromFormat('!d/m/Y', $item['date']);
-
-        if (! $date) {
-            return null;
-        }
-
-        return [
-            'date' => $date->format('Y-m-d'),
-            'text' => $item['text'],
-            'times' => $item['times'] ?? [],
-            'id_afspraak' => $item['id_afspraak'],
-            'city' => $cityName,
-        ];
-    }
-
-    private function getFilterParameters(?User $user): array
+    protected function getFilterParameters(?User $user): array
     {
         $startDatum = $user?->startDatum
             ? DateTime::createFromFormat('!d/m/Y', $user->startDatum)?->format('Y-m-d')
@@ -225,8 +139,11 @@ class DatumController extends Controller
         ];
     }
 
-    private function findNewlyFoundEarlierDatums(Collection $incomingDatums, ?array $earliestDatumInDb, array $filters): Collection
-    {
+    protected function findNewlyFoundEarlierDatums(
+        Collection $incomingDatums,
+        ?array $earliestDatumInDb,
+        array $filters
+    ): Collection {
         return $incomingDatums->filter(function ($item) use ($earliestDatumInDb, $filters) {
             $itemDate = DateTime::createFromFormat('Y-m-d', $item['date']);
 
@@ -291,7 +208,7 @@ class DatumController extends Controller
         );
     }
 
-    private function updateDatums(?Datum $datum, Collection $incomingDatums, int $cityId): void
+    protected function updateDatums(?Datum $datum, Collection $incomingDatums, int $cityId): void
     {
         $newDatumsToStore = $incomingDatums->sortBy('date')->values()->toArray();
 
@@ -307,7 +224,7 @@ class DatumController extends Controller
         ]);
     }
 
-    private function sendNotifications(Collection $newlyFoundEarlierDatums, User $user, string $cityName): void
+    protected function sendNotifications(Collection $newlyFoundEarlierDatums, User $user, string $cityName): void
     {
         Mail::to($user->email)->queue(new NewEarlierDateFound(
             $newlyFoundEarlierDatums->toArray(),

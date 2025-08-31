@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,13 +12,16 @@ class Datum extends Model
 {
     use HasFactory;
 
+    /** @var string */
     protected $table = 'datum';
 
+    /** @var list<string> */
     protected $fillable = [
         'city_id',
         'olddatums',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'olddatums' => 'array',
     ];

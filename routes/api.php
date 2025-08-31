@@ -1,60 +1,15 @@
 <?php
 
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\DatumController;
-use App\Models\City;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Autoveiligheid\AutoveiligheidController;
+use App\Http\Controllers\Sbat\SbatController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\EnrollmentController;
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-});
-
+/* We dont want to allow any requests from other domains to our api */
 Route::middleware('allow-only-local-requests')->group(function () {
-    Route::get('user/{id}', function ($id) {
-        $user = User::findOrFail($id);
+    Route::get('/users/{id}', [UserController::class, 'show']);
 
-        return response()->json([
-            'personal_info' => [
-                'achternaam' => $user->achternaam,
-                'voornaam' => $user->voornaam,
-                'rrn' => $user->rrn,
-                'gbdatum' => $user->gbdatum,
-                'tel' => $user->tel,
-                'email' => $user->email,
-                'adres' => $user->adres,
-                'postcode' => $user->postcode,
-                'sbat_email' => $user->sbat_email,
-                'sbat_password' => $user->sbat_password,
-                'datum_slagen_theorieB' => $user->datum_slagen_theorieB,
-                'type_voorlopig_rijbewijs' => $user->type_voorlopig_rijbewijs,
-                'afgiftedatum_voorlopig_rijbewijsB' => $user->afgiftedatum_voorlopig_rijbewijsB,
-                'hoeveelste_poging' => $user->hoeveelste_poging,
-            ],
-            'license_info' => [
-                'zeersteVRijbewijsDatum' => $user->zeersteVRijbewijsDatum,
-                'zhuidigVRijbewijsDatum' => $user->zhuidigVRijbewijsDatum,
-                'zhuidigVRijbewijsGeldigTot' => $user->zhuidigVRijbewijsGeldigTot,
-            ],
-            'preferences' => [
-                'startDatum' => $user->startDatum,
-                'endDatum' => $user->endDatum,
-                'startUur' => $user->startUur,
-                'endUur' => $user->endUur,
-            ],
-        ]);
-    });
-    Route::post('compare-datums', [DatumController::class, 'compare']);
+    Route::post('/compare-datums', [AutoveiligheidController::class, 'compare']);
 
-    Route::post('compare-datums-sbat', [DatumController::class, 'compare_sbat']);
+    Route::post('/compare-datums-sbat', [SbatController::class, 'compare']);
 });
-
-Route::get('/cities-sbat', function () {
-    return City::all()->where('company', 'Autoveiligheid');
-})->middleware('allow-only-local-requests');
-
-// Route::post('/whatsapp', [ContactController::class, 'sendWhatsapp'])->name('whatsapp.send');
