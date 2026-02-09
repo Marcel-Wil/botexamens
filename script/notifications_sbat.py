@@ -1,69 +1,70 @@
-import time
-import os
-from dotenv import load_dotenv
-from utils_sbat import make_session_sbat_login, get_available_exam_dates, transform_sbat_response
-from datetime import datetime
-from utils import post_dates_to_api_sbat
 import json
+import os
+import time
+from datetime import datetime
 
-exam_centers = {
+from dotenv import load_dotenv
+
+from utils import post_dates_to_api_sbat
+from utils_sbat import make_session_sbat_login, get_available_exam_dates
+
+EXAM_CENTERS = {
     "Sint-Denijs-Westrem": 1,
     "Brakel": 7,
     "Eeklo": 8,
     "Erembodegem": 9,
-    "Sint-Niklaas": 10
+    "Sint-Niklaas": 10,
 }
+
+LOGS_DIR = os.path.join(os.path.dirname(__file__), "logs")
+
+
+def get_poll_interval():
+    now = datetime.now()
+    hour, minute = now.hour, now.minute
+
+    if 0 <= hour < 7:
+        return 300
+    if (hour == 7 and minute < 30) or (16 <= hour < 17):
+        return 30
+    return 60
+
+
+def log_response(city, data):
+    city_log_dir = os.path.join(LOGS_DIR, city.lower())
+    os.makedirs(city_log_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filepath = os.path.join(city_log_dir, f"extracted_dates_{timestamp}.json")
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
+
+def poll_exam_centers(token):
+    for city, center_id in EXAM_CENTERS.items():
+        available_dates = get_available_exam_dates(token, center_id, city)
+        log_response(city, available_dates)
+        # post_dates_to_api_sbat(available_dates, city)
+
 
 def main():
     load_dotenv()
     email = os.getenv("SBAT_EMAIL", "")
-    psswd = os.getenv("SBAT_PSSWD", "")
-    
-    try:
-        token = make_session_sbat_login(email, psswd)
-        print("using token: " + token)
-    except Exception as e:
-        print(f"Failed to get token: {e}")
-        time.sleep(60)
-        return
+    password = os.getenv("SBAT_PSSWD", "")
+
+    token = make_session_sbat_login(email, password)
+
     while True:
-        for city, center_id in exam_centers.items():
-            try:
-                available_date = get_available_exam_dates(token, center_id, city)
-            except Exception as e:
-                print(f"Failed to get available exam dates: {e}")
-                return
-            city_log_dir = os.path.join(os.path.dirname(__file__), 'logs', city.lower())
-            os.makedirs(city_log_dir, exist_ok=True)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            file_path = os.path.join(city_log_dir, f'extracted_dates_{timestamp}.json')
-            with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(available_date, f, indent=4)
+        poll_exam_centers(token)
+        time.sleep(get_poll_interval())
 
-                post_dates_to_api_sbat(available_date, city)
-        print("sleeping zzz...")
-
-        current_time = datetime.now()
-        hour = current_time.hour
-        minute = current_time.minute
-
-        if 0 <= hour < 7:
-            # Between midnight and 7 AM
-            sleep_seconds = 300
-        elif (hour == 7 and 0 <= minute < 30) or (16 <= hour < 17):
-            # Between 7:00-7:29 and 16:00-16:59
-            sleep_seconds = 30
-        else:
-            # All other times
-            sleep_seconds = 60
-
-        time.sleep(sleep_seconds)
 
 if __name__ == "__main__":
     while True:
         try:
             main()
         except Exception as e:
-            print(f"Main process error: {e}")
-        print("Process ended. Restarting in 60 seconds...")
+            print(f"Process crashed: {e}")
+        print("Restarting in 60 seconds...")
         time.sleep(60)

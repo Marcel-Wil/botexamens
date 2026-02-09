@@ -1,51 +1,46 @@
 import os
+
 import requests
-import json
 from dotenv import load_dotenv
+
+load_dotenv()
+
+API_BASE_URL = "http://{}:{}".format(
+    os.getenv("SERVER", "127.0.0.1"),
+    os.getenv("PORT", "8000"),
+)
+
+
+def get_required_field(data, key):
+    """Gets a field from a dictionary or raises ValueError if missing or empty."""
+    value = data.get(key)
+    if not value:
+        raise ValueError(f"Missing or empty required field: '{key}'")
+    return value
+
+
+def _post_dates(endpoint, dates, city_name, silent=False):
+    url = f"{API_BASE_URL}/api/{endpoint}"
+    payload = {"newdatums": dates["newdatums"], "city": city_name}
+    try:
+        response = requests.post(url, json=payload, headers={"Accept": "application/json"})
+        response.raise_for_status()
+        print(f"Successfully posted dates for {city_name}.")
+    except requests.exceptions.RequestException as e:
+        if not silent:
+            print(f"Failed to post dates to {url} for {city_name}: {e}")
 
 
 def post_dates_to_api(dates, city_name):
-    load_dotenv()
-    server = os.getenv("SERVER", "127.0.0.1")
-    port = os.getenv("PORT", "8000")
-    url = f"{server}/api/compare-datums"
-    try:
-        payload = {
-            'newdatums': dates['newdatums'],  
-            'city': city_name
-        }
-        headers = {"Accept": "application/json"}
-        response = requests.post(url, json=payload, headers=headers)
-        response.raise_for_status()
-        print(f"Successfully posted dates for {city_name}.")
-    except Exception as e:
-        print(f"Failed to post dates to {url} for {city_name}: {e}")
-        if 'response' in locals():
-            print(f"Response content: {response.text}")
+    _post_dates("compare-datums", dates, city_name)
+
 
 def post_dates_to_api_sbat(dates, city_name):
-    load_dotenv()
-    server = os.getenv("SERVER", "127.0.0.1")
-    port = os.getenv("PORT", "8000")
-    url = f"{server}/api/compare-datums-sbat"
-    try:
-        payload = {
-            'newdatums': dates['newdatums'],  
-            'city': city_name
-        }
-        headers = {"Accept": "application/json"}
-        response = requests.post(url, json=payload, headers=headers)
-        response.raise_for_status()
-        print(f"Successfully posted dates for {city_name}.")
-    except Exception as e:
-        pass
+    _post_dates("compare-datums-sbat", dates, city_name, silent=True)
 
 
 def get_user_data_from_api(user_id: int) -> dict:
-    load_dotenv()
-    server = os.getenv("SERVER", "127.0.0.1")
-    port = os.getenv("PORT", "8000")
-    url = f"{server}/api/user/{user_id}"
+    url = f"{API_BASE_URL}/api/user/{user_id}"
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -54,16 +49,13 @@ def get_user_data_from_api(user_id: int) -> dict:
         print(f"Error fetching user data from API: {e}")
         return {}
 
+
 def get_cities_from_api():
-    """Fetches all cities from the API."""
-    load_dotenv()
-    server = os.getenv("SERVER", "127.0.0.1")
-    port = os.getenv("PORT", "8000")
-    url = f"{server}/api/cities-sbat"
+    url = f"{API_BASE_URL}/api/cities-sbat"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"Error fetching cities from API: {e}")
-        return [] 
+        return []

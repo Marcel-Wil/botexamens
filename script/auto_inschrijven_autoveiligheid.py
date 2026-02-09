@@ -4,7 +4,7 @@ import os
 import sys
 from datetime import datetime
 from camoufox import Camoufox
-from utils import get_user_data_from_api
+from utils import get_required_field, get_user_data_from_api
 import sentry_sdk
 from dotenv import load_dotenv
 
@@ -19,14 +19,6 @@ sentry_sdk.init(
 )
 
 addons = [os.getenv("ADDON_PATH", "")]
-
-def get_required_field(data_dict, key):
-    """Gets a field from a dictionary or raises a ValueError if it's missing or empty."""
-    value = data_dict.get(key)
-    if not value:
-        raise ValueError(f"Missing or empty required field: '{key}'")
-    return value
-
 
 def auto_inschrijven(user_id: int, city_code: str):
     try:
