@@ -19,9 +19,9 @@ const HeroSection = () => {
             </div>
 
             <div className="relative z-10 text-center">
-                <h1 className="text-5xl font-extrabold text-white">Altijd Als Eerste Ingeschreven voor je Examen</h1>
+                <h1 className="text-5xl font-extrabold text-white">Booking assistant Rijbewijs B - Belgie</h1>
                 <p className="mt-4 text-lg text-gray-300">
-                    Geen stress, geen wachtrijen. Wij regelen je inschrijving zodra er een plek beschikbaar is.
+                    Wij kunnen een examenplek voor jouw regelen binnen de 2 weken in plaats van 6 maanden!
                 </p>
 
                 <a
@@ -112,7 +112,7 @@ export default function Homepage() {
                 <Navbar />
                 <main>
                     <HeroSection />
-                    <ReviewSection />
+                    {/* <ReviewSection /> */}
                     <Faq />
                 </main>
             </div>
