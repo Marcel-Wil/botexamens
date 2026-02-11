@@ -5,6 +5,16 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::post('/locale/{locale}', function (string $locale) {
+    if (! in_array($locale, ['nl', 'fr', 'en'])) {
+        abort(400);
+    }
+
+    session()->put('locale', $locale);
+
+    return redirect()->back();
+})->name('locale.switch');
+
 Route::get('/', function () {
     return Inertia::render('homepage');
 })->name('home');

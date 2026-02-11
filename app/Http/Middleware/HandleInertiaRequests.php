@@ -37,6 +37,21 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
+    /**
+     * @return array<string, string>
+     */
+    private function loadTranslations(): array
+    {
+        $locale = app()->getLocale();
+        $path = lang_path("{$locale}.json");
+
+        if (file_exists($path)) {
+            return json_decode(file_get_contents($path), true) ?: [];
+        }
+
+        return [];
+    }
+
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
@@ -54,6 +69,8 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'csrf' => csrf_token(),
+            'locale' => app()->getLocale(),
+            'translations' => fn (): array => $this->loadTranslations(),
         ];
     }
 }

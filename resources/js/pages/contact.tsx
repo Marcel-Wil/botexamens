@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import { Navbar } from '@/components/navbar';
+import { useTrans } from '@/hooks/use-trans';
 
 const ContactPage = () => {
+    const { t } = useTrans();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -20,7 +22,7 @@ const ContactPage = () => {
     };
 
     const { csrf } = usePage().props;
-    
+
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -32,7 +34,7 @@ const ContactPage = () => {
             formDataToSend.append('name', formData.name);
             formDataToSend.append('email', formData.email);
             formDataToSend.append('message', formData.message);
-            
+
             const response = await fetch('/contact', {
                 method: 'POST',
                 headers: {
@@ -44,19 +46,19 @@ const ContactPage = () => {
             });
 
             const data = await response.json();
-            
+
             if (response.ok) {
                 setMessage({
-                    text: data.message || 'Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.',
+                    text: data.message || t('Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.'),
                     type: 'success'
                 });
                 setFormData({ name: '', email: '', message: '' });
             } else {
-                throw new Error(data.message || 'Er is iets misgegaan. Probeer het later opnieuw.');
+                throw new Error(data.message || t('Er is iets misgegaan. Probeer het later opnieuw.'));
             }
         } catch (error) {
             setMessage({
-                text: error instanceof Error ? error.message : 'Er is iets misgegaan. Probeer het later opnieuw.',
+                text: error instanceof Error ? error.message : t('Er is iets misgegaan. Probeer het later opnieuw.'),
                 type: 'error'
             });
         } finally {
@@ -72,17 +74,17 @@ const ContactPage = () => {
                 <main className="flex justify-center items-center px-4 pt-20 min-h-screen">
                     <div className="p-8 space-y-8 w-full max-w-lg rounded-xl border shadow-2xl backdrop-blur-lg bg-gray-800/50 border-gray-700/50">
                         <div className="text-center">
-                            <h2 className="text-4xl font-extrabold text-white">Neem contact met ons op</h2>
-                            <p className="mt-2 text-lg text-gray-300">Heb je een vraag? We horen graag van je.</p>
+                            <h2 className="text-4xl font-extrabold text-white">{t('Neem contact met ons op')}</h2>
+                            <p className="mt-2 text-lg text-gray-300">{t('Heb je een vraag? We horen graag van je.')}</p>
                         </div>
 
                         {message.text && (
                             <div className={`p-4 rounded-md border-l-4 ${
-                                message.type === 'success' 
-                                    ? 'text-green-700 bg-green-100 border-green-500' 
+                                message.type === 'success'
+                                    ? 'text-green-700 bg-green-100 border-green-500'
                                     : 'text-red-700 bg-red-100 border-red-500'
                             }`} role="alert">
-                                <p className="font-bold">{message.type === 'success' ? 'Gelukt!' : 'Fout'}</p>
+                                <p className="font-bold">{message.type === 'success' ? t('Gelukt!') : t('Fout')}</p>
                                 <p>{message.text}</p>
                             </div>
                         )}
@@ -90,7 +92,7 @@ const ContactPage = () => {
                         <form onSubmit={submit} className="space-y-6" id="contact-form">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-gray-300">
-                                    Naam
+                                    {t('Naam')}
                                 </label>
                                 <input
                                     id="name"
@@ -108,7 +110,7 @@ const ContactPage = () => {
 
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                                    Email
+                                    {t('Email')}
                                 </label>
                                 <input
                                     id="email"
@@ -126,7 +128,7 @@ const ContactPage = () => {
 
                             <div>
                                 <label htmlFor="message" className="block text-sm font-medium text-gray-300">
-                                    Bericht
+                                    {t('Bericht')}
                                 </label>
                                 <textarea
                                     id="message"
@@ -148,19 +150,19 @@ const ContactPage = () => {
                                     disabled={isSubmitting}
                                     className="flex justify-center px-4 py-3 w-full text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isSubmitting ? 'Versturen...' : 'Verstuur bericht'}
+                                    {isSubmitting ? t('Versturen...') : t('Verstuur bericht')}
                                 </button>
                             </div>
                         </form>
 
                         <div className="flex items-center gap-4">
                             <div className="flex-1 h-px bg-gray-600"></div>
-                            <span className="text-sm text-gray-400">OF</span>
+                            <span className="text-sm text-gray-400">{t('OF')}</span>
                             <div className="flex-1 h-px bg-gray-600"></div>
                         </div>
 
                         <div className="text-center">
-                            <p className="mb-3 text-gray-300">Neem contact met ons op via Instagram</p>
+                            <p className="mb-3 text-gray-300">{t('Neem contact met ons op via Instagram')}</p>
                             <a
                                 href="https://www.instagram.com/rijschool_boekingassistant/"
                                 target="_blank"
