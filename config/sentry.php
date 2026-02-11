@@ -36,7 +36,7 @@ return [
     'enable_logs' => env('SENTRY_ENABLE_LOGS', false),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send-default-pii
-    'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
+    'send_default_pii' => (bool) env('SENTRY_SEND_DEFAULT_PII', false),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#ignore-exceptions
     // 'ignore_exceptions' => [],
