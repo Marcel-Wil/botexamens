@@ -5,38 +5,24 @@ interface FaqItem {
 
 const faqData: FaqItem[] = [
     {
-        question: 'Welke examencentra kan ik kiezen?',
-        answer: 'Je kunt kiezen uit de volgende examencentra: Autoveiligheid.ben, sbat.be (Deurne, Geel, Kontich, Alken, Bree, Haasrode, Sint-Denijs-Westrem, Brakel, Eeklo, Erembodegem, Sint-Niklaas) ',
+        question: 'Zijn jullie verbonden aan SBAT, Autoveiligheid of een examencentrum?',
+        answer: 'Nee, Rijbewijsboeker is op geen enkele manier verbonden aan, geassocieerd met of onderdeel van SBAT nv, Autoveiligheid of enig ander examencentrum. Wij zijn een onafhankelijke dienst die u helpt bij het vinden en boeken van beschikbare examendata.',
     },
     {
-        question: 'Hoe werkt de notificatie-abonnement?',
-        answer: 'Na het aanmaken van de account kiest u voor welke examencentrum u een bericht wilt ontvangen en tussen welke datum en uur u nieuwe vrije datums wilt ontvangen(in de instellingen). Vervolgens als wij uw bundel activeren (stuur ons via e-mail of contact-formulier) gaat u telkens een e-mail bericht ontvangen met de nieuwe vrije datums.',
+        question: 'Welke gegevens bewaren jullie en waarom?',
+        answer: 'Wij bewaren enkel de gegevens die noodzakelijk zijn om u in te schrijven voor een rijexamen, zoals uw naam, e-mailadres en eventueel de gegevens die vereist zijn door het examencentrum (bv. rijksregisternummer, geboortedatum, adres). Deze gegevens worden uitsluitend gebruikt om uw boeking uit te voeren en worden niet verkocht of gedeeld met derden.',
     },
     {
-        question: 'Hoe activeer ik de notificatie-abonnement?',
-        answer: 'Maak een account aan en vul je e-mail in. Kies de examencentra waarvoor u een notificatie wilt ontvangen, kies ook het uur en datum in de instellingen. Vervolgens neem met ons contact op via de contact-formulier of deze e-mail (info@rijbewijsboeker.be). Stuur ons een bericht met de bundel die je wilt kiezen en met je gegevens van de account.',
+        question: 'Hoe lang worden mijn gegevens bewaard?',
+        answer: 'Uw gegevens worden bewaard zolang uw account actief is. U kunt op elk moment uw account en alle bijbehorende gegevens laten verwijderen via de instellingen of door contact op te nemen via info@rijbewijsboeker.be.',
     },
     {
-        question: 'Hoe werkt automatisch inschrijven?',
-        answer: 'Maak een account aan en vul uw gegevens goed in. In de instellingen is er een tab voor het inschrijven voor sbat.be en autoveiligheid.be vul in deze tab alles in als u deze bundel wilt kiezen deze is nodig om automatisch in te loggen op de site wanneer er nieuwe datum vrij komt en deze is ook nodig om u automatisch in te schrijven. Na dat u alles heeft ingevuld en de steden heeft gekozen waar u zich automatisch wilt inschrijven contacteer ons via e-mail(info@rijbewijsboeker.be) of formulier.',
+        question: 'Wat zijn mijn rechten met betrekking tot mijn gegevens?',
+        answer: 'Conform de GDPR heeft u recht op inzage, wijziging, verwijdering en overdracht van uw persoonsgegevens. Ook heeft u het recht om bezwaar te maken tegen de verwerking of een beperking van de verwerking te vragen. U kunt deze rechten uitoefenen door contact op te nemen via info@rijbewijsboeker.be.',
     },
-    {
-        question: 'Hoe snel kan ik een eerdere examendatum vinden?',
-        answer: 'Dit hangt af van de beschikbaarheid bij het CBR. Sommige gebruikers vinden binnen enkele uren een nieuwe datum, terwijl het voor anderen enkele dagen kan duren. We garanderen dat je de eerste beschikbare datum die aan je criteria voldoet, niet zult missen.',
-    },
-
     {
         question: 'Is dit legaal?',
-        answer: 'Ja, onze service is volledig legaal. Wij maken gebruik van openbaar toegankelijke informatie en automatiseren alleen het proces van het controleren op beschikbaarheid, wat je anders handmatig zou moeten doen.',
-    },
-
-    {
-        question: 'Wat gebeurt er nadat ik een melding heb ontvangen? (Enkel voor de notifcatie bundel)',
-        answer: 'Wanneer je een melding ontvangt, moet je zelf zo snel mogelijk inloggen op de CBR-website om de voorgestelde datum te boeken. Vrijgekomen plekken worden vaak snel weer bezet, dus snelheid is essentieel.',
-    },
-    {
-        question: 'Is het veilig om mijn gegevens te delen met deze site?',
-        answer: 'Ja, onze site is veilig en betrouwbaar. We gebruiken moderne technieken om uw gegevens te beveiligen en wij gebruiken uw gegevens enkel om u in te schrijven. U kan ook uw account verwijderen via de instellingen.',
+        answer: 'Ja, onze service is volledig legaal. Wij maken gebruik van openbaar toegankelijke informatie op de websites van examencentra en automatiseren het proces van het controleren op beschikbaarheid, wat u anders handmatig zou moeten doen. Wij handelen hierbij in opdracht en met toestemming van de gebruiker.',
     },
 ];
 
