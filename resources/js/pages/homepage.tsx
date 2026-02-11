@@ -25,10 +25,10 @@ const HeroSection = () => {
                 </p>
 
                 <a
-                    href="#reviews"
+                    href="/contact"
                     className="mt-8 inline-block cursor-pointer rounded-lg bg-indigo-600 px-8 py-3 font-bold text-white transition duration-300 hover:bg-indigo-700"
                 >
-                    Begin Nu
+                    Neem met ons contact
                 </a>
             </div>
         </section>

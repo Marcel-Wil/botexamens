@@ -42,12 +42,6 @@ export const Navbar = () => {
                         </>
                     ) : (
                         <>
-                            <a className="text-white hover:text-gray-200" href="/login">
-                                Inloggen
-                            </a>
-                            <a className="text-white hover:text-gray-200" href="/register">
-                                Registreren
-                            </a>
                             <a className="text-white hover:text-gray-200" href="/contact">
                                 Contact
                             </a>
@@ -91,12 +85,6 @@ export const Navbar = () => {
                                 </>
                             ) : (
                                 <>
-                                    <a href="/login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        Inloggen
-                                    </a>
-                                    <a href="/register" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        Registreren
-                                    </a>
                                     <a href="/contact" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         Contact
                                     </a>
