@@ -33,6 +33,17 @@ const HeroSection = () => {
                 >
                     {t('Neem met ons contact')}
                 </a>
+
+                <div className="mx-auto mt-10 flex max-w-2xl flex-wrap justify-center gap-2">
+                    {['Deurne', 'Alken', 'Kontich', 'Geel', 'Haasrode', 'Bree', 'Sint-Denijs-Westrem', 'Brakel', 'Eeklo', 'Erembodegem', 'Sint-Niklaas'].map((city) => (
+                        <span
+                            key={city}
+                            className="rounded-full border border-gray-600 bg-gray-800/50 px-4 py-1.5 text-sm text-gray-300"
+                        >
+                            {city}
+                        </span>
+                    ))}
+                </div>
             </div>
         </section>
     );

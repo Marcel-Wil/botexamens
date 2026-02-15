@@ -5,8 +5,12 @@ export function Faq() {
 
     const faqData = [
         {
-            question: t('Zijn jullie verbonden aan SBAT, Autoveiligheid of een examencentrum?'),
-            answer: t('Nee, Rijbewijsboeker is op geen enkele manier verbonden aan, geassocieerd met of onderdeel van SBAT nv, Autoveiligheid of enig ander examencentrum. Wij zijn een onafhankelijke dienst die u helpt bij het vinden en boeken van beschikbare examendata.'),
+            question: t('Wat doen wij precies?'),
+            answer: t('Wij zoeken een examenplek voor je die veel eerder beschikbaar is dan over 6 maanden. Op basis van onze data vinden wij meestal binnen twee weken al een geschikt examen.'),
+        },
+        {
+            question: t('Welke regios supporten wij?'),
+            answer: t('Wij ondersteunen momenteel de volgende examencentra: Autoveiligheid: Deurne, Alken, Kontich, Geel, Haasrode en Bree. SBAT: Sint-Denijs-Westrem, Brakel, Eeklo, Erembodegem en Sint-Niklaas.')
         },
         {
             question: t('Welke gegevens bewaren jullie en waarom?'),
@@ -23,6 +27,10 @@ export function Faq() {
         {
             question: t('Is dit legaal?'),
             answer: t('Ja, onze service is volledig legaal. Wij maken gebruik van openbaar toegankelijke informatie op de websites van examencentra en automatiseren het proces van het controleren op beschikbaarheid, wat u anders handmatig zou moeten doen. Wij handelen hierbij in opdracht en met toestemming van de gebruiker.'),
+        },
+        {
+            question: t('Zijn jullie verbonden aan SBAT, Autoveiligheid of een examencentrum?'),
+            answer: t('Nee, Rijbewijsboeker is op geen enkele manier verbonden aan, geassocieerd met of onderdeel van SBAT nv, Autoveiligheid of enig ander examencentrum. Wij zijn een onafhankelijke dienst die u helpt bij het vinden en boeken van beschikbare examendata.'),
         },
     ];
 
