@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import { Navbar } from '@/components/navbar';
 import { useTrans } from '@/hooks/use-trans';
 
@@ -48,12 +48,9 @@ const ContactPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setMessage({
-                    text: data.message || t('Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.'),
-                    type: 'success'
-                });
-                setFormData({ name: '', email: '', message: '' });
-            } else {
+                  router.visit('/danku');
+                  return;
+              } else {
                 throw new Error(data.message || t('Er is iets misgegaan. Probeer het later opnieuw.'));
             }
         } catch (error) {
@@ -71,8 +68,8 @@ const ContactPage = () => {
             <Head title="Contact Us" />
             <div className="min-h-screen font-sans antialiased text-gray-200 bg-gradient-to-br from-black via-gray-900 to-purple-900">
                 <Navbar />
-                <main className="flex justify-center items-center px-4 pt-20 min-h-screen">
-                    <div className="p-8 space-y-8 w-full max-w-lg rounded-xl border shadow-2xl backdrop-blur-lg bg-gray-800/50 border-gray-700/50">
+                <main className="flex items-center justify-center min-h-screen px-4 pt-20">
+                    <div className="w-full max-w-lg p-8 space-y-8 border shadow-2xl rounded-xl backdrop-blur-lg bg-gray-800/50 border-gray-700/50">
                         <div className="text-center">
                             <h2 className="text-4xl font-extrabold text-white">{t('Neem contact met ons op')}</h2>
                             <p className="mt-2 text-lg text-gray-300">{t('Heb je een vraag? We horen graag van je.')}</p>
@@ -100,7 +97,7 @@ const ContactPage = () => {
                                     type="text"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="block p-2 mt-1 w-full text-white rounded-md border-gray-600 shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                                    className="block w-full p-2 mt-1 text-white border-gray-600 rounded-md shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                                     required
                                 />
                                 {message.type === 'error' && message.text.includes('name') && (
@@ -118,7 +115,7 @@ const ContactPage = () => {
                                     type="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="block p-2 mt-1 w-full text-white rounded-md border-gray-600 shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                                    className="block w-full p-2 mt-1 text-white border-gray-600 rounded-md shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                                     required
                                 />
                                 {message.type === 'error' && message.text.includes('email') && (
@@ -136,7 +133,7 @@ const ContactPage = () => {
                                     rows={4}
                                     value={formData.message}
                                     onChange={handleChange}
-                                    className="block p-2 mt-1 w-full text-white rounded-md border-gray-600 shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                                    className="block w-full p-2 mt-1 text-white border-gray-600 rounded-md shadow-sm bg-gray-700/50 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                                     required
                                 ></textarea>
                                 {message.type === 'error' && message.text.includes('message') && (
@@ -148,7 +145,7 @@ const ContactPage = () => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="flex justify-center px-4 py-3 w-full text-sm font-medium text-white bg-indigo-600 rounded-md border border-transparent shadow-sm transition-colors duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex justify-center w-full px-4 py-3 text-sm font-medium text-white transition-colors duration-200 bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isSubmitting ? t('Versturen...') : t('Verstuur bericht')}
                                 </button>

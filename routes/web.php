@@ -19,6 +19,10 @@ Route::get('/', function () {
     return Inertia::render('homepage');
 })->name('home');
 
+Route::get('/danku', function () {
+    return Inertia::render('danku');
+})->name('danku');
+
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'send'])
     ->name('contact.send')
