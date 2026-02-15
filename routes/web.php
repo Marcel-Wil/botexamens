@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 Route::get('/danku', function () {
     return Inertia::render('danku');
-})->name('danku');
+})->name('danku')->middleware(\App\Http\Middleware\EnsureContactFormSent::class);
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/contact', [ContactController::class, 'send'])

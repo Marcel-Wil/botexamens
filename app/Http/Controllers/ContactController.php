@@ -28,6 +28,8 @@ class ContactController extends Controller
 
         Mail::to('satumbusiness@gmail.com')->queue(new ContactFormMail($validated));
 
+        session()->put('contact_form_sent', true);
+
         return response()->json([
             'message' => 'Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.',
         ]);
